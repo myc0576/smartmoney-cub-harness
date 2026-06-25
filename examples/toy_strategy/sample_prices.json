@@ -1,0 +1,34 @@
+{
+  "TOY.CUB": {
+    "20260601": {
+      "close": 10.0,
+      "low": 9.9
+    },
+    "20260602": {
+      "close": 10.5,
+      "low": 9.8,
+      "met_user_pattern": true
+    },
+    "20260604": {
+      "close": 10.8,
+      "low": 9.7,
+      "met_user_pattern": true
+    }
+  },
+  "TOY.BETA": {
+    "20260601": {
+      "close": 8.0,
+      "low": 7.9
+    },
+    "20260602": {
+      "close": 7.8,
+      "low": 7.55,
+      "met_user_pattern": false
+    },
+    "20260604": {
+      "close": 7.9,
+      "low": 7.5,
+      "met_user_pattern": false
+    }
+  }
+}

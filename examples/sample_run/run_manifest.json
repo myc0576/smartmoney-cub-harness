@@ -1,0 +1,22 @@
+{
+  "schema": "smartmoney_cub_run_manifest.v1",
+  "run_id": "20260601_153000-after-close",
+  "decision_time": "2026-06-01T15:30:00+08:00",
+  "mode": "after-close",
+  "safety": "READ_ONLY_NO_ORDER_NO_CANCEL_NO_TRADE",
+  "selection_system_version": "toy_offline_v0.1",
+  "selection_system_refs": [
+    "examples/toy_strategy/README.md"
+  ],
+  "data_sources": [
+    {
+      "name": "toy_strategy",
+      "fetch_time": "2026-06-01T15:30:00+08:00",
+      "available_at": "2026-06-01T15:30:00+08:00",
+      "data_quality_flag": "ok",
+      "artifact_stdout": "artifacts/toy_strategy.stdout.txt",
+      "artifact_stderr": "artifacts/toy_strategy.stderr.txt",
+      "artifact_meta": "artifacts/toy_strategy.meta.json"
+    }
+  ]
+}
