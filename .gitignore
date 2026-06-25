@@ -27,3 +27,4 @@ artifacts/*
 !artifacts/.gitkeep
 !artifacts/open_source_check.md
 !artifacts/pre_publish_review.md
+!artifacts/story_polish_review.md
