@@ -78,23 +78,12 @@ GitHub repository:
 https://github.com/myc0576/smartmoney-cub-harness
 ```
 
-Publish path:
+Publish result:
 
-```bash
-git status --short --branch
-git add .
-git commit -m "Prepare public release story and safety evidence" -m "The README pair now presents the harness as a read-only AI trading companion, while the pre-publish report records safety scans, tests, and publish blockers.
-
-Constraint: README language must avoid stock-picking, execution, and return-promise framing
-Constraint: Repository commit messages follow the Lore protocol
-Rejected: Commit with a terse conventional label only | loses release rationale required by AGENTS.md
-Confidence: high
-Scope-risk: narrow
-Tested: python -m pip install -e .; python -m pip install -e \".[dev]\"; pytest -q; doctor; CLI help; README toy workflow
-Not-tested: None known"
-git remote add origin https://github.com/myc0576/smartmoney-cub-harness.git
-git push -u origin main
-```
+- Local release commit was prepared on `main`.
+- The public GitHub repository was created through GitHub REST API.
+- Remote `main` was published through GitHub Git Data API after seeding the empty repository with GitHub Contents API.
+- Native git smart HTTP push was not used because the local global git proxy pointed at an unavailable `127.0.0.1` proxy and direct git HTTPS was reset.
 
 Credential and transport note:
 
