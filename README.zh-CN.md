@@ -8,6 +8,31 @@
 [![Human-in-the-loop](https://img.shields.io/badge/human--in--the--loop-required-blueviolet)](docs/harness-contract.md)
 [![Agent-ready](https://img.shields.io/badge/agent--ready-offline%20artifacts-success)](docs/agent-integration.md)
 
+一个离线、只读、可由 Agent 执行的 A 股主观交易复盘 Harness：记录决策、D1/D3 回放、评分复盘、规则进化。
+
+## 5 秒跑通 Agent Loop
+
+```bash
+git clone https://github.com/myc0576/smartmoney-cub-harness.git
+cd smartmoney-cub-harness
+python -m pip install -e ".[dev]"
+smcub loop --preset toy --agent-trigger "自进化"
+```
+
+Skill 给 Agent 能力，MCP 给 Agent 工具，Harness 给交易复盘闭环一个可执行运行时。
+
+你只需要对 Claude Code / Codex / Cursor 说："跑一轮 loop"、"自进化一下"、"复盘一下"，Agent 就应该执行 `smcub loop`，读取 trace 和 report，再提出安全的规则改进建议。
+
+这不是 AI 自动炒股，也不是荐股系统；它只是 read-only 的主观交易决策记录、复盘和规则进化 harness。
+
+```mermaid
+flowchart TD
+  A["Human phrase / 人的一句话"] --> B["Agent trigger resolver"]
+  B --> C["smcub loop"]
+  C --> D["Observe -> Candidate -> Plan -> Position Check -> Outcome -> Review -> Rule Update"]
+  D --> E["Report + Trace + Challenger Rule Proposal"]
+```
+
 不是荐股机器人，而是陪主观交易者复盘、质询、进化的 AI 决策 Harness。
 
 **聪明资金幼年体 / 游资幼年体：陪你复盘，不替你下单。**  

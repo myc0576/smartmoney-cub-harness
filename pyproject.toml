@@ -10,7 +10,24 @@ readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
 authors = [{ name = "smartmoney-cub-harness contributors" }]
-keywords = ["trading-journal", "decision-log", "backtesting", "rule-evolution", "read-only"]
+keywords = [
+  "agent-harness",
+  "agent-loop",
+  "self-evolving-agent",
+  "human-in-the-loop",
+  "decision-review",
+  "trading-journal",
+  "subjective-trading",
+  "semi-quant",
+  "rule-evolution",
+  "mcp",
+  "skills",
+  "context-engineering",
+  "workflow-engineering",
+  "read-only",
+  "decision-log",
+  "backtesting",
+]
 classifiers = [
   "Development Status :: 3 - Alpha",
   "Intended Audience :: Financial and Insurance Industry",

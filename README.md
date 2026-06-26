@@ -8,6 +8,41 @@
 [![Human-in-the-loop](https://img.shields.io/badge/human--in--the--loop-required-blueviolet)](docs/harness-contract.md)
 [![Agent-ready](https://img.shields.io/badge/agent--ready-offline%20artifacts-success)](docs/agent-integration.md)
 
+An offline, read-only Agent Loop Harness for subjective A-share trading review: decision logging, D1/D3 replay, evaluation, and safe rule evolution.
+
+## 5-second Agent Loop Demo
+
+```bash
+git clone https://github.com/myc0576/smartmoney-cub-harness.git
+cd smartmoney-cub-harness
+python -m pip install -e ".[dev]"
+smcub loop --preset toy --agent-trigger "loop"
+```
+
+Expected output:
+
+```json
+{
+  "status": "ok",
+  "loop_name": "observe_candidate_plan_position_outcome_review_rule_update",
+  "preset": "toy",
+  "safety": "READ_ONLY_NO_ORDER_NO_CANCEL_NO_TRADE",
+  "champion_mutated": false
+}
+```
+
+Skills give agents abilities. MCP gives agents tools. Smartmoney Cub Harness gives a subjective trading review loop a runtime.
+
+Tell your coding agent: "run loop", "review this", or "自进化". The agent should call `smcub loop`, inspect the generated report and trace, then propose safe improvements. It must never place trades.
+
+```mermaid
+flowchart TD
+  A["Human phrase"] --> B["Agent trigger resolver"]
+  B --> C["smcub loop"]
+  C --> D["Observe -> Candidate -> Plan -> Position Check -> Outcome -> Review -> Rule Update"]
+  D --> E["Report + Trace + Challenger Rule Proposal"]
+```
+
 AI decision harness for subjective A-share traders.  
 Read-only. Human-in-the-loop. Built for review, discipline, and rule evolution.
 

@@ -103,12 +103,18 @@ def unique_run_dir(root: Path, decision_time: str, mode: str, sandbox: bool = Fa
     stem = f"{dt.strftime('%Y%m%d_%H%M%S')}-{safe_name(mode)}"
     parent = root / "tmp" / "sandbox" / day if sandbox else root / "runs" / day
     base = parent / stem
-    if not base.exists():
+    try:
+        base.mkdir(parents=True, exist_ok=False)
         return base
+    except FileExistsError:
+        pass
     for index in range(2, 1000):
         candidate = parent / f"{stem}-{index}"
-        if not candidate.exists():
+        try:
+            candidate.mkdir(parents=True, exist_ok=False)
             return candidate
+        except FileExistsError:
+            continue
     raise RuntimeError(f"too many run directories for {stem}")
 
 

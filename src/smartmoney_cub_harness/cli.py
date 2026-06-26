@@ -9,6 +9,7 @@ from typing import Any
 
 from smartmoney_cub_harness import __version__
 from smartmoney_cub_harness.evaluator import evaluate_decision
+from smartmoney_cub_harness.loop import run_agent_loop
 from smartmoney_cub_harness.manifest import validate_run_manifest
 from smartmoney_cub_harness.outcome import build_outcome
 from smartmoney_cub_harness.registry import register_candidate
@@ -111,6 +112,12 @@ def build_parser() -> argparse.ArgumentParser:
 
     doctor_cmd = sub.add_parser("doctor", help="Show local package health and safety settings")
     doctor_cmd.set_defaults(command="doctor")
+
+    loop_cmd = sub.add_parser("loop", help="Run the offline toy agent loop")
+    loop_cmd.add_argument("--preset", choices=["toy"], default="toy")
+    loop_cmd.add_argument("--agent-trigger", default="")
+    loop_cmd.add_argument("--horizon", choices=["d1", "d3"], default="d1")
+    loop_cmd.add_argument("--json", action="store_true", help="Print the final loop summary as JSON")
     return parser
 
 
@@ -154,6 +161,16 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.command == "doctor":
         _print_json(doctor())
+        return 0
+
+    if args.command == "loop":
+        _print_json(
+            run_agent_loop(
+                preset=args.preset,
+                horizon=args.horizon,
+                agent_trigger=args.agent_trigger,
+            )
+        )
         return 0
 
     parser.error(f"unknown command: {args.command}")
