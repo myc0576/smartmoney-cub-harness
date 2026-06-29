@@ -13,11 +13,11 @@ An offline, read-only Agent Loop Harness for subjective A-share trading review: 
 ## 5-second Agent Loop Demo
 
 ```bash
-git clone https://github.com/myc0576/smartmoney-cub-harness.git
-cd smartmoney-cub-harness
-python -m pip install -e ".[dev]"
+python -m pip install "smartmoney-cub-harness @ https://github.com/myc0576/smartmoney-cub-harness/archive/refs/heads/main.zip"
 smcub loop --preset toy --agent-trigger "loop"
 ```
+
+This public ZIP install does not use Git, GitHub login, a GitHub token, or a GitHub API key.
 
 Expected output:
 
@@ -219,6 +219,32 @@ The human remains responsible for final judgment.
 
 ## Quick Start
 
+### Install without GitHub login
+
+```bash
+python -m pip install "smartmoney-cub-harness @ https://github.com/myc0576/smartmoney-cub-harness/archive/refs/heads/main.zip"
+smcub doctor
+smcub loop --preset toy --agent-trigger "loop"
+```
+
+Expected safety signals from `smcub doctor` include:
+
+```json
+{
+  "network_required": false,
+  "credentials_required": false,
+  "github_auth_required": false,
+  "external_api_required": false,
+  "broker_api_required": false,
+  "execution_integrations": "disabled",
+  "safety": "READ_ONLY_NO_ORDER_NO_CANCEL_NO_TRADE"
+}
+```
+
+If your Git client asks for a GitHub password or token while cloning this public repository, cancel the prompt and use the ZIP install above.
+
+### Developer checkout
+
 ```bash
 git clone https://github.com/myc0576/smartmoney-cub-harness.git
 cd smartmoney-cub-harness
@@ -229,7 +255,7 @@ smcub build-outcome tmp/sandbox/20260601/20260601_153000-after-close --horizon d
 smcub evaluate-run tmp/sandbox/20260601/20260601_153000-after-close --horizon d1
 ```
 
-The fixed decision time above creates the shown sandbox path in a clean checkout. Local absolute paths are redacted from CLI JSON output, so choose another decision time before repeating the exact sequence.
+The checkout commands are optional and meant for development or editing examples. The fixed decision time above creates the shown sandbox path in a clean checkout. Local absolute paths are redacted from CLI JSON output, so choose another decision time before repeating the exact sequence.
 
 ## Demo Output
 

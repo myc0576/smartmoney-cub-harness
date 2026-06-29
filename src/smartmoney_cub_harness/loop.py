@@ -47,6 +47,10 @@ def _doctor_payload(root: Path) -> dict[str, Any]:
             "platform": platform.platform(),
             "cwd": str(root),
             "network_required": False,
+            "credentials_required": False,
+            "github_auth_required": False,
+            "external_api_required": False,
+            "broker_api_required": False,
             "execution_integrations": "disabled",
             "default_data_mode": "offline_json_fixtures",
             "safety": SAFETY_DECLARATION,
@@ -289,7 +293,14 @@ def run_agent_loop(
             "doctor",
             "ok",
             input_payload={"preset": preset},
-            output_payload={"status": doctor_result["status"], "network_required": False},
+            output_payload={
+                "status": doctor_result["status"],
+                "network_required": False,
+                "credentials_required": False,
+                "github_auth_required": False,
+                "external_api_required": False,
+                "broker_api_required": False,
+            },
             decision_time=decision_time,
         )
     )

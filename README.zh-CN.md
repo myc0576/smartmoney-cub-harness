@@ -13,11 +13,11 @@
 ## 5 秒跑通 Agent Loop
 
 ```bash
-git clone https://github.com/myc0576/smartmoney-cub-harness.git
-cd smartmoney-cub-harness
-python -m pip install -e ".[dev]"
+python -m pip install "smartmoney-cub-harness @ https://github.com/myc0576/smartmoney-cub-harness/archive/refs/heads/main.zip"
 smcub loop --preset toy --agent-trigger "自进化"
 ```
+
+这个公开源码 ZIP 安装方式不使用 Git，不需要 GitHub 登录，不需要 GitHub Token，也不需要 GitHub API key。
 
 Skill 给 Agent 能力，MCP 给 Agent 工具，Harness 给交易复盘闭环一个可执行运行时。
 
@@ -208,6 +208,32 @@ AI 不是神谕。在这个 harness 里，Agent 是陪练：它帮你提出反�
 
 ## Quick Start
 
+### 不登录 GitHub 安装
+
+```bash
+python -m pip install "smartmoney-cub-harness @ https://github.com/myc0576/smartmoney-cub-harness/archive/refs/heads/main.zip"
+smcub doctor
+smcub loop --preset toy --agent-trigger "自进化"
+```
+
+`smcub doctor` 预期安全信号包括：
+
+```json
+{
+  "network_required": false,
+  "credentials_required": false,
+  "github_auth_required": false,
+  "external_api_required": false,
+  "broker_api_required": false,
+  "execution_integrations": "disabled",
+  "safety": "READ_ONLY_NO_ORDER_NO_CANCEL_NO_TRADE"
+}
+```
+
+如果你的 Git 客户端在 clone 这个公开仓库时弹出 GitHub 密码或 Token 登录框，请取消弹窗，改用上面的 ZIP 安装方式。
+
+### 开发者 checkout
+
 ```bash
 git clone https://github.com/myc0576/smartmoney-cub-harness.git
 cd smartmoney-cub-harness
@@ -218,7 +244,7 @@ smcub build-outcome tmp/sandbox/20260601/20260601_153000-after-close --horizon d
 smcub evaluate-run tmp/sandbox/20260601/20260601_153000-after-close --horizon d1
 ```
 
-上面的固定 decision time 会在干净 checkout 中生成示例里的 sandbox 路径。CLI JSON 会遮盖本机绝对路径；如果要重复运行同一组命令，请换一个 decision time。
+checkout 命令是可选的，主要用于开发或编辑示例文件。上面的固定 decision time 会在干净 checkout 中生成示例里的 sandbox 路径。CLI JSON 会遮盖本机绝对路径；如果要重复运行同一组命令，请换一个 decision time。
 
 ## Demo output
 

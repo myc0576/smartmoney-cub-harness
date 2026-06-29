@@ -105,10 +105,15 @@ def test_loop_generates_report_trace_and_required_artifacts():
     assert (REPO_ROOT / summary["proposed_challenger_rule_path"]).exists()
 
     report_text, trace_text, trace = read_loop_outputs(summary)
+    doctor_output = next(line["output"] for line in trace if line["step"] == "doctor")
     assert [line["step"] for line in trace] == REQUIRED_STEPS
     assert all(line["safety"] == SAFETY_DECLARATION for line in trace)
     assert all(line["champion_mutated"] is False for line in trace)
     assert all(line["no_future_leakage"] is True for line in trace)
+    assert doctor_output["credentials_required"] is False
+    assert doctor_output["github_auth_required"] is False
+    assert doctor_output["external_api_required"] is False
+    assert doctor_output["broker_api_required"] is False
     assert "Smartmoney Cub Agent Loop Report" in report_text
     assert "champion_mutated: false" in report_text
     assert_no_local_path_leakage(result_text := json.dumps(summary, ensure_ascii=False), report_text, trace_text)
