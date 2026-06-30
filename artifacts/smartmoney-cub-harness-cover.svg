@@ -1,0 +1,136 @@
+<svg width="1280" height="640" viewBox="0 0 1280 640" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="112" y1="74" x2="1121" y2="573" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F8F3EB"/>
+      <stop offset="1" stop-color="#F2E9DD"/>
+    </linearGradient>
+    <radialGradient id="glowA" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(219 121) rotate(40.756) scale(303.252 287.071)">
+      <stop stop-color="#E8D8C3"/>
+      <stop offset="1" stop-color="#E8D8C3" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glowB" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(1095 539) rotate(176.583) scale(309.552 217.011)">
+      <stop stop-color="#D8C8B5"/>
+      <stop offset="1" stop-color="#D8C8B5" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="card" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#FEFCF9"/>
+      <stop offset="1" stop-color="#F4ECE2"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#7A6754"/>
+      <stop offset="1" stop-color="#B89F85"/>
+    </linearGradient>
+    <filter id="shadow" x="-40" y="-40" width="400" height="240" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="18" stdDeviation="18" flood-color="#5D4A36" flood-opacity="0.13"/>
+    </filter>
+    <filter id="softShadow" x="-40" y="-40" width="800" height="520" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="16" stdDeviation="24" flood-color="#6F5D49" flood-opacity="0.12"/>
+    </filter>
+    <pattern id="grid" width="28" height="28" patternUnits="userSpaceOnUse">
+      <path d="M28 0H0V28" stroke="#D8CBBB" stroke-opacity="0.35" stroke-width="1"/>
+    </pattern>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10V0Z" fill="#9A876F"/>
+    </marker>
+  </defs>
+
+  <rect width="1280" height="640" rx="28" fill="url(#bg)"/>
+  <rect width="1280" height="640" rx="28" fill="url(#grid)" opacity="0.22"/>
+  <circle cx="214" cy="124" r="228" fill="url(#glowA)"/>
+  <circle cx="1117" cy="551" r="244" fill="url(#glowB)"/>
+
+  <g opacity="0.68">
+    <rect x="74" y="74" width="166" height="34" rx="17" fill="#F7EEE4" stroke="#D9CCBC"/>
+    <text x="157" y="96" text-anchor="middle" fill="#7B6855" font-family="Segoe UI, Microsoft YaHei, Arial, sans-serif" font-size="15" font-weight="600">GitHub Cover</text>
+    <rect x="252" y="74" width="182" height="34" rx="17" fill="#F7EEE4" stroke="#D9CCBC"/>
+    <text x="343" y="96" text-anchor="middle" fill="#7B6855" font-family="Segoe UI, Microsoft YaHei, Arial, sans-serif" font-size="15" font-weight="600">Claude-style Intro</text>
+  </g>
+
+  <g transform="translate(82 122)">
+    <text x="0" y="0" fill="#8E765E" font-family="Segoe UI, Microsoft YaHei, Arial, sans-serif" font-size="18" font-weight="700" letter-spacing="1.4">OPEN-SOURCE AI DECISION HARNESS</text>
+    <text x="0" y="84" fill="#2E241B" font-family="Segoe UI, Microsoft YaHei, Arial, sans-serif" font-size="50" font-weight="800">smartmoney</text>
+    <text x="0" y="140" fill="#2E241B" font-family="Segoe UI, Microsoft YaHei, Arial, sans-serif" font-size="50" font-weight="800">-cub-harness</text>
+    <text x="0" y="202" fill="#4C3D2F" font-family="Segoe UI, Microsoft YaHei, Arial, sans-serif" font-size="32" font-weight="700">聪明资金幼年体</text>
+    <text x="0" y="244" fill="#655242" font-family="Segoe UI, Microsoft YaHei, Arial, sans-serif" font-size="24" font-weight="600">只读复盘 · 质询进化 · 不替你下单</text>
+
+    <text x="0" y="310" fill="#68594C" font-family="Segoe UI, Microsoft YaHei, Arial, sans-serif" font-size="20" font-weight="500">
+      把主观交易中的冲动、证据、失效位与结果，
+    </text>
+    <text x="0" y="344" fill="#68594C" font-family="Segoe UI, Microsoft YaHei, Arial, sans-serif" font-size="20" font-weight="500">
+      变成可记录、可复盘、可进化的决策系统。
+    </text>
+
+    <g transform="translate(0 395)">
+      <rect x="0" y="0" width="206" height="46" rx="23" fill="#2F261D"/>
+      <text x="103" y="29" text-anchor="middle" fill="#F7F2EA" font-family="Segoe UI, Microsoft YaHei, Arial, sans-serif" font-size="18" font-weight="700">READ-ONLY</text>
+
+      <rect x="218" y="0" width="230" height="46" rx="23" fill="#F8EFE4" stroke="#CCBDAA"/>
+      <text x="333" y="29" text-anchor="middle" fill="#645343" font-family="Segoe UI, Microsoft YaHei, Arial, sans-serif" font-size="18" font-weight="700">HUMAN IN THE LOOP</text>
+
+      <rect x="462" y="0" width="168" height="46" rx="23" fill="#F8EFE4" stroke="#CCBDAA"/>
+      <text x="546" y="29" text-anchor="middle" fill="#645343" font-family="Segoe UI, Microsoft YaHei, Arial, sans-serif" font-size="18" font-weight="700">D1 / D3 REVIEW</text>
+    </g>
+
+    <g transform="translate(0 468)">
+      <rect x="0" y="0" width="618" height="64" rx="20" fill="#FBF8F3" stroke="#D7C8B5"/>
+      <circle cx="36" cy="32" r="7" fill="#8D765D"/>
+      <text x="58" y="38" fill="#544333" font-family="Consolas, Menlo, monospace" font-size="18" font-weight="700">
+        READ_ONLY_NO_ORDER_NO_CANCEL_NO_TRADE
+      </text>
+    </g>
+  </g>
+
+  <g transform="translate(722 88)" filter="url(#softShadow)">
+    <rect x="0" y="0" width="478" height="466" rx="34" fill="url(#card)" stroke="#D6C7B5"/>
+
+    <rect x="34" y="28" width="152" height="34" rx="17" fill="#F3E7D9" stroke="#D8C7B4"/>
+    <text x="110" y="50" text-anchor="middle" fill="#7B6652" font-family="Segoe UI, Microsoft YaHei, Arial, sans-serif" font-size="15" font-weight="700">PROJECT LOOP</text>
+
+    <g transform="translate(34 86)">
+      <rect width="182" height="82" rx="24" fill="#FCF8F3" stroke="#D8C8B7"/>
+      <text x="22" y="32" fill="#86715D" font-family="Segoe UI, Microsoft YaHei, Arial, sans-serif" font-size="13" font-weight="700">01</text>
+      <text x="22" y="56" fill="#2F261D" font-family="Segoe UI, Microsoft YaHei, Arial, sans-serif" font-size="24" font-weight="700">只读输入</text>
+      <text x="22" y="76" fill="#6C5A4B" font-family="Segoe UI, Microsoft YaHei, Arial, sans-serif" font-size="15">账户导出 / 截图 / 交易日志</text>
+    </g>
+
+    <g transform="translate(262 86)">
+      <rect width="182" height="82" rx="24" fill="#F4E8DA" stroke="#CDB8A0"/>
+      <text x="22" y="32" fill="#86715D" font-family="Segoe UI, Microsoft YaHei, Arial, sans-serif" font-size="13" font-weight="700">02</text>
+      <text x="22" y="56" fill="#2F261D" font-family="Segoe UI, Microsoft YaHei, Arial, sans-serif" font-size="24" font-weight="700">决策结构化</text>
+      <text x="22" y="76" fill="#6C5A4B" font-family="Segoe UI, Microsoft YaHei, Arial, sans-serif" font-size="15">证据来源 / 失效位 / 风险约束</text>
+    </g>
+
+    <g transform="translate(34 212)">
+      <rect width="182" height="82" rx="24" fill="#FCF8F3" stroke="#D8C8B7"/>
+      <text x="22" y="32" fill="#86715D" font-family="Segoe UI, Microsoft YaHei, Arial, sans-serif" font-size="13" font-weight="700">03</text>
+      <text x="22" y="56" fill="#2F261D" font-family="Segoe UI, Microsoft YaHei, Arial, sans-serif" font-size="24" font-weight="700">结果复盘</text>
+      <text x="22" y="76" fill="#6C5A4B" font-family="Segoe UI, Microsoft YaHei, Arial, sans-serif" font-size="15">D1 / D3 outcome 与评估</text>
+    </g>
+
+    <g transform="translate(262 212)">
+      <rect width="182" height="82" rx="24" fill="#FCF8F3" stroke="#D8C8B7"/>
+      <text x="22" y="32" fill="#86715D" font-family="Segoe UI, Microsoft YaHei, Arial, sans-serif" font-size="13" font-weight="700">04</text>
+      <text x="22" y="56" fill="#2F261D" font-family="Segoe UI, Microsoft YaHei, Arial, sans-serif" font-size="24" font-weight="700">规则进化</text>
+      <text x="22" y="76" fill="#6C5A4B" font-family="Segoe UI, Microsoft YaHei, Arial, sans-serif" font-size="15">challenger → champion</text>
+    </g>
+
+    <path d="M216 127C239 127 239 127 262 127" stroke="#9A876F" stroke-width="2.5" stroke-linecap="round" marker-end="url(#arrow)"/>
+    <path d="M353 168C353 190 353 190 353 212" stroke="#9A876F" stroke-width="2.5" stroke-linecap="round" marker-end="url(#arrow)"/>
+    <path d="M262 253C239 253 239 253 216 253" stroke="#9A876F" stroke-width="2.5" stroke-linecap="round" marker-end="url(#arrow)"/>
+    <path d="M125 294C125 338 202 352 320 352C389 352 429 336 444 315" stroke="#9A876F" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="7 7" marker-end="url(#arrow)"/>
+
+    <g transform="translate(34 338)">
+      <rect width="410" height="96" rx="24" fill="#2F261D"/>
+      <text x="24" y="34" fill="#D9B88E" font-family="Segoe UI, Microsoft YaHei, Arial, sans-serif" font-size="14" font-weight="700">AI COMPANION</text>
+      <text x="24" y="61" fill="#FAF5EE" font-family="Segoe UI, Microsoft YaHei, Arial, sans-serif" font-size="24" font-weight="700">复盘员 · 反方质询 · 档案管理员 · 漂移检测</text>
+      <text x="24" y="82" fill="#D7C9BB" font-family="Segoe UI, Microsoft YaHei, Arial, sans-serif" font-size="15">不是神谕，而是帮助交易者形成反馈闭环的陪练系统。</text>
+    </g>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="1036" y="58" width="160" height="96" rx="24" fill="url(#card)" stroke="#D7C8B5"/>
+    <text x="1116" y="94" text-anchor="middle" fill="#8B765F" font-family="Segoe UI, Microsoft YaHei, Arial, sans-serif" font-size="13" font-weight="700">VISUAL DIRECTION</text>
+    <text x="1116" y="124" text-anchor="middle" fill="#31261D" font-family="Segoe UI, Microsoft YaHei, Arial, sans-serif" font-size="24" font-weight="800">Warm</text>
+    <text x="1116" y="146" text-anchor="middle" fill="#6A594B" font-family="Segoe UI, Microsoft YaHei, Arial, sans-serif" font-size="15" font-weight="600">calm · structured · human</text>
+  </g>
+</svg>

@@ -8,31 +8,6 @@
 [![Human-in-the-loop](https://img.shields.io/badge/human--in--the--loop-required-blueviolet)](docs/harness-contract.md)
 [![Agent-ready](https://img.shields.io/badge/agent--ready-offline%20artifacts-success)](docs/agent-integration.md)
 
-一个离线、只读、可由 Agent 执行的 A 股主观交易复盘 Harness：记录决策、D1/D3 回放、评分复盘、规则进化。
-
-## 5 秒跑通 Agent Loop
-
-```bash
-python -m pip install "smartmoney-cub-harness @ https://github.com/myc0576/smartmoney-cub-harness/archive/refs/heads/main.zip"
-smcub loop --preset toy --agent-trigger "自进化"
-```
-
-这个公开源码 ZIP 安装方式不使用 Git，不需要 GitHub 登录，不需要 GitHub Token，也不需要 GitHub API key。
-
-Skill 给 Agent 能力，MCP 给 Agent 工具，Harness 给交易复盘闭环一个可执行运行时。
-
-你只需要对 Claude Code / Codex / Cursor 说："跑一轮 loop"、"自进化一下"、"复盘一下"，Agent 就应该执行 `smcub loop`，读取 trace 和 report，再提出安全的规则改进建议。
-
-这不是 AI 自动炒股，也不是荐股系统；它只是 read-only 的主观交易决策记录、复盘和规则进化 harness。
-
-```mermaid
-flowchart TD
-  A["Human phrase / 人的一句话"] --> B["Agent trigger resolver"]
-  B --> C["smcub loop"]
-  C --> D["Observe -> Candidate -> Plan -> Position Check -> Outcome -> Review -> Rule Update"]
-  D --> E["Report + Trace + Challenger Rule Proposal"]
-```
-
 不是荐股机器人，而是陪主观交易者复盘、质询、进化的 AI 决策 Harness。
 
 **聪明资金幼年体 / 游资幼年体：陪你复盘，不替你下单。**  
@@ -108,32 +83,32 @@ READ_ONLY_NO_ORDER_NO_CANCEL_NO_TRADE
 ## 核心循环图
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#f6f8fa", "primaryTextColor": "#24292f", "primaryBorderColor": "#8c959f", "lineColor": "#57606a", "secondaryColor": "#ddf4ff", "tertiaryColor": "#fff8c5"}}}%%
+%%{init: {"theme": "base", "themeVariables": {"background": "#f7f3ee", "primaryColor": "#f0e7db", "primaryTextColor": "#2f261d", "primaryBorderColor": "#b9aa96", "lineColor": "#8f7f6b", "secondaryColor": "#e8ded1", "tertiaryColor": "#efe7dc", "clusterBkg": "#fbf8f4", "clusterBorder": "#c8b9a5", "fontSize": "14px"}}}%%
 flowchart TD
-  subgraph Human["Human Trader"]
-    A["Trading Thesis<br/>计划 / 预案"]
+  subgraph Human["Human Judgment"]
+    A["Thesis<br/>计划 / 预案"]
     B["Observation<br/>盘中观察"]
-    C["Final Judgment<br/>人类最终判断"]
+    C["Final Call<br/>人类最终判断"]
   end
 
-  subgraph Inputs["Read-only Inputs"]
+  subgraph Inputs["Read-only Evidence"]
     I1["Broker / QMT Export<br/>只读账户数据"]
-    I2["TongHuaShun Screenshots<br/>同花顺截图"]
+    I2["Screenshots<br/>同花顺 / 券商截图"]
     I3["Trading Notes<br/>交易日志"]
     I4["Watchlist / Market Data<br/>观察池 / 市场数据"]
   end
 
-  subgraph Harness["Smartmoney Cub Harness"]
-    H1["Provenance Check<br/>来源校验"]
-    H2["Anti-Future-Leakage<br/>反未来函数"]
+  subgraph Harness["smartmoney-cub-harness"]
+    H1["Provenance<br/>来源校验"]
+    H2["Leakage Guard<br/>反未来函数"]
     H3["Decision Schema<br/>决策结构化"]
     H4["Risk Contract<br/>失效位 / 放弃条件"]
-    H5["D1/D3 Outcome Review<br/>结果复盘"]
+    H5["Outcome Review<br/>D1 / D3 结果复盘"]
     H6["Rule Evolution<br/>规则进化"]
     H7["Markdown Memory<br/>交易记忆"]
   end
 
-  subgraph Agent["AI Agent Companion"]
+  subgraph Agent["AI Companion"]
     G1["Reviewer<br/>复盘员"]
     G2["Challenger<br/>反方质询"]
     G3["Archivist<br/>档案管理员"]
@@ -152,31 +127,41 @@ flowchart TD
   G2 --> H3
   G3 --> H7
   G4 --> H6
+
+  classDef human fill:#f3ebe0,stroke:#b9aa96,color:#2f261d,stroke-width:1.2px;
+  classDef input fill:#f8f4ee,stroke:#c8b9a5,color:#3b3128,stroke-width:1.2px;
+  classDef harness fill:#e7dccd,stroke:#8f7f6b,color:#241d17,stroke-width:1.4px;
+  classDef agent fill:#ede4d8,stroke:#a89681,color:#2f261d,stroke-width:1.2px;
+
+  class A,B,C human;
+  class I1,I2,I3,I4 input;
+  class H1,H2,H3,H4,H5,H6,H7 harness;
+  class G1,G2,G3,G4 agent;
 ```
 
 ## Where the 易经 Thinking Lives
 
 这里不写玄学，不写卦象预测，不写算命，也不写“易经判断涨跌”。易经在这个项目里的位置，是把周期、时位、变易、不易、进退、节制和反方证据工程化。
 
-| 易经思想 | Harness 模块 | 工程化含义 |
+| 观察维度 | 映射位置 | 为什么重要 |
 | ---- | ---------- | ----- |
-| Market Regime / Sentiment Cycle | `decision.json`、outcome 标签、Markdown memory | 记录市场处在初生、新题材试探；生长、主线确认；亢龙、一致加速；衰退、分歧放大；潜藏、退潮/空仓/等待中的哪个阶段。 |
-| Timing & Position | `decision_time`、`available_at`、D1/D3 horizon | 不只问“能不能做”，还问“现在处在周期的哪个位置”。同样的模式在不同情绪位置，风险收益完全不同。 |
-| Change vs Invariance | `manifest.py`、`evaluator.py`、`registry.py` | 变的是题材、龙头、情绪、市场偏好；不变的是风险边界、复盘、失效位、纪律和样本验证。 |
-| Advance / Retreat / Restraint | `WATCH`、`AVOID`、`EMPTY_POSITION`、risk contract | 市场状态不支持时，系统应记录观察、回避或空仓。空仓也是决策，退潮期的目标是保留下一次进攻资格。 |
-| Opposing Evidence | Agent challenger、failure tags | 每个 bullish thesis 都要生成 opposing thesis，Agent 必须主动提出反方问题，防止只收集支持自己想法的证据。 |
+| Market Regime / Sentiment Cycle | `decision.json`、outcome 标签、Markdown memory | 把“市场感觉”落成可复盘标签，例如试探、确认、加速、分歧、退潮 / 等待。 |
+| Timing & Position | `decision_time`、`available_at`、D1 / D3 horizon | 逼自己从“能不能做”转向“现在处在周期的哪个位置”。 |
+| Change vs Invariance | `manifest.py`、`evaluator.py`、`registry.py` | 把会变的题材、情绪与不该变的失效位、复盘纪律、风险边界拆开看。 |
+| Advance / Retreat / Restraint | `WATCH`、`AVOID`、`EMPTY_POSITION`、risk contract | 让克制也被记录下来。上下文不支持时，空仓和等待本身也是决策。 |
+| Opposing Evidence | Agent challenger、failure tags | 强制生成反方论点，避免只搜集支持自己观点的证据。 |
 
 ## Where Systems Engineering Lives
 
 钱学森系统工程在这里不是口号，而是模块化工作流。
 
-| 系统工程思想 | Harness 模块 | 工程化含义 |
+| 系统工程概念 | 映射位置 | 为什么重要 |
 | ------ | ---------- | ----- |
-| Goal Tree | 目标记录、复盘笔记、rule registry | 区分年度目标、月度目标、单笔交易目标、复盘目标；不以一次交易输赢定义系统。 |
-| Decomposition & Integration | `manifest`、`decision`、`outcome`、`evaluation` | 把市场状态、主线题材、个股辨识度、仓位、风险、心理状态、交易后结果拆开，再综合成 `decision.json` 和 `evaluation.json`。 |
-| Feedback Loop | Plan -> Observe -> Decide -> Record -> Outcome -> Evaluate -> Evolve | 先记录，再等结果，再复盘，再进化，避免在情绪最热时修改规则。 |
-| Human-Machine Collaboration | `docs/agent-integration.md` | 人负责最终判断；AI 负责质询、整理、复盘、归档、发现漂移。Agent 不是神谕，是陪练。 |
-| Qualitative-to-Quantitative Review | D1/D3 outcome、challenger -> champion registry | 主观判断先被结构化，再被 D1/D3 outcome 评价，再进入规则晋级流程。 |
+| Goal Tree | 目标记录、复盘笔记、rule registry | 把年度、月度、单笔和复盘目标拆开，避免用一次盈亏定义整个系统。 |
+| Decomposition & Integration | `manifest`、`decision`、`outcome`、`evaluation` | 将上下文、主线、仓位、风险、心理和结果拆成可检查部件，再重新组合成可审查记录。 |
+| Feedback Loop | Plan -> Observe -> Decide -> Record -> Outcome -> Evaluate -> Evolve | 把改规则放到结果出现之后，而不是情绪最热的时候。 |
+| Human-Machine Collaboration | `docs/agent-integration.md` | 人保留最终判断，AI 负责质询、结构化、归档、复盘和发现漂移。 |
+| Qualitative-to-Quantitative Review | D1 / D3 outcome、challenger -> champion registry | 让主观判断先被结构化，再被评分，最后才有资格进入规则晋级。 |
 
 ## Not Quant Trading. Not Pure Discretion. A Semi-Quant AI Decision Harness.
 
@@ -184,15 +169,15 @@ flowchart TD
 
 本项目从主观交易经验出发，记录人做决策时的证据链，用 AI 质询和结构化，用 D1/D3 结果检验，让规则和交易者一起进化。它不是一个固定策略，而是帮助策略成熟的 harness。
 
-| Dimension | Traditional Quant System | smartmoney-cub-harness |
+| 对比维度 | Traditional Quant System | `smartmoney-cub-harness` |
 | --------- | ------------------------ | ---------------------- |
-| Starting point | 策略定义与历史数据 | 人的判断、预案、上下文和证据链 |
-| Core question | 信号是否可重复 | 当时为什么出手，后续证据是否支持 |
-| Execution | 可能自动执行 | 永不执行，只读复盘 |
-| Strategy shape | 相对固定 | 通过 D1/D3 和规则治理持续进化 |
-| AI role | 信号生成或优化 | 质询者、复盘员、档案管理员、漂移检测器 |
-| Output | 信号、组合、回测指标 | manifest、decision、outcome、evaluation、memory、rule candidate |
-| Human role | 可能被弱化 | 被保留，并变得可记录、可审查、可迭代 |
+| 起点 | 策略定义与历史数据 | 人的判断、预案、上下文和证据链 |
+| 核心问题 | 信号是否可重复 | 当时为什么出手，后续证据是否支持 |
+| 执行 | 可能自动执行 | 永不执行，只读复盘 |
+| 策略形态 | 相对固定 | 通过 D1 / D3 与规则治理持续进化 |
+| AI 角色 | 信号生成或优化 | 质询者、复盘员、档案管理员、漂移检测器 |
+| 输出 | 信号、组合、回测指标 | manifest、decision、outcome、evaluation、memory、rule candidate |
+| 人的角色 | 可能被弱化 | 被保留，并且更可记录、可审查、可迭代 |
 
 它不是策略本身，而是策略成长的容器。它不是替代交易者，而是训练交易者。它不是把人拿掉，而是把人的经验变得可记录、可审查、可迭代。
 
@@ -208,32 +193,6 @@ AI 不是神谕。在这个 harness 里，Agent 是陪练：它帮你提出反�
 
 ## Quick Start
 
-### 不登录 GitHub 安装
-
-```bash
-python -m pip install "smartmoney-cub-harness @ https://github.com/myc0576/smartmoney-cub-harness/archive/refs/heads/main.zip"
-smcub doctor
-smcub loop --preset toy --agent-trigger "自进化"
-```
-
-`smcub doctor` 预期安全信号包括：
-
-```json
-{
-  "network_required": false,
-  "credentials_required": false,
-  "github_auth_required": false,
-  "external_api_required": false,
-  "broker_api_required": false,
-  "execution_integrations": "disabled",
-  "safety": "READ_ONLY_NO_ORDER_NO_CANCEL_NO_TRADE"
-}
-```
-
-如果你的 Git 客户端在 clone 这个公开仓库时弹出 GitHub 密码或 Token 登录框，请取消弹窗，改用上面的 ZIP 安装方式。
-
-### 开发者 checkout
-
 ```bash
 git clone https://github.com/myc0576/smartmoney-cub-harness.git
 cd smartmoney-cub-harness
@@ -244,7 +203,7 @@ smcub build-outcome tmp/sandbox/20260601/20260601_153000-after-close --horizon d
 smcub evaluate-run tmp/sandbox/20260601/20260601_153000-after-close --horizon d1
 ```
 
-checkout 命令是可选的，主要用于开发或编辑示例文件。上面的固定 decision time 会在干净 checkout 中生成示例里的 sandbox 路径。CLI JSON 会遮盖本机绝对路径；如果要重复运行同一组命令，请换一个 decision time。
+上面的固定 decision time 会在干净 checkout 中生成示例里的 sandbox 路径。CLI JSON 会遮盖本机绝对路径；如果要重复运行同一组命令，请换一个 decision time。
 
 ## Demo output
 

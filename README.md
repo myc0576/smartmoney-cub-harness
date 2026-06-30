@@ -8,41 +8,6 @@
 [![Human-in-the-loop](https://img.shields.io/badge/human--in--the--loop-required-blueviolet)](docs/harness-contract.md)
 [![Agent-ready](https://img.shields.io/badge/agent--ready-offline%20artifacts-success)](docs/agent-integration.md)
 
-An offline, read-only Agent Loop Harness for subjective A-share trading review: decision logging, D1/D3 replay, evaluation, and safe rule evolution.
-
-## 5-second Agent Loop Demo
-
-```bash
-python -m pip install "smartmoney-cub-harness @ https://github.com/myc0576/smartmoney-cub-harness/archive/refs/heads/main.zip"
-smcub loop --preset toy --agent-trigger "loop"
-```
-
-This public ZIP install does not use Git, GitHub login, a GitHub token, or a GitHub API key.
-
-Expected output:
-
-```json
-{
-  "status": "ok",
-  "loop_name": "observe_candidate_plan_position_outcome_review_rule_update",
-  "preset": "toy",
-  "safety": "READ_ONLY_NO_ORDER_NO_CANCEL_NO_TRADE",
-  "champion_mutated": false
-}
-```
-
-Skills give agents abilities. MCP gives agents tools. Smartmoney Cub Harness gives a subjective trading review loop a runtime.
-
-Tell your coding agent: "run loop", "review this", or "自进化". The agent should call `smcub loop`, inspect the generated report and trace, then propose safe improvements. It must never place trades.
-
-```mermaid
-flowchart TD
-  A["Human phrase"] --> B["Agent trigger resolver"]
-  B --> C["smcub loop"]
-  C --> D["Observe -> Candidate -> Plan -> Position Check -> Outcome -> Review -> Rule Update"]
-  D --> E["Report + Trace + Challenger Rule Proposal"]
-```
-
 AI decision harness for subjective A-share traders.  
 Read-only. Human-in-the-loop. Built for review, discipline, and rule evolution.
 
@@ -121,32 +86,32 @@ Screenshots are often the safer path for ordinary users: lower setup cost, small
 ## Core Loop
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#f6f8fa", "primaryTextColor": "#24292f", "primaryBorderColor": "#8c959f", "lineColor": "#57606a", "secondaryColor": "#ddf4ff", "tertiaryColor": "#fff8c5"}}}%%
+%%{init: {"theme": "base", "themeVariables": {"background": "#f7f3ee", "primaryColor": "#f0e7db", "primaryTextColor": "#2f261d", "primaryBorderColor": "#b9aa96", "lineColor": "#8f7f6b", "secondaryColor": "#e8ded1", "tertiaryColor": "#efe7dc", "clusterBkg": "#fbf8f4", "clusterBorder": "#c8b9a5", "fontSize": "14px"}}}%%
 flowchart TD
-  subgraph Human["Human Trader"]
-    A["Trading Thesis<br/>计划 / 预案"]
+  subgraph Human["Human Judgment"]
+    A["Thesis<br/>计划 / 预案"]
     B["Observation<br/>盘中观察"]
-    C["Final Judgment<br/>人类最终判断"]
+    C["Final Call<br/>人类最终判断"]
   end
 
-  subgraph Inputs["Read-only Inputs"]
+  subgraph Inputs["Read-only Evidence"]
     I1["Broker / QMT Export<br/>只读账户数据"]
-    I2["TongHuaShun Screenshots<br/>同花顺截图"]
+    I2["Screenshots<br/>同花顺 / 券商截图"]
     I3["Trading Notes<br/>交易日志"]
     I4["Watchlist / Market Data<br/>观察池 / 市场数据"]
   end
 
-  subgraph Harness["Smartmoney Cub Harness"]
-    H1["Provenance Check<br/>来源校验"]
-    H2["Anti-Future-Leakage<br/>反未来函数"]
+  subgraph Harness["smartmoney-cub-harness"]
+    H1["Provenance<br/>来源校验"]
+    H2["Leakage Guard<br/>反未来函数"]
     H3["Decision Schema<br/>决策结构化"]
     H4["Risk Contract<br/>失效位 / 放弃条件"]
-    H5["D1/D3 Outcome Review<br/>结果复盘"]
+    H5["Outcome Review<br/>D1 / D3 结果复盘"]
     H6["Rule Evolution<br/>规则进化"]
     H7["Markdown Memory<br/>交易记忆"]
   end
 
-  subgraph Agent["AI Agent Companion"]
+  subgraph Agent["AI Companion"]
     G1["Reviewer<br/>复盘员"]
     G2["Challenger<br/>反方质询"]
     G3["Archivist<br/>档案管理员"]
@@ -165,19 +130,29 @@ flowchart TD
   G2 --> H3
   G3 --> H7
   G4 --> H6
+
+  classDef human fill:#f3ebe0,stroke:#b9aa96,color:#2f261d,stroke-width:1.2px;
+  classDef input fill:#f8f4ee,stroke:#c8b9a5,color:#3b3128,stroke-width:1.2px;
+  classDef harness fill:#e7dccd,stroke:#8f7f6b,color:#241d17,stroke-width:1.4px;
+  classDef agent fill:#ede4d8,stroke:#a89681,color:#2f261d,stroke-width:1.2px;
+
+  class A,B,C human;
+  class I1,I2,I3,I4 input;
+  class H1,H2,H3,H4,H5,H6,H7 harness;
+  class G1,G2,G3,G4 agent;
 ```
 
 ## Where the 易经 Thinking Lives
 
 This project does not use 易经 as fortune telling, symbol prediction, or price forecasting. The useful engineering translation is a review language for cycle, timing, position, change, restraint, and opposing evidence.
 
-| 易经思想 | Harness module | Engineering meaning |
+| Lens | Where it lives | Why it matters |
 | --- | --- | --- |
-| Market Regime / Sentiment Cycle | `decision.json`, outcome tags, Markdown memory | Label whether the market felt like early probing, mainline growth, crowded acceleration, widening divergence, or retreat/waiting. |
-| Timing & Position | `decision_time`, `available_at`, D1/D3 horizon | Ask not only "can this pattern work?" but "where is it inside the current cycle?" |
-| Change vs Invariance | `manifest.py`, `evaluator.py`, `registry.py` | Themes, leaders, emotion, and preferences change; risk boundaries, review, invalidation, discipline, and sample validation stay. |
-| Advance / Retreat / Restraint | `WATCH`, `AVOID`, `EMPTY_POSITION`, risk contract | When the state is unsupported, the system should record restraint. Empty position is also a decision. |
-| Opposing Evidence | Agent challenger prompts and failure tags | Every bullish thesis should generate an opposing thesis so the trader does not collect only confirming evidence. |
+| Market Regime / Sentiment Cycle | `decision.json`, outcome tags, Markdown memory | Turns "market feel" into explicit labels such as probing, confirmation, acceleration, divergence, or retreat / wait. |
+| Timing & Position | `decision_time`, `available_at`, D1 / D3 horizon | Forces the question from "can this work?" to "where inside the cycle am I acting?" |
+| Change vs Invariance | `manifest.py`, `evaluator.py`, `registry.py` | Separates what changes with the tape from what must stay fixed: invalidation, review discipline, risk limits, and evidence standards. |
+| Advance / Retreat / Restraint | `WATCH`, `AVOID`, `EMPTY_POSITION`, risk contract | Makes restraint legible. Standing down is also a recorded decision when context is weak. |
+| Opposing Evidence | Agent challenger prompts and failure tags | Requires a counter-thesis so the trader is not collecting confirmation only. |
 
 The retreat phase matters. In a cooldown or drawdown state, the goal is not offense; it is preserving the right to act next time.
 
@@ -185,27 +160,27 @@ The retreat phase matters. In a cooldown or drawdown state, the goal is not offe
 
 Qian Xuesen-style systems engineering appears here as modules and loops, not decorative philosophy.
 
-| Systems engineering idea | Harness module | Engineering meaning |
+| Systems idea | Where it lives | Why it matters |
 | --- | --- | --- |
-| Goal Tree | Future goal records, review notes, rule registry | Separate annual goals, monthly goals, single-trade goals, and review goals; do not define the system by one win or loss. |
-| Decomposition & Integration | `manifest`, `decision`, `outcome`, `evaluation` | Break market state, theme, recognizability, position, risk, psychology, and outcome into inspectable fields, then integrate them into decision/evaluation artifacts. |
-| Feedback Loop | Plan -> Observe -> Decide -> Record -> Outcome -> Evaluate -> Evolve | Review happens after evidence arrives, not during emotional heat. |
-| Human-Machine Collaboration | `docs/agent-integration.md` | Human makes final judgment; AI challenges, structures, archives, reviews, and detects drift. |
-| Qualitative-to-Quantitative Review | D1/D3 outcomes and challenger -> champion registry | Subjective judgment becomes structured, then scored, then eligible for rule promotion only after evidence. |
+| Goal Tree | Future goal records, review notes, rule registry | Keeps annual goals, monthly goals, single-trade goals, and review goals from collapsing into one emotional score. |
+| Decomposition & Integration | `manifest`, `decision`, `outcome`, `evaluation` | Splits context, thesis, position, risk, psychology, and outcome into inspectable parts, then recombines them into auditable artifacts. |
+| Feedback Loop | Plan -> Observe -> Decide -> Record -> Outcome -> Evaluate -> Evolve | Moves rule changes to the review stage, after evidence arrives, instead of in the emotional heat of the trade. |
+| Human-Machine Collaboration | `docs/agent-integration.md` | Leaves judgment with the trader while AI handles challenge, structure, archiving, review, and drift detection. |
+| Qualitative-to-Quantitative Review | D1 / D3 outcomes and challenger -> champion registry | Lets subjective judgment become structured, scored, and promotion-ready only after evidence accumulates. |
 
 ## Not Quant Trading. Not Pure Discretion. A Semi-Quant AI Decision Harness.
 
 Traditional quant systems usually define a strategy first, backtest historical data, seek repeatable signals, and may automate execution. `smartmoney-cub-harness` starts from subjective trading experience and makes that experience auditable.
 
-| Dimension | Traditional Quant System | smartmoney-cub-harness |
+| Dimension | Traditional quant system | `smartmoney-cub-harness` |
 | --- | --- | --- |
 | Starting point | Strategy definition and historical data | Human decision, thesis, context, and evidence chain |
-| Main question | Does this signal repeat? | Why did I act, and did the evidence later support it? |
+| Core question | Does this signal repeat? | Why did I act, and did the evidence later support it? |
 | Execution | May automate | Never executes; read-only review only |
-| Strategy shape | Relatively fixed | Evolves through D1/D3 review and rule governance |
+| Strategy shape | Relatively fixed | Evolves through D1 / D3 review and rule governance |
 | AI role | Often signal generation or optimization | Challenger, reviewer, archivist, drift detector |
 | Output | Signal, portfolio, backtest metrics | Manifest, decision, outcome, evaluation, memory, rule candidate |
-| Human role | Often reduced | Preserved and made inspectable |
+| Human role | Often reduced | Preserved, visible, and reviewable |
 
 It is not the strategy itself. It is the container where a strategy grows up. It does not replace the trader; it trains the trader. It does not remove human experience; it makes that experience recordable, reviewable, and iterable.
 
@@ -219,32 +194,6 @@ The human remains responsible for final judgment.
 
 ## Quick Start
 
-### Install without GitHub login
-
-```bash
-python -m pip install "smartmoney-cub-harness @ https://github.com/myc0576/smartmoney-cub-harness/archive/refs/heads/main.zip"
-smcub doctor
-smcub loop --preset toy --agent-trigger "loop"
-```
-
-Expected safety signals from `smcub doctor` include:
-
-```json
-{
-  "network_required": false,
-  "credentials_required": false,
-  "github_auth_required": false,
-  "external_api_required": false,
-  "broker_api_required": false,
-  "execution_integrations": "disabled",
-  "safety": "READ_ONLY_NO_ORDER_NO_CANCEL_NO_TRADE"
-}
-```
-
-If your Git client asks for a GitHub password or token while cloning this public repository, cancel the prompt and use the ZIP install above.
-
-### Developer checkout
-
 ```bash
 git clone https://github.com/myc0576/smartmoney-cub-harness.git
 cd smartmoney-cub-harness
@@ -255,7 +204,7 @@ smcub build-outcome tmp/sandbox/20260601/20260601_153000-after-close --horizon d
 smcub evaluate-run tmp/sandbox/20260601/20260601_153000-after-close --horizon d1
 ```
 
-The checkout commands are optional and meant for development or editing examples. The fixed decision time above creates the shown sandbox path in a clean checkout. Local absolute paths are redacted from CLI JSON output, so choose another decision time before repeating the exact sequence.
+The fixed decision time above creates the shown sandbox path in a clean checkout. Local absolute paths are redacted from CLI JSON output, so choose another decision time before repeating the exact sequence.
 
 ## Demo Output
 
