@@ -8,10 +8,14 @@ from pathlib import Path
 from typing import Any
 
 from smartmoney_cub_harness import __version__
+from smartmoney_cub_harness.case_bank import collect_offline_case
 from smartmoney_cub_harness.evaluator import evaluate_decision
+from smartmoney_cub_harness.evolution_ledger import append_ledger_event
 from smartmoney_cub_harness.loop import run_agent_loop
 from smartmoney_cub_harness.manifest import validate_run_manifest
+from smartmoney_cub_harness.memory import save_memory_record
 from smartmoney_cub_harness.outcome import build_outcome
+from smartmoney_cub_harness.privacy_audit import inspect_run_artifacts, load_payload_json, privacy_audit
 from smartmoney_cub_harness.registry import register_candidate
 from smartmoney_cub_harness.run_capture import capture_run, get_command_preset, parse_command
 from smartmoney_cub_harness.safety import redact
@@ -71,6 +75,8 @@ def doctor() -> dict[str, Any]:
         "platform": platform.platform(),
         "cwd": str(Path.cwd()),
         "network_required": False,
+        "telemetry": False,
+        "upload": False,
         "credentials_required": False,
         "github_auth_required": False,
         "external_api_required": False,
@@ -122,6 +128,25 @@ def build_parser() -> argparse.ArgumentParser:
     loop_cmd.add_argument("--agent-trigger", default="")
     loop_cmd.add_argument("--horizon", choices=["d1", "d3"], default="d1")
     loop_cmd.add_argument("--json", action="store_true", help="Print the final loop summary as JSON")
+
+    privacy_cmd = sub.add_parser("privacy-audit", help="Show offline privacy and safety settings")
+    privacy_cmd.set_defaults(command="privacy-audit")
+
+    inspect = sub.add_parser("inspect-artifacts", help="Inspect a loop run directory for required safe artifacts")
+    inspect.add_argument("run_dir")
+
+    collect_case = sub.add_parser("collect-case", help="Collect a toy offline case from a run directory")
+    collect_case.add_argument("run_dir")
+    collect_case.add_argument("--output")
+
+    append_ledger = sub.add_parser("append-ledger", help="Append a redacted event to an evolution ledger JSONL file")
+    append_ledger.add_argument("--event", required=True)
+    append_ledger.add_argument("--payload-json", required=True)
+    append_ledger.add_argument("--ledger")
+
+    save_memory = sub.add_parser("save-memory", help="Write local Markdown memory from a case record")
+    save_memory.add_argument("--case-record", required=True)
+    save_memory.add_argument("--output")
     return parser
 
 
@@ -175,6 +200,28 @@ def main(argv: list[str] | None = None) -> int:
                 agent_trigger=args.agent_trigger,
             )
         )
+        return 0
+
+    if args.command == "privacy-audit":
+        _print_json(privacy_audit())
+        return 0
+
+    if args.command == "inspect-artifacts":
+        _print_json(inspect_run_artifacts(args.run_dir))
+        return 0
+
+    if args.command == "collect-case":
+        _print_json(collect_offline_case(args.run_dir, output_path=args.output))
+        return 0
+
+    if args.command == "append-ledger":
+        payload_path = Path(args.payload_json)
+        ledger_path = Path(args.ledger) if args.ledger else payload_path.with_name("evolution_ledger.jsonl")
+        _print_json(append_ledger_event(ledger_path, args.event, load_payload_json(payload_path)))
+        return 0
+
+    if args.command == "save-memory":
+        _print_json(save_memory_record(args.case_record, output_path=args.output))
         return 0
 
     parser.error(f"unknown command: {args.command}")

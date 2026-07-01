@@ -71,10 +71,10 @@
       <text x="546" y="29" text-anchor="middle" fill="#645343" font-family="Segoe UI, Microsoft YaHei, Arial, sans-serif" font-size="18" font-weight="700">D1 / D3 REVIEW</text>
     </g>
 
-    <g transform="translate(0 468)">
-      <rect x="0" y="0" width="618" height="64" rx="20" fill="#FBF8F3" stroke="#D7C8B5"/>
+    <g transform="translate(0 444)">
+      <rect x="0" y="0" width="732" height="64" rx="20" fill="#FBF8F3" stroke="#D7C8B5"/>
       <circle cx="36" cy="32" r="7" fill="#8D765D"/>
-      <text x="58" y="38" fill="#544333" font-family="Consolas, Menlo, monospace" font-size="18" font-weight="700">
+      <text x="58" y="39" fill="#544333" font-family="Consolas, Menlo, monospace" font-size="15" font-weight="700">
         READ_ONLY_NO_ORDER_NO_CANCEL_NO_TRADE
       </text>
     </g>
@@ -97,7 +97,8 @@
       <rect width="182" height="82" rx="24" fill="#F4E8DA" stroke="#CDB8A0"/>
       <text x="22" y="32" fill="#86715D" font-family="Segoe UI, Microsoft YaHei, Arial, sans-serif" font-size="13" font-weight="700">02</text>
       <text x="22" y="56" fill="#2F261D" font-family="Segoe UI, Microsoft YaHei, Arial, sans-serif" font-size="24" font-weight="700">决策结构化</text>
-      <text x="22" y="76" fill="#6C5A4B" font-family="Segoe UI, Microsoft YaHei, Arial, sans-serif" font-size="15">证据来源 / 失效位 / 风险约束</text>
+      <text x="22" y="72" fill="#6C5A4B" font-family="Segoe UI, Microsoft YaHei, Arial, sans-serif" font-size="14">证据来源 / 失效位</text>
+      <text x="22" y="88" fill="#6C5A4B" font-family="Segoe UI, Microsoft YaHei, Arial, sans-serif" font-size="14">风险约束</text>
     </g>
 
     <g transform="translate(34 212)">
@@ -117,13 +118,14 @@
     <path d="M216 127C239 127 239 127 262 127" stroke="#9A876F" stroke-width="2.5" stroke-linecap="round" marker-end="url(#arrow)"/>
     <path d="M353 168C353 190 353 190 353 212" stroke="#9A876F" stroke-width="2.5" stroke-linecap="round" marker-end="url(#arrow)"/>
     <path d="M262 253C239 253 239 253 216 253" stroke="#9A876F" stroke-width="2.5" stroke-linecap="round" marker-end="url(#arrow)"/>
-    <path d="M125 294C125 338 202 352 320 352C389 352 429 336 444 315" stroke="#9A876F" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="7 7" marker-end="url(#arrow)"/>
+    <path d="M125 294C125 330 192 338 260 330C305 325 330 301 347 276" stroke="#9A876F" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="7 7" marker-end="url(#arrow)"/>
 
-    <g transform="translate(34 338)">
-      <rect width="410" height="96" rx="24" fill="#2F261D"/>
+    <g transform="translate(34 330)">
+      <rect width="410" height="112" rx="24" fill="#2F261D"/>
       <text x="24" y="34" fill="#D9B88E" font-family="Segoe UI, Microsoft YaHei, Arial, sans-serif" font-size="14" font-weight="700">AI COMPANION</text>
-      <text x="24" y="61" fill="#FAF5EE" font-family="Segoe UI, Microsoft YaHei, Arial, sans-serif" font-size="24" font-weight="700">复盘员 · 反方质询 · 档案管理员 · 漂移检测</text>
-      <text x="24" y="82" fill="#D7C9BB" font-family="Segoe UI, Microsoft YaHei, Arial, sans-serif" font-size="15">不是神谕，而是帮助交易者形成反馈闭环的陪练系统。</text>
+      <text x="24" y="60" fill="#FAF5EE" font-family="Segoe UI, Microsoft YaHei, Arial, sans-serif" font-size="20" font-weight="700">复盘员 · 反方质询 · 档案管理员</text>
+      <text x="24" y="86" fill="#FAF5EE" font-family="Segoe UI, Microsoft YaHei, Arial, sans-serif" font-size="20" font-weight="700">漂移检测</text>
+      <text x="24" y="104" fill="#D7C9BB" font-family="Segoe UI, Microsoft YaHei, Arial, sans-serif" font-size="14">不是神谕，而是帮助交易者形成反馈闭环的陪练系统。</text>
     </g>
   </g>
 

@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any
 
+from smartmoney_cub_harness.safety import redact
 from smartmoney_cub_harness.schemas import OUTCOME_SCHEMA, SAFETY_DECLARATION, VALID_HORIZONS
 
 
@@ -140,7 +141,7 @@ def build_outcome(run_dir: str | Path, horizon: str, price_source: str | Path) -
         "symbol": symbol,
         "horizon": horizon,
         "decision_time": decision_time,
-        "decision_path": str(decision_path),
+        "decision_path": str(redact(str(decision_path))),
         "entry_date": decision_day,
         "entry_close": entry_close,
         "exit_date": exit_date,
@@ -148,7 +149,7 @@ def build_outcome(run_dir: str | Path, horizon: str, price_source: str | Path) -
         f"{horizon}_return_pct": return_pct,
         "max_adverse_excursion_pct": adverse_pct,
         "met_user_pattern": bool(symbol_prices[exit_date].get("met_user_pattern", False)),
-        "price_source": str(price_source),
+        "price_source": str(redact(str(price_source))),
         "price_source_type": "json_fixture",
         "safety": SAFETY_DECLARATION,
     }

@@ -1,0 +1,99 @@
+<svg width="1280" height="640" viewBox="0 0 1280 640" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .font {
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC", "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
+      }
+    </style>
+    <linearGradient id="bg" x1="0" y1="0" x2="1280" y2="640" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F7F1EA"/>
+      <stop offset="0.54" stop-color="#F2E7DA"/>
+      <stop offset="1" stop-color="#E7D9C8"/>
+    </linearGradient>
+    <linearGradient id="panel" x1="704" y1="92" x2="1192" y2="528" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FEFCF8"/>
+      <stop offset="1" stop-color="#EFE3D4"/>
+    </linearGradient>
+    <linearGradient id="dark" x1="70" y1="520" x2="1180" y2="604" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#2F281F"/>
+      <stop offset="1" stop-color="#4A3C2E"/>
+    </linearGradient>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0 0L10 5L0 10Z" fill="#8B755E"/>
+    </marker>
+    <filter id="shadow" x="650" y="52" width="600" height="540" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="18" stdDeviation="22" flood-color="#6F5D49" flood-opacity="0.14"/>
+    </filter>
+  </defs>
+
+  <rect width="1280" height="640" rx="0" fill="url(#bg)"/>
+  <path d="M72 92H1210" stroke="#D6C7B4" stroke-width="1"/>
+  <path d="M72 548H1210" stroke="#CBB9A4" stroke-width="1"/>
+  <path d="M112 142H578M112 178H482M112 214H528" stroke="#E0D3C3" stroke-width="2" stroke-linecap="round"/>
+
+  <g class="font" transform="translate(74 120)">
+    <text x="0" y="52" fill="#2E251D" font-size="64" font-weight="800">smartmoney-cub</text>
+    <text x="0" y="124" fill="#2E251D" font-size="64" font-weight="800">harness</text>
+    <text x="0" y="180" fill="#59483A" font-size="28" font-weight="650">Local-first AI review loop</text>
+    <text x="0" y="216" fill="#59483A" font-size="28" font-weight="650">for subjective traders</text>
+    <text x="0" y="262" fill="#6D5A49" font-size="26" font-weight="650">聪明资金幼年体：陪你复盘，不替你下单</text>
+
+    <g transform="translate(0 322)">
+      <rect x="0" y="0" width="146" height="44" rx="8" fill="#2F281F"/>
+      <text x="73" y="29" text-anchor="middle" fill="#FFF8EF" font-size="19" font-weight="800">READ-ONLY</text>
+
+      <rect x="162" y="0" width="166" height="44" rx="8" fill="#F9F0E6" stroke="#C9B8A4" stroke-width="1.5"/>
+      <text x="245" y="29" text-anchor="middle" fill="#5B493A" font-size="19" font-weight="800">LOCAL-FIRST</text>
+
+      <rect x="344" y="0" width="180" height="44" rx="8" fill="#F9F0E6" stroke="#C9B8A4" stroke-width="1.5"/>
+      <text x="434" y="29" text-anchor="middle" fill="#5B493A" font-size="19" font-weight="800">D1/D3 REVIEW</text>
+    </g>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="690" y="98" width="500" height="408" rx="22" fill="url(#panel)" stroke="#CCBBA7" stroke-width="1.5"/>
+  </g>
+
+  <g class="font" transform="translate(732 142)">
+    <text x="0" y="0" fill="#7B6754" font-size="18" font-weight="800">CORE LOOP</text>
+    <path d="M0 34H410" stroke="#D6C7B4" stroke-width="1"/>
+
+    <g transform="translate(0 76)">
+      <rect x="0" y="0" width="154" height="62" rx="10" fill="#FBF7F1" stroke="#D5C4AF"/>
+      <text x="77" y="39" text-anchor="middle" fill="#2F281F" font-size="24" font-weight="800">Plan</text>
+    </g>
+    <path d="M166 107H206" stroke="#8B755E" stroke-width="3" stroke-linecap="round" marker-end="url(#arrow)"/>
+
+    <g transform="translate(222 76)">
+      <rect x="0" y="0" width="154" height="62" rx="10" fill="#FBF7F1" stroke="#D5C4AF"/>
+      <text x="77" y="39" text-anchor="middle" fill="#2F281F" font-size="24" font-weight="800">Record</text>
+    </g>
+
+    <path d="M299 150V192" stroke="#8B755E" stroke-width="3" stroke-linecap="round" marker-end="url(#arrow)"/>
+
+    <g transform="translate(222 208)">
+      <rect x="0" y="0" width="154" height="62" rx="10" fill="#FBF7F1" stroke="#D5C4AF"/>
+      <text x="77" y="39" text-anchor="middle" fill="#2F281F" font-size="24" font-weight="800">Review</text>
+    </g>
+    <path d="M210 239H170" stroke="#8B755E" stroke-width="3" stroke-linecap="round" marker-end="url(#arrow)"/>
+
+    <g transform="translate(0 208)">
+      <rect x="0" y="0" width="154" height="62" rx="10" fill="#FBF7F1" stroke="#D5C4AF"/>
+      <text x="77" y="39" text-anchor="middle" fill="#2F281F" font-size="24" font-weight="800">Memory</text>
+    </g>
+
+    <path d="M77 194C77 160 44 156 44 128" stroke="#8B755E" stroke-width="3" stroke-linecap="round" marker-end="url(#arrow)"/>
+    <path d="M386 239C438 240 438 106 388 106" stroke="#8B755E" stroke-width="3" stroke-linecap="round" stroke-dasharray="8 8" marker-end="url(#arrow)"/>
+
+    <g transform="translate(118 306)">
+      <rect x="0" y="0" width="164" height="58" rx="10" fill="#3A3026"/>
+      <text x="82" y="37" text-anchor="middle" fill="#FFF8EF" font-size="24" font-weight="800">Evolve</text>
+    </g>
+    <path d="M195 282V294" stroke="#8B755E" stroke-width="3" stroke-linecap="round" marker-end="url(#arrow)"/>
+  </g>
+
+  <g class="font">
+    <rect x="74" y="536" width="1132" height="54" rx="12" fill="url(#dark)"/>
+    <text x="640" y="570" text-anchor="middle" fill="#F8EFE5" font-size="21" font-weight="700">No orders · No broker execution · No telemetry</text>
+  </g>
+</svg>

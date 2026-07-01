@@ -5,7 +5,7 @@ from smartmoney_cub_harness.schemas import SAFETY_DECLARATION
 
 
 def test_resolves_chinese_self_evolve_to_safe_full_loop():
-    intent = resolve_agent_trigger("请自进化一下")
+    intent = resolve_agent_trigger("请自进化一轮")
 
     assert intent.intent_name == "full_loop"
     assert intent.loop_stage == "full_loop"
@@ -44,7 +44,7 @@ def test_resolves_rule_evolution_as_challenger_only():
 
 
 def test_normalizes_common_windows_mojibake_for_chinese_trigger():
-    mojibake = "\u9477\ue047\u7e58\u9356?"
+    mojibake = "自进化".encode("utf-8").decode("gbk", errors="replace")
 
     intent = resolve_agent_trigger(mojibake)
 
