@@ -20,6 +20,7 @@ from smartmoney_cub_harness.registry import register_candidate
 from smartmoney_cub_harness.run_capture import capture_run, get_command_preset, parse_command
 from smartmoney_cub_harness.safety import redact
 from smartmoney_cub_harness.schemas import SAFETY_DECLARATION
+from smartmoney_cub_harness.self_evolve import confirm_promotion, run_self_evolve
 
 
 def _read_json(path: str | Path) -> dict[str, Any]:
@@ -129,6 +130,20 @@ def build_parser() -> argparse.ArgumentParser:
     loop_cmd.add_argument("--horizon", choices=["d1", "d3"], default="d1")
     loop_cmd.add_argument("--json", action="store_true", help="Print the final loop summary as JSON")
 
+    self_evolve = sub.add_parser("self-evolve", help="Run the local private CSV self-evolution loop")
+    self_evolve.add_argument("--input-csv", required=True)
+    self_evolve.add_argument("--max-iterations", type=int, default=20)
+    self_evolve.add_argument("--time-budget-min", type=float, default=10.0)
+    self_evolve.add_argument("--horizon", choices=["d1", "d3"], default="d1")
+    self_evolve.add_argument("--state-root", default="state/self_evolve")
+    self_evolve.add_argument("--resume")
+    self_evolve.add_argument("--interactive-confirm", action="store_true")
+
+    confirm = sub.add_parser("confirm-promotion", help="Record a manual promotion decision")
+    confirm.add_argument("promotion_packet")
+    confirm.add_argument("--decision", required=True, choices=["promote", "defer", "reject"])
+    confirm.add_argument("--note", default="")
+
     privacy_cmd = sub.add_parser("privacy-audit", help="Show offline privacy and safety settings")
     privacy_cmd.set_defaults(command="privacy-audit")
 
@@ -200,6 +215,29 @@ def main(argv: list[str] | None = None) -> int:
                 agent_trigger=args.agent_trigger,
             )
         )
+        return 0
+
+    if args.command == "self-evolve":
+        result = run_self_evolve(
+            input_csv=args.input_csv,
+            max_iterations=args.max_iterations,
+            time_budget_min=args.time_budget_min,
+            horizon=args.horizon,
+            state_root=args.state_root,
+            resume=args.resume,
+        )
+        if args.interactive_confirm and result.get("promotion_status") == "promotion_recommended":
+            sys.stderr.write("Promotion recommended. Enter promote, defer, or reject: ")
+            decision = input().strip().lower()
+            sys.stderr.write("Optional note: ")
+            note = input()
+            packet_path = Path(args.state_root) / str(result["loop_id"]) / "promotion_packet.json"
+            result["confirmation"] = confirm_promotion(packet_path, decision=decision, note=note)
+        _print_json(result)
+        return 0
+
+    if args.command == "confirm-promotion":
+        _print_json(confirm_promotion(args.promotion_packet, decision=args.decision, note=args.note))
         return 0
 
     if args.command == "privacy-audit":
