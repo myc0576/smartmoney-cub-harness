@@ -8,18 +8,29 @@ from pathlib import Path
 from typing import Any
 
 from smartmoney_cub_harness import __version__
-from smartmoney_cub_harness.case_bank import collect_offline_case
 from smartmoney_cub_harness.evaluator import evaluate_decision
-from smartmoney_cub_harness.evolution_ledger import append_ledger_event
 from smartmoney_cub_harness.loop import run_agent_loop
 from smartmoney_cub_harness.manifest import validate_run_manifest
-from smartmoney_cub_harness.memory import save_memory_record
 from smartmoney_cub_harness.outcome import build_outcome
-from smartmoney_cub_harness.privacy_audit import inspect_run_artifacts, load_payload_json, privacy_audit
 from smartmoney_cub_harness.registry import register_candidate
 from smartmoney_cub_harness.run_capture import capture_run, get_command_preset, parse_command
 from smartmoney_cub_harness.safety import redact
 from smartmoney_cub_harness.schemas import SAFETY_DECLARATION
+from smartmoney_cub_harness.uzi import uzi_install, uzi_scan, uzi_status
+
+try:
+    from smartmoney_cub_harness.privacy_audit import privacy_audit
+except ImportError:  # pragma: no cover - compatibility with older source trees.
+    def privacy_audit() -> dict[str, Any]:
+        return {
+            "network_required": False,
+            "telemetry": False,
+            "upload": False,
+            "default_data_mode": "offline_json_fixtures",
+            "execution_integrations": "disabled",
+            "redaction": "enabled",
+            "safety": SAFETY_DECLARATION,
+        }
 
 
 def _read_json(path: str | Path) -> dict[str, Any]:
@@ -83,6 +94,15 @@ def doctor() -> dict[str, Any]:
         "broker_api_required": False,
         "execution_integrations": "disabled",
         "default_data_mode": "offline_json_fixtures",
+        "optional_plugins": {
+            "uzi_skill": {
+                "status_command": "smcub uzi-status",
+                "install_command": "smcub uzi-install",
+                "scan_command": "smcub uzi-scan <symbol>",
+                "scan_network_required": True,
+                "execution_integrations": "disabled",
+            }
+        },
         "safety": SAFETY_DECLARATION,
     }
 
@@ -132,21 +152,24 @@ def build_parser() -> argparse.ArgumentParser:
     privacy_cmd = sub.add_parser("privacy-audit", help="Show offline privacy and safety settings")
     privacy_cmd.set_defaults(command="privacy-audit")
 
-    inspect = sub.add_parser("inspect-artifacts", help="Inspect a loop run directory for required safe artifacts")
-    inspect.add_argument("run_dir")
+    uzi_install_cmd = sub.add_parser("uzi-install", help="Install the optional local UZI-Skill plugin")
+    uzi_install_cmd.add_argument("--root", default=".")
+    uzi_install_cmd.add_argument("--path", default=None)
+    uzi_install_cmd.add_argument("--ref", default="main")
+    uzi_install_cmd.add_argument("--timeout-seconds", type=int, default=1800)
 
-    collect_case = sub.add_parser("collect-case", help="Collect a toy offline case from a run directory")
-    collect_case.add_argument("run_dir")
-    collect_case.add_argument("--output")
+    uzi_status_cmd = sub.add_parser("uzi-status", help="Show optional UZI-Skill plugin status")
+    uzi_status_cmd.add_argument("--root", default=".")
+    uzi_status_cmd.add_argument("--path", default=None)
 
-    append_ledger = sub.add_parser("append-ledger", help="Append a redacted event to an evolution ledger JSONL file")
-    append_ledger.add_argument("--event", required=True)
-    append_ledger.add_argument("--payload-json", required=True)
-    append_ledger.add_argument("--ledger")
-
-    save_memory = sub.add_parser("save-memory", help="Write local Markdown memory from a case record")
-    save_memory.add_argument("--case-record", required=True)
-    save_memory.add_argument("--output")
+    uzi_scan_cmd = sub.add_parser("uzi-scan", help="Run a read-only A-share short-horizon UZI observation")
+    uzi_scan_cmd.add_argument("symbol")
+    uzi_scan_cmd.add_argument("--root", default=".")
+    uzi_scan_cmd.add_argument("--path", default=None)
+    uzi_scan_cmd.add_argument("--depth", choices=["lite", "medium"], default="lite")
+    uzi_scan_cmd.add_argument("--label", choices=["WATCH", "ALERT", "AVOID"], default="WATCH")
+    uzi_scan_cmd.add_argument("--timeout-seconds", type=int, default=900)
+    uzi_scan_cmd.add_argument("--decision-time")
     return parser
 
 
@@ -206,22 +229,33 @@ def main(argv: list[str] | None = None) -> int:
         _print_json(privacy_audit())
         return 0
 
-    if args.command == "inspect-artifacts":
-        _print_json(inspect_run_artifacts(args.run_dir))
+    if args.command == "uzi-install":
+        _print_json(
+            uzi_install(
+                root=args.root,
+                path=args.path,
+                ref=args.ref,
+                timeout_seconds=args.timeout_seconds,
+            )
+        )
         return 0
 
-    if args.command == "collect-case":
-        _print_json(collect_offline_case(args.run_dir, output_path=args.output))
+    if args.command == "uzi-status":
+        _print_json(uzi_status(root=args.root, path=args.path))
         return 0
 
-    if args.command == "append-ledger":
-        payload_path = Path(args.payload_json)
-        ledger_path = Path(args.ledger) if args.ledger else payload_path.with_name("evolution_ledger.jsonl")
-        _print_json(append_ledger_event(ledger_path, args.event, load_payload_json(payload_path)))
-        return 0
-
-    if args.command == "save-memory":
-        _print_json(save_memory_record(args.case_record, output_path=args.output))
+    if args.command == "uzi-scan":
+        _print_json(
+            uzi_scan(
+                symbol=args.symbol,
+                root=args.root,
+                path=args.path,
+                depth=args.depth,
+                label=args.label,
+                timeout_seconds=args.timeout_seconds,
+                decision_time=args.decision_time,
+            )
+        )
         return 0
 
     parser.error(f"unknown command: {args.command}")

@@ -13,6 +13,23 @@ Agents can use this repository as a disciplined artifact layer for subjective tr
 7. Propose a rule candidate only from evaluated evidence.
 8. Keep rule promotion in challenger state unless metrics pass and the human explicitly confirms champion mutation.
 
+## Optional UZI Short-Horizon Plugin
+
+When a user asks for A-share short-horizon analysis, hot-money review, LHB/龙虎榜 context, trap detection, or "A 股速判", agents may use the optional UZI-Skill adapter. This is a local plugin flow, not part of the offline public core.
+
+1. Run `smcub uzi-status`.
+2. If the status is `requires_integration`, ask the user for permission before installing the external plugin.
+3. After explicit permission, run `smcub uzi-install`.
+4. Run `smcub uzi-scan <symbol>` for a read-only observation.
+5. Read the generated `run_manifest.json`, `decision.json`, and `artifacts/uzi_observation.json`.
+6. Treat the result as `WATCH`/review evidence only. Do not convert it into buy/sell instructions.
+
+`uzi-scan` is allowed to use public network data and records `network_required=true` on the run. It still disables broker/account integrations, remote report sharing, and any order or cancellation behavior. Non-error observations must include a derived invalidation price, D1/D3 review time stop, give-up conditions, data source, available time, data quality, and:
+
+```text
+READ_ONLY_NO_ORDER_NO_CANCEL_NO_TRADE
+```
+
 ## Agent Roles
 
 | Role | What it can do | What it must not do |

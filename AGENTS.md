@@ -24,3 +24,12 @@ pip install -e ".[dev]"
 pytest -q
 python -m smartmoney_cub_harness.cli doctor
 ```
+
+## Optional UZI Plugin
+
+For user requests about A-share short-horizon analysis, hot-money flow, LHB/龙虎榜, trap detection, or A 股速判:
+
+1. Run `smcub uzi-status`.
+2. If it returns `requires_integration`, ask the user before running `smcub uzi-install`.
+3. After installation, run `smcub uzi-scan <symbol>`.
+4. Treat the result as read-only review evidence only, never as an order, cancellation, or broker/account action.
