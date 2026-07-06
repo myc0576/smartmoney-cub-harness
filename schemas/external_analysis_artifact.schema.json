@@ -1,0 +1,154 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/smartmoney-cub-harness/schemas/external_analysis_artifact.schema.json",
+  "title": "External Analysis Artifact",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "artifact_id",
+    "source_project",
+    "source_license",
+    "source_url",
+    "market",
+    "ticker",
+    "analysis_date",
+    "generated_at",
+    "available_at",
+    "decision_time",
+    "raw_report_path",
+    "bull_case",
+    "bear_case",
+    "risk_notes",
+    "external_proposal",
+    "confidence",
+    "data_quality_notes",
+    "future_leakage_check",
+    "read_only_invariant",
+    "safety"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "external_analysis_artifact.v1"
+    },
+    "artifact_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_project": {
+      "enum": ["tradingagents"]
+    },
+    "source_license": {
+      "const": "Apache-2.0"
+    },
+    "source_url": {
+      "type": "string"
+    },
+    "market": {
+      "type": "string"
+    },
+    "ticker": {
+      "type": "string"
+    },
+    "analysis_date": {
+      "type": "string"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "available_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "decision_time": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "raw_report_path": {
+      "type": "string",
+      "minLength": 1
+    },
+    "bull_case": {
+      "type": "string"
+    },
+    "bear_case": {
+      "type": "string"
+    },
+    "risk_notes": {
+      "type": "string"
+    },
+    "external_proposal": {
+      "type": "string"
+    },
+    "confidence": {
+      "type": ["string", "number", "null"]
+    },
+    "data_quality_notes": {
+      "type": "string"
+    },
+    "future_leakage_check": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "available_at_lte_decision_time",
+        "status",
+        "reason"
+      ],
+      "properties": {
+        "available_at_lte_decision_time": {
+          "type": "boolean"
+        },
+        "status": {
+          "enum": ["passed", "failed"]
+        },
+        "reason": {
+          "type": "string"
+        }
+      }
+    },
+    "read_only_invariant": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "no_order",
+        "no_cancel",
+        "no_trade",
+        "no_broker_connection",
+        "champion_mutated",
+        "network_required",
+        "telemetry",
+        "broker_execution"
+      ],
+      "properties": {
+        "no_order": {
+          "const": true
+        },
+        "no_cancel": {
+          "const": true
+        },
+        "no_trade": {
+          "const": true
+        },
+        "no_broker_connection": {
+          "const": true
+        },
+        "champion_mutated": {
+          "const": false
+        },
+        "network_required": {
+          "const": false
+        },
+        "telemetry": {
+          "const": false
+        },
+        "broker_execution": {
+          "const": false
+        }
+      }
+    },
+    "safety": {
+      "const": "READ_ONLY_NO_ORDER_NO_CANCEL_NO_TRADE"
+    }
+  }
+}

@@ -1,0 +1,308 @@
+<svg width="1600" height="900" viewBox="0 0 1600 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .font {
+        font-family: "Inter", "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", Arial, sans-serif;
+      }
+      .title {
+        font-size: 42px;
+        font-weight: 800;
+        fill: #0f172a;
+      }
+      .subtitle {
+        font-size: 18px;
+        font-weight: 600;
+        fill: #475569;
+      }
+      .section {
+        font-size: 18px;
+        font-weight: 800;
+        letter-spacing: 0.06em;
+      }
+      .cardTitle {
+        font-size: 22px;
+        font-weight: 800;
+        fill: #0f172a;
+      }
+      .smallTitle {
+        font-size: 18px;
+        font-weight: 800;
+        fill: #0f172a;
+      }
+      .body {
+        font-size: 15px;
+        font-weight: 600;
+        fill: #334155;
+      }
+      .micro {
+        font-size: 13px;
+        font-weight: 700;
+        fill: #64748b;
+      }
+      .label {
+        font-size: 14px;
+        font-weight: 700;
+        fill: #334155;
+      }
+      .arrowLabel {
+        font-size: 14px;
+        font-weight: 800;
+        fill: #1e293b;
+      }
+      .slogan {
+        font-size: 16px;
+        font-weight: 800;
+      }
+      .safety {
+        font-size: 15px;
+        font-weight: 800;
+        fill: #7f1d1d;
+      }
+    </style>
+    <linearGradient id="pageBg" x1="800" y1="0" x2="800" y2="900" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#f8fafc"/>
+    </linearGradient>
+    <linearGradient id="heroLine" x1="380" y1="120" x2="1220" y2="120" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#dbeafe"/>
+      <stop offset="0.45" stop-color="#e9d5ff"/>
+      <stop offset="1" stop-color="#dcfce7"/>
+    </linearGradient>
+    <linearGradient id="mainBox" x1="640" y1="176" x2="1110" y2="600" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#eff6ff"/>
+      <stop offset="0.55" stop-color="#f5f3ff"/>
+      <stop offset="1" stop-color="#eef2ff"/>
+    </linearGradient>
+    <filter id="shadowSoft" x="-40" y="-40" width="1680" height="980" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="16" stdDeviation="18" flood-color="#0f172a" flood-opacity="0.08"/>
+    </filter>
+    <filter id="shadowMini" x="-20" y="-20" width="1640" height="940" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="10" stdDeviation="10" flood-color="#0f172a" flood-opacity="0.08"/>
+    </filter>
+    <marker id="arrowBlue" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="10" markerHeight="10" orient="auto">
+      <path d="M0 0L12 6L0 12V0Z" fill="#2563eb"/>
+    </marker>
+    <marker id="arrowPurple" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="10" markerHeight="10" orient="auto">
+      <path d="M0 0L12 6L0 12V0Z" fill="#7c3aed"/>
+    </marker>
+    <marker id="arrowGreen" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="10" markerHeight="10" orient="auto">
+      <path d="M0 0L12 6L0 12V0Z" fill="#16a34a"/>
+    </marker>
+    <marker id="arrowRed" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="10" markerHeight="10" orient="auto">
+      <path d="M0 0L12 6L0 12V0Z" fill="#dc2626"/>
+    </marker>
+  </defs>
+
+  <rect width="1600" height="900" fill="url(#pageBg)"/>
+  <rect x="54" y="48" width="1492" height="804" rx="28" fill="#ffffff" stroke="#e2e8f0" stroke-width="2"/>
+  <rect x="88" y="84" width="1424" height="4" rx="2" fill="url(#heroLine)"/>
+
+  <g class="font">
+    <text x="96" y="130" class="title">SmartMoney Cub Agent Interaction</text>
+    <text x="96" y="158" class="subtitle">把外部 Agent 变成“本地只读复盘大脑”的协作图，而不是自动交易系统</text>
+
+    <rect x="96" y="184" width="234" height="38" rx="19" fill="#eff6ff" stroke="#bfdbfe"/>
+    <text x="213" y="208" text-anchor="middle" class="slogan" fill="#2563eb">Bring your own agent.</text>
+
+    <rect x="348" y="184" width="292" height="38" rx="19" fill="#f0fdf4" stroke="#bbf7d0"/>
+    <text x="494" y="208" text-anchor="middle" class="slogan" fill="#15803d">No embedded LLM API required.</text>
+
+    <rect x="660" y="184" width="242" height="38" rx="19" fill="#faf5ff" stroke="#e9d5ff"/>
+    <text x="781" y="208" text-anchor="middle" class="slogan" fill="#7c3aed">Your trading logic stays local.</text>
+  </g>
+
+  <g class="font">
+    <text x="96" y="276" class="section" fill="#2563eb">EXTERNAL AGENTS / 外部 Agent</text>
+
+    <g filter="url(#shadowMini)">
+      <rect x="96" y="292" width="116" height="56" rx="16" fill="#ffffff" stroke="#dbeafe" stroke-width="2"/>
+      <circle cx="126" cy="320" r="14" fill="#10a37f"/>
+      <text x="126" y="325" text-anchor="middle" font-size="12" font-weight="900" fill="#ffffff">O</text>
+      <text x="156" y="315" class="smallTitle">Codex</text>
+      <text x="156" y="334" class="micro">OpenAI CLI</text>
+
+      <rect x="224" y="292" width="132" height="56" rx="16" fill="#ffffff" stroke="#e9d5ff" stroke-width="2"/>
+      <circle cx="254" cy="320" r="14" fill="#111827"/>
+      <text x="254" y="325" text-anchor="middle" font-size="13" font-weight="900" fill="#ffffff">C</text>
+      <text x="284" y="315" class="smallTitle">Claude Code</text>
+      <text x="284" y="334" class="micro">Anthropic style</text>
+
+      <rect x="368" y="292" width="108" height="56" rx="16" fill="#ffffff" stroke="#bfdbfe" stroke-width="2"/>
+      <circle cx="398" cy="320" r="14" fill="#2563eb"/>
+      <text x="398" y="325" text-anchor="middle" font-size="13" font-weight="900" fill="#ffffff">C</text>
+      <text x="428" y="315" class="smallTitle">Cursor</text>
+      <text x="428" y="334" class="micro">editor agent</text>
+
+      <rect x="488" y="292" width="114" height="56" rx="16" fill="#ffffff" stroke="#fde68a" stroke-width="2"/>
+      <circle cx="518" cy="320" r="14" fill="#f59e0b"/>
+      <text x="518" y="325" text-anchor="middle" font-size="13" font-weight="900" fill="#ffffff">G</text>
+      <text x="548" y="315" class="smallTitle">Gemini</text>
+      <text x="548" y="334" class="micro">Gemini CLI</text>
+
+      <rect x="614" y="292" width="128" height="56" rx="16" fill="#ffffff" stroke="#c7d2fe" stroke-width="2"/>
+      <circle cx="644" cy="320" r="14" fill="#6366f1"/>
+      <text x="644" y="325" text-anchor="middle" font-size="11" font-weight="900" fill="#ffffff">OC</text>
+      <text x="674" y="315" class="smallTitle">OpenCode</text>
+      <text x="674" y="334" class="micro">OpenClaw</text>
+
+      <rect x="754" y="292" width="124" height="56" rx="16" fill="#ffffff" stroke="#d1fae5" stroke-width="2"/>
+      <circle cx="784" cy="320" r="14" fill="#059669"/>
+      <text x="784" y="325" text-anchor="middle" font-size="12" font-weight="900" fill="#ffffff">GH</text>
+      <text x="814" y="315" class="smallTitle">GitHub Copilot</text>
+      <text x="814" y="334" class="micro">optional</text>
+    </g>
+
+    <text x="96" y="370" class="micro">Logos are trademarks of their respective owners; used only to indicate compatible external tools.</text>
+  </g>
+
+  <g class="font">
+    <text x="96" y="420" class="section" fill="#0ea5e9">READ-ONLY INPUTS / 只读输入层</text>
+
+    <g filter="url(#shadowMini)">
+      <rect x="96" y="438" width="330" height="78" rx="20" fill="#ffffff" stroke="#cbd5e1" stroke-width="2"/>
+      <rect x="96" y="438" width="8" height="78" rx="4" fill="#2563eb"/>
+      <text x="122" y="466" class="cardTitle">Trading Plan / 交易计划</text>
+      <text x="122" y="491" class="body">• thesis</text>
+      <text x="122" y="511" class="body">• invalidation</text>
+      <text x="252" y="511" class="body">• time stop</text>
+
+      <rect x="96" y="530" width="330" height="78" rx="20" fill="#ffffff" stroke="#cbd5e1" stroke-width="2"/>
+      <rect x="96" y="530" width="8" height="78" rx="4" fill="#22c55e"/>
+      <text x="122" y="558" class="cardTitle">Local Notes &amp; Screenshots / 本地笔记与截图</text>
+      <text x="122" y="583" class="body">• CSV</text>
+      <text x="202" y="583" class="body">• screenshot</text>
+      <text x="324" y="583" class="body">• markdown</text>
+
+      <rect x="96" y="622" width="330" height="78" rx="20" fill="#ffffff" stroke="#cbd5e1" stroke-width="2"/>
+      <rect x="96" y="622" width="8" height="78" rx="4" fill="#f59e0b"/>
+      <text x="122" y="650" class="cardTitle">External Research Reports / 外部研究报告</text>
+      <text x="122" y="675" class="body">• TradingAgents report</text>
+      <text x="122" y="695" class="body">• UZI-Skill notes</text>
+      <text x="252" y="695" class="body">• public research</text>
+
+      <rect x="96" y="714" width="330" height="78" rx="20" fill="#ffffff" stroke="#cbd5e1" stroke-width="2"/>
+      <rect x="96" y="714" width="8" height="78" rx="4" fill="#7c3aed"/>
+      <text x="122" y="742" class="cardTitle">Toy Offline Fixtures / toy 离线样例</text>
+      <text x="122" y="767" class="body">• examples only</text>
+      <text x="252" y="767" class="body">• no private data in public repo</text>
+    </g>
+  </g>
+
+  <g filter="url(#shadowSoft)" class="font">
+    <rect x="520" y="248" width="620" height="420" rx="28" fill="url(#mainBox)" stroke="#bfdbfe" stroke-width="2"/>
+    <rect x="544" y="270" width="572" height="84" rx="22" fill="#ffffff" stroke="#dbeafe"/>
+    <text x="830" y="306" text-anchor="middle" class="title" font-size="34px">SmartMoney Cub Harness</text>
+    <text x="830" y="333" text-anchor="middle" class="subtitle">Local External Review Brain · No embedded LLM API · Read-only</text>
+
+    <rect x="560" y="378" width="256" height="98" rx="20" fill="#ffffff" stroke="#bfdbfe" stroke-width="2"/>
+    <text x="584" y="408" class="smallTitle">1. Manifest &amp; Provenance</text>
+    <text x="584" y="434" class="body">• available_at &lt;= decision_time</text>
+    <text x="584" y="456" class="body">• anti-future-leakage</text>
+
+    <rect x="840" y="378" width="256" height="98" rx="20" fill="#ffffff" stroke="#bfdbfe" stroke-width="2"/>
+    <text x="864" y="408" class="smallTitle">2. Run Capture</text>
+    <text x="864" y="434" class="body">• stdout / stderr / metadata</text>
+    <text x="864" y="456" class="body">• trace.jsonl</text>
+
+    <rect x="560" y="494" width="256" height="98" rx="20" fill="#ffffff" stroke="#c4b5fd" stroke-width="2"/>
+    <text x="584" y="524" class="smallTitle">3. Decision Record</text>
+    <text x="584" y="550" class="body">• plan</text>
+    <text x="662" y="550" class="body">• evidence</text>
+    <text x="584" y="572" class="body">• risk contract</text>
+
+    <rect x="840" y="494" width="256" height="98" rx="20" fill="#ffffff" stroke="#c4b5fd" stroke-width="2"/>
+    <text x="864" y="524" class="smallTitle">4. D1 / D3 Outcome</text>
+    <text x="864" y="550" class="body">• delayed review</text>
+    <text x="864" y="572" class="body">• toy or local data</text>
+
+    <rect x="560" y="610" width="256" height="98" rx="20" fill="#ffffff" stroke="#86efac" stroke-width="2"/>
+    <text x="584" y="640" class="smallTitle">5. Evaluator</text>
+    <text x="584" y="666" class="body">• score</text>
+    <text x="662" y="666" class="body">• risk check</text>
+    <text x="584" y="688" class="body">• evidence audit</text>
+
+    <rect x="840" y="610" width="256" height="98" rx="20" fill="#ffffff" stroke="#86efac" stroke-width="2"/>
+    <text x="864" y="640" class="smallTitle">6. Memory &amp; Rule Registry</text>
+    <text x="864" y="666" class="body">• memory.md</text>
+    <text x="864" y="688" class="body">• challenger -&gt; champion · human gated</text>
+  </g>
+
+  <g class="font">
+    <text x="1186" y="420" class="section" fill="#16a34a">HUMAN REVIEW / RULE GOVERNANCE</text>
+    <g filter="url(#shadowMini)">
+      <rect x="1180" y="442" width="296" height="206" rx="24" fill="#ffffff" stroke="#bbf7d0" stroke-width="2"/>
+      <rect x="1202" y="464" width="56" height="56" rx="28" fill="#dcfce7"/>
+      <circle cx="1230" cy="488" r="12" fill="#16a34a"/>
+      <path d="M1212 519C1218 506 1242 506 1248 519" stroke="#16a34a" stroke-width="4" stroke-linecap="round"/>
+      <text x="1276" y="487" class="cardTitle">Human Trader</text>
+      <text x="1276" y="513" class="micro">reviewer / manager</text>
+
+      <text x="1208" y="560" class="body">• reviews artifacts</text>
+      <text x="1208" y="586" class="body">• approves promotion</text>
+      <text x="1208" y="612" class="body">• owns final judgment</text>
+    </g>
+  </g>
+
+  <g class="font">
+    <path d="M640 292C700 292 758 304 758 348" stroke="#2563eb" stroke-width="4" stroke-linecap="round" marker-end="url(#arrowBlue)"/>
+    <text x="608" y="258" class="arrowLabel">read AGENTS.md / CLAUDE.md / harness contract</text>
+
+    <path d="M824 292C824 304 824 316 824 348" stroke="#2563eb" stroke-width="4" stroke-linecap="round" marker-end="url(#arrowBlue)"/>
+    <text x="846" y="286" class="arrowLabel">run smcub CLI</text>
+
+    <path d="M980 348C980 304 912 292 850 292" stroke="#7c3aed" stroke-width="4" stroke-linecap="round" stroke-dasharray="10 8" marker-end="url(#arrowPurple)"/>
+    <text x="984" y="286" class="arrowLabel">artifacts for review</text>
+
+    <path d="M426 477H510" stroke="#2563eb" stroke-width="4" stroke-linecap="round" marker-end="url(#arrowBlue)"/>
+    <path d="M426 569H510" stroke="#16a34a" stroke-width="4" stroke-linecap="round" marker-end="url(#arrowGreen)"/>
+    <path d="M426 661H510" stroke="#f59e0b" stroke-width="4" stroke-linecap="round" marker-end="url(#arrowPurple)"/>
+    <path d="M426 753H510" stroke="#7c3aed" stroke-width="4" stroke-linecap="round" marker-end="url(#arrowPurple)"/>
+    <text x="442" y="645" class="arrowLabel">optional read-only upstream evidence</text>
+
+    <path d="M1140 532H1170" stroke="#16a34a" stroke-width="4" stroke-linecap="round" marker-end="url(#arrowGreen)"/>
+    <text x="1084" y="502" class="arrowLabel">review packet</text>
+    <text x="1038" y="522" class="micro">loop_report.md / case_record.json / memory.md / promotion_packet.json</text>
+
+    <path d="M1180 610C1128 610 1120 610 1140 610" stroke="#16a34a" stroke-width="4" stroke-linecap="round" stroke-dasharray="10 8" marker-end="url(#arrowGreen)"/>
+    <text x="1100" y="646" class="arrowLabel">manual approval only</text>
+  </g>
+
+  <g filter="url(#shadowMini)" class="font">
+    <rect x="1196" y="676" width="252" height="88" rx="22" fill="#fff1f2" stroke="#fda4af" stroke-width="2"/>
+    <text x="1220" y="706" class="cardTitle" fill="#991b1b">Broker / Execution</text>
+    <text x="1220" y="730" class="body" fill="#991b1b">• order router</text>
+    <text x="1220" y="750" class="body" fill="#991b1b">• broker connector</text>
+    <path d="M1112 720H1182" stroke="#dc2626" stroke-width="5" stroke-linecap="round" marker-end="url(#arrowRed)"/>
+    <line x1="1134" y1="700" x2="1162" y2="740" stroke="#dc2626" stroke-width="6" stroke-linecap="round"/>
+    <line x1="1162" y1="700" x2="1134" y2="740" stroke="#dc2626" stroke-width="6" stroke-linecap="round"/>
+    <text x="1004" y="708" class="arrowLabel" fill="#dc2626">blocked by design</text>
+  </g>
+
+  <g filter="url(#shadowSoft)" class="font">
+    <rect x="92" y="794" width="1404" height="78" rx="24" fill="#fff5f5" stroke="#ef4444" stroke-width="3" stroke-dasharray="12 10"/>
+    <text x="794" y="825" text-anchor="middle" class="title" font-size="28px" fill="#991b1b">READ_ONLY_NO_ORDER_NO_CANCEL_NO_TRADE</text>
+
+    <g transform="translate(180 850)">
+      <circle cx="0" cy="0" r="18" fill="#fee2e2" stroke="#ef4444" stroke-width="3"/>
+      <line x1="-10" y1="-10" x2="10" y2="10" stroke="#ef4444" stroke-width="4" stroke-linecap="round"/>
+      <text x="32" y="6" class="safety">No broker connector</text>
+    </g>
+    <g transform="translate(510 850)">
+      <circle cx="0" cy="0" r="18" fill="#fee2e2" stroke="#ef4444" stroke-width="3"/>
+      <line x1="-10" y1="-10" x2="10" y2="10" stroke="#ef4444" stroke-width="4" stroke-linecap="round"/>
+      <text x="32" y="6" class="safety">No order placement</text>
+    </g>
+    <g transform="translate(830 850)">
+      <circle cx="0" cy="0" r="18" fill="#fee2e2" stroke="#ef4444" stroke-width="3"/>
+      <line x1="-10" y1="-10" x2="10" y2="10" stroke="#ef4444" stroke-width="4" stroke-linecap="round"/>
+      <text x="32" y="6" class="safety">No order cancellation</text>
+    </g>
+    <g transform="translate(1172 850)">
+      <circle cx="0" cy="0" r="18" fill="#fee2e2" stroke="#ef4444" stroke-width="3"/>
+      <line x1="-10" y1="-10" x2="10" y2="10" stroke="#ef4444" stroke-width="4" stroke-linecap="round"/>
+      <text x="32" y="6" class="safety">No account automation</text>
+    </g>
+
+    <text x="794" y="840" text-anchor="middle" class="slogan" fill="#991b1b">External agents may reason, review, and challenge. They must not execute trades.</text>
+  </g>
+</svg>

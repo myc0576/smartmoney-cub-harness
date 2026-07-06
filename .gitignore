@@ -8,6 +8,7 @@ __pycache__/
 htmlcov/
 dist/
 build/
+.claude/
 
 .env
 .env.*
@@ -22,6 +23,9 @@ exports/
 snapshots/
 watchlists/
 tmp/
+
+*冲突文件*
+*.baiduyun.uploading.cfg
 
 artifacts/*
 !artifacts/.gitkeep

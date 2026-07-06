@@ -1,0 +1,209 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<svg width="2400" height="1350" viewBox="0 0 2400 1350" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      text { font-family: Arial, "Microsoft YaHei", "Noto Sans CJK SC", sans-serif; }
+    </style>
+    <filter id="cardShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#0F172A" flood-opacity="0.07"/>
+    </filter>
+    <marker id="arrow-blue" markerWidth="14" markerHeight="14" refX="11" refY="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L11,5 L0,10 Z" fill="#2563EB"/>
+    </marker>
+    <marker id="arrow-green" markerWidth="14" markerHeight="14" refX="11" refY="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L11,5 L0,10 Z" fill="#16A34A"/>
+    </marker>
+    <marker id="arrow-orange" markerWidth="14" markerHeight="14" refX="11" refY="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L11,5 L0,10 Z" fill="#F59E0B"/>
+    </marker>
+    <marker id="arrow-purple" markerWidth="14" markerHeight="14" refX="11" refY="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L11,5 L0,10 Z" fill="#7C3AED"/>
+    </marker>
+  </defs>
+  <rect id="background" width="2400" height="1350" fill="#F8FAFC"/>
+  <g id="page-frame">
+    <rect x="52" y="48" width="2296" height="1254" rx="44" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="3"/>
+  </g>
+
+  <g id="title-and-slogans">
+    <text x="90" y="116" text-anchor="start" font-size="58" font-weight="900" fill="#0F172A" ><tspan x="90" dy="0">SmartMoney Cub Agent Interaction</tspan></text>
+    <text x="90" y="168" text-anchor="start" font-size="25" font-weight="700" fill="#475569" ><tspan x="90" dy="0">把外部 Agent 变成“本地只读复盘大脑”的协作图 / Turning external agents into a local read-only review brain</tspan></text>
+
+    <rect x="90" y="200" width="265" height="44" rx="22" fill="#EFF6FF" stroke="#2563EB" stroke-width="2"  />
+    <text x="222.5" y="229" text-anchor="middle" font-size="18" font-weight="800" fill="#2563EB" ><tspan x="222.5" dy="0">Bring your own agent.</tspan></text>
+
+
+    <rect x="375" y="200" width="355" height="44" rx="22" fill="#F0FDF4" stroke="#15803D" stroke-width="2"  />
+    <text x="552.5" y="229" text-anchor="middle" font-size="18" font-weight="800" fill="#15803D" ><tspan x="552.5" dy="0">No embedded LLM API required.</tspan></text>
+
+
+    <rect x="750" y="200" width="310" height="44" rx="22" fill="#F5F3FF" stroke="#7C3AED" stroke-width="2"  />
+    <text x="905" y="229" text-anchor="middle" font-size="18" font-weight="800" fill="#7C3AED" ><tspan x="905" dy="0">Your trading logic stays local.</tspan></text>
+
+  </g>
+
+  <g id="external-agents">
+    <text x="90" y="280" text-anchor="start" font-size="24" font-weight="900" fill="#2563EB" letter-spacing="1.5"><tspan x="90" dy="0">External Agents / 外部 Agent</tspan></text>
+
+    <rect x="90" y="306" width="104" height="72" rx="18" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="2"  />
+    <circle cx="114" cy="333" r="18" fill="#10B981"/>
+    <text x="114" y="339" text-anchor="middle" font-size="18" font-weight="800" fill="#FFFFFF" ><tspan x="114" dy="0">O</tspan></text>
+    <text x="140" y="330" text-anchor="start" font-size="14.5" font-weight="800" fill="#0F172A" ><tspan x="140" dy="0">Codex</tspan></text>
+    <text x="140" y="353" text-anchor="start" font-size="10.5" font-weight="700" fill="#64748B" ><tspan x="140" dy="0">OpenAI CLI</tspan></text>
+
+    <rect x="202" y="306" width="104" height="72" rx="18" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="2"  />
+    <circle cx="226" cy="333" r="18" fill="#111827"/>
+    <text x="226" y="339" text-anchor="middle" font-size="18" font-weight="800" fill="#FFFFFF" ><tspan x="226" dy="0">C</tspan></text>
+    <text x="252" y="330" text-anchor="start" font-size="14.5" font-weight="800" fill="#0F172A" ><tspan x="252" dy="0">Claude</tspan></text>
+    <text x="252" y="353" text-anchor="start" font-size="10.5" font-weight="700" fill="#64748B" ><tspan x="252" dy="0">Code</tspan></text>
+
+    <rect x="314" y="306" width="104" height="72" rx="18" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="2"  />
+    <circle cx="338" cy="333" r="18" fill="#2563EB"/>
+    <text x="338" y="339" text-anchor="middle" font-size="18" font-weight="800" fill="#FFFFFF" ><tspan x="338" dy="0">&gt;</tspan></text>
+    <text x="364" y="330" text-anchor="start" font-size="14.5" font-weight="800" fill="#0F172A" ><tspan x="364" dy="0">Cursor</tspan></text>
+    <text x="364" y="353" text-anchor="start" font-size="10.5" font-weight="700" fill="#64748B" ><tspan x="364" dy="0">editor agent</tspan></text>
+
+    <rect x="426" y="306" width="104" height="72" rx="18" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="2"  />
+    <circle cx="450" cy="333" r="18" fill="#7C3AED"/>
+    <text x="450" y="339" text-anchor="middle" font-size="18" font-weight="800" fill="#FFFFFF" ><tspan x="450" dy="0">✦</tspan></text>
+    <text x="476" y="330" text-anchor="start" font-size="14.5" font-weight="800" fill="#0F172A" ><tspan x="476" dy="0">Gemini</tspan></text>
+    <text x="476" y="353" text-anchor="start" font-size="10.5" font-weight="700" fill="#64748B" ><tspan x="476" dy="0">CLI</tspan></text>
+
+    <rect x="538" y="306" width="104" height="72" rx="18" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="2"  />
+    <circle cx="562" cy="333" r="18" fill="#F59E0B"/>
+    <text x="562" y="339" text-anchor="middle" font-size="18" font-weight="800" fill="#FFFFFF" ><tspan x="562" dy="0">OC</tspan></text>
+    <text x="588" y="330" text-anchor="start" font-size="14.5" font-weight="800" fill="#0F172A" ><tspan x="588" dy="0">OpenCode</tspan></text>
+    <text x="588" y="353" text-anchor="start" font-size="10.5" font-weight="700" fill="#64748B" ><tspan x="588" dy="0">OpenClaw</tspan></text>
+
+    <rect x="650" y="306" width="104" height="72" rx="18" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="2"  />
+    <circle cx="674" cy="333" r="18" fill="#64748B"/>
+    <text x="674" y="339" text-anchor="middle" font-size="18" font-weight="800" fill="#FFFFFF" ><tspan x="674" dy="0">+</tspan></text>
+    <text x="700" y="330" text-anchor="start" font-size="14.5" font-weight="800" fill="#0F172A" ><tspan x="700" dy="0">Other</tspan></text>
+    <text x="700" y="353" text-anchor="start" font-size="10.5" font-weight="700" fill="#64748B" ><tspan x="700" dy="0">local agents</tspan></text>
+
+    <text x="90" y="410" text-anchor="start" font-size="17" font-weight="800" fill="#64748B" ><tspan x="90" dy="0">Compatible external tools / 可兼容的外部工具</tspan></text>
+    <text x="90" y="438" text-anchor="start" font-size="14" font-weight="600" fill="#64748B" ><tspan x="90" dy="0">Logos are trademarks of their respective owners and are used only to indicate compatibility.</tspan></text>
+  </g>
+
+  <g id="agent-harness-contract-arrows">
+    <line x1="860" y1="310" x2="1225" y2="310" stroke="#2563EB" stroke-width="4" stroke-linecap="round"  marker-end="url(#arrow-blue)"/>
+    <text x="1042" y="292" text-anchor="middle" font-size="17" font-weight="800" fill="#1E40AF" ><tspan x="1042" dy="0">External Agents -&gt; Harness: read AGENTS.md / CLAUDE.md / harness contract</tspan></text>
+    <line x1="1505" y1="338" x2="1120" y2="338" stroke="#7C3AED" stroke-width="4" stroke-linecap="round"  marker-end="url(#arrow-purple)"/>
+    <text x="1313" y="357" text-anchor="middle" font-size="17" font-weight="800" fill="#7C3AED" ><tspan x="1313" dy="0">Harness -&gt; External Agents: artifacts for review / 复盘产物回传</tspan></text>
+  </g>
+
+  <g id="read-only-inputs">
+    <text x="90" y="518" text-anchor="start" font-size="24" font-weight="900" fill="#0284C7" letter-spacing="1.2"><tspan x="90" dy="0">Read-only Inputs / 只读输入层</tspan></text>
+
+    <rect x="90" y="548" width="565" height="104" rx="20" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="2"  filter="url(#cardShadow)"/>
+    <rect x="90" y="548" width="12" height="104" rx="6" fill="#2563EB"/>
+    <text x="128" y="590" text-anchor="start" font-size="25" font-weight="800" fill="#0F172A" ><tspan x="128" dy="0">Trading Plan / 交易计划</tspan></text>
+    <text x="128" y="622" text-anchor="start" font-size="18" font-weight="600" fill="#334155" ><tspan x="128" dy="0">• thesis / 假设</tspan><tspan x="128" dy="24.3">• invalidation / 失效条件</tspan><tspan x="128" dy="24.3">• time stop / 时间止损</tspan></text>
+
+    <rect x="90" y="680" width="565" height="104" rx="20" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="2"  filter="url(#cardShadow)"/>
+    <rect x="90" y="680" width="12" height="104" rx="6" fill="#22C55E"/>
+    <text x="128" y="722" text-anchor="start" font-size="25" font-weight="800" fill="#0F172A" ><tspan x="128" dy="0">Local Notes &amp; Screenshots / 本地笔记与截图</tspan></text>
+    <text x="128" y="754" text-anchor="start" font-size="18" font-weight="600" fill="#334155" ><tspan x="128" dy="0">• CSV</tspan><tspan x="128" dy="24.3">• screenshot / 截图</tspan><tspan x="128" dy="24.3">• markdown</tspan></text>
+
+    <rect x="90" y="812" width="565" height="104" rx="20" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="2"  filter="url(#cardShadow)"/>
+    <rect x="90" y="812" width="12" height="104" rx="6" fill="#F59E0B"/>
+    <text x="128" y="854" text-anchor="start" font-size="25" font-weight="800" fill="#0F172A" ><tspan x="128" dy="0">External Research Reports / 外部研究报告</tspan></text>
+    <text x="128" y="886" text-anchor="start" font-size="18" font-weight="600" fill="#334155" ><tspan x="128" dy="0">• TradingAgents report</tspan><tspan x="128" dy="24.3">• UZI-Skill notes</tspan><tspan x="128" dy="24.3">• public research / 公开研究</tspan></text>
+
+    <rect x="90" y="944" width="565" height="104" rx="20" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="2"  filter="url(#cardShadow)"/>
+    <rect x="90" y="944" width="12" height="104" rx="6" fill="#7C3AED"/>
+    <text x="128" y="986" text-anchor="start" font-size="25" font-weight="800" fill="#0F172A" ><tspan x="128" dy="0">Toy Offline Fixtures / toy 离线样例</tspan></text>
+    <text x="128" y="1018" text-anchor="start" font-size="18" font-weight="600" fill="#334155" ><tspan x="128" dy="0">• examples only / 仅示例</tspan><tspan x="128" dy="24.3">• no private data / 不含私有数据</tspan></text>
+
+    <line x1="668" y1="600" x2="785" y2="600" stroke="#2563EB" stroke-width="5" stroke-linecap="round"  marker-end="url(#arrow-blue)"/><line x1="668" y1="732" x2="785" y2="732" stroke="#22C55E" stroke-width="5" stroke-linecap="round"  marker-end="url(#arrow-green)"/><line x1="668" y1="864" x2="785" y2="864" stroke="#F59E0B" stroke-width="5" stroke-linecap="round"  marker-end="url(#arrow-orange)"/><line x1="668" y1="996" x2="785" y2="996" stroke="#7C3AED" stroke-width="5" stroke-linecap="round"  marker-end="url(#arrow-purple)"/>
+  </g>
+
+  <g id="smartmoney-cub-harness">
+    <rect x="800" y="365" width="760" height="700" rx="38" fill="#EAF4FF" stroke="#93C5FD" stroke-width="3"  filter="url(#cardShadow)"/>
+    <rect x="834" y="400" width="692" height="124" rx="26" fill="#FFFFFF" stroke="#BFDBFE" stroke-width="2"  />
+    <text x="864" y="454" text-anchor="start" font-size="44" font-weight="900" fill="#0F172A" ><tspan x="864" dy="0">SmartMoney Cub Harness</tspan></text>
+    <text x="864" y="491" text-anchor="start" font-size="21" font-weight="800" fill="#475569" ><tspan x="864" dy="0">Local External Review Brain · No embedded LLM API · Read-only</tspan></text>
+    <text x="864" y="518" text-anchor="start" font-size="19" font-weight="700" fill="#475569" ><tspan x="864" dy="0">本地外置复盘大脑 · 无内置 LLM API · 只读</tspan></text>
+    <rect x="1304" y="378" width="222" height="34" rx="17" fill="#FFF1F2" stroke="#FECACA" stroke-width="2"  />
+    <text x="1415" y="401" text-anchor="middle" font-size="15" font-weight="900" fill="#991B1B" ><tspan x="1415" dy="0">Not auto-trading / 非自动交易</tspan></text>
+
+    <rect x="835" y="540" width="331" height="142" rx="22" fill="#FFFFFF" stroke="#BFDBFE" stroke-width="3"  />
+    <text x="861" y="575" text-anchor="start" font-size="18" font-weight="800" fill="#0F172A" ><tspan x="861" dy="0">Manifest &amp; Provenance</tspan><tspan x="861" dy="19.44">/ 清单与溯源</tspan></text>
+    <text x="861" y="614" text-anchor="start" font-size="15.5" font-weight="600" fill="#334155" ><tspan x="861" dy="0">• available_at &lt;= decision_time</tspan><tspan x="861" dy="20.46">• anti-future-leakage</tspan></text>
+
+    <rect x="1194" y="540" width="331" height="142" rx="22" fill="#FFFFFF" stroke="#BFDBFE" stroke-width="3"  />
+    <text x="1220" y="575" text-anchor="start" font-size="18" font-weight="800" fill="#0F172A" ><tspan x="1220" dy="0">Run Capture / 运行捕获</tspan></text>
+    <text x="1220" y="608" text-anchor="start" font-size="15.5" font-weight="600" fill="#334155" ><tspan x="1220" dy="0">• stdout / stderr / metadata</tspan><tspan x="1220" dy="20.46">• trace.jsonl</tspan></text>
+
+    <rect x="835" y="700" width="331" height="142" rx="22" fill="#FFFFFF" stroke="#C4B5FD" stroke-width="3"  />
+    <text x="861" y="735" text-anchor="start" font-size="18" font-weight="800" fill="#0F172A" ><tspan x="861" dy="0">Decision Record / 决策记录</tspan></text>
+    <text x="861" y="768" text-anchor="start" font-size="15.5" font-weight="600" fill="#334155" ><tspan x="861" dy="0">• plan / 计划</tspan><tspan x="861" dy="20.46">• evidence / 证据</tspan><tspan x="861" dy="20.46">• risk contract / 风险约束</tspan></text>
+
+    <rect x="1194" y="700" width="331" height="142" rx="22" fill="#FFFFFF" stroke="#C4B5FD" stroke-width="3"  />
+    <text x="1220" y="735" text-anchor="start" font-size="18" font-weight="800" fill="#0F172A" ><tspan x="1220" dy="0">D1 / D3 Outcome</tspan><tspan x="1220" dy="19.44">/ D1-D3 结果验证</tspan></text>
+    <text x="1220" y="774" text-anchor="start" font-size="15.5" font-weight="600" fill="#334155" ><tspan x="1220" dy="0">• delayed review / 延迟评估</tspan><tspan x="1220" dy="20.46">• toy or local data / toy 或本地数据</tspan></text>
+
+    <rect x="835" y="860" width="331" height="142" rx="22" fill="#FFFFFF" stroke="#86EFAC" stroke-width="3"  />
+    <text x="861" y="895" text-anchor="start" font-size="18" font-weight="800" fill="#0F172A" ><tspan x="861" dy="0">Evaluator / 评估器</tspan></text>
+    <text x="861" y="928" text-anchor="start" font-size="15.5" font-weight="600" fill="#334155" ><tspan x="861" dy="0">• score / 评分</tspan><tspan x="861" dy="20.46">• risk check / 风险检查</tspan><tspan x="861" dy="20.46">• evidence audit / 证据审计</tspan></text>
+
+    <rect x="1194" y="860" width="331" height="142" rx="22" fill="#FFFFFF" stroke="#86EFAC" stroke-width="3"  />
+    <text x="1220" y="895" text-anchor="start" font-size="18" font-weight="800" fill="#0F172A" ><tspan x="1220" dy="0">Memory &amp; Rule Registry</tspan><tspan x="1220" dy="19.44">/ 记忆与规则注册表</tspan></text>
+    <text x="1220" y="934" text-anchor="start" font-size="15.5" font-weight="600" fill="#334155" ><tspan x="1220" dy="0">• memory.md</tspan><tspan x="1220" dy="20.46">• challenger -&gt; champion</tspan><tspan x="1220" dy="20.46">• human gated / 人工把关</tspan></text>
+
+  </g>
+
+  <g id="human-review-rule-governance">
+    <text x="1780" y="518" text-anchor="start" font-size="24" font-weight="900" fill="#16A34A" letter-spacing="1.1"><tspan x="1780" dy="0">Human Review / Rule Governance</tspan><tspan x="1780" dy="28.32">人工复核 / 规则治理</tspan></text>
+    <rect x="1780" y="565" width="530" height="292" rx="32" fill="#ECFDF5" stroke="#86EFAC" stroke-width="3"  filter="url(#cardShadow)"/>
+    <circle cx="1846" cy="641" r="40" fill="#DCFCE7"/>
+    <circle cx="1846" cy="641" r="19" fill="#16A34A"/>
+    <text x="1904" y="636" text-anchor="start" font-size="29" font-weight="900" fill="#0F172A" ><tspan x="1904" dy="0">Human Trader / 人工交易者</tspan></text>
+    <text x="1904" y="681" text-anchor="start" font-size="17" font-weight="800" fill="#64748B" ><tspan x="1904" dy="0">reviewer / manager</tspan></text>
+    <text x="1826" y="750" text-anchor="start" font-size="19" font-weight="650" fill="#334155" ><tspan x="1826" dy="0">• reviews artifacts / 审阅产物</tspan><tspan x="1826" dy="27.55">• approves promotion / 批准升级</tspan><tspan x="1826" dy="27.55">• owns final judgment / 保留最终判断</tspan></text>
+  </g>
+
+  <g id="harness-human-arrows">
+    <line x1="1570" y1="660" x2="1764" y2="660" stroke="#16A34A" stroke-width="5" stroke-linecap="round"  marker-end="url(#arrow-green)"/>
+    <rect x="1570" y="584" width="204" height="64" rx="14" fill="#FFFFFF" stroke="#BBF7D0" stroke-width="2"  />
+    <text x="1672" y="607" text-anchor="middle" font-size="17" font-weight="900" fill="#15803D" ><tspan x="1672" dy="0">review packet</tspan></text>
+    <text x="1672" y="629" text-anchor="middle" font-size="11" font-weight="700" fill="#64748B" ><tspan x="1672" dy="0">loop_report.md · case_record.json</tspan></text>
+    <text x="1672" y="644" text-anchor="middle" font-size="11" font-weight="700" fill="#64748B" ><tspan x="1672" dy="0">memory.md · promotion_packet.json</tspan></text>
+    <line x1="1764" y1="796" x2="1570" y2="796" stroke="#16A34A" stroke-width="5" stroke-linecap="round" stroke-dasharray="10 10" marker-end="url(#arrow-green)"/>
+    <text x="1666" y="828" text-anchor="middle" font-size="16" font-weight="900" fill="#15803D" ><tspan x="1666" dy="0">manual approval only / 仅人工批准</tspan></text>
+  </g>
+
+  <g id="broker-execution-blocked">
+    <text x="1850" y="895" text-anchor="start" font-size="25" font-weight="900" fill="#991B1B" ><tspan x="1850" dy="0">Broker / Execution</tspan></text>
+    <text x="1850" y="926" text-anchor="start" font-size="21" font-weight="800" fill="#991B1B" ><tspan x="1850" dy="0">券商 / 执行</tspan></text>
+    <rect x="1850" y="948" width="430" height="132" rx="28" fill="#FEF2F2" stroke="#FDA4AF" stroke-width="3"  />
+    <text x="1890" y="990" text-anchor="start" font-size="18" font-weight="700" fill="#334155" ><tspan x="1890" dy="0">• order router / 下单路由</tspan><tspan x="1890" dy="24.839999999999996">• broker connector / 券商连接</tspan><tspan x="1890" dy="24.839999999999996">• account automation / 账户自动化</tspan></text>
+    <line x1="1570" y1="1010" x2="1715" y2="1010" stroke="#DC2626" stroke-width="6" stroke-linecap="round"/>
+
+    <line x1="1726" y1="982" x2="1782" y2="1038" stroke="#DC2626" stroke-width="12" stroke-linecap="round"/>
+    <line x1="1782" y1="982" x2="1726" y2="1038" stroke="#DC2626" stroke-width="12" stroke-linecap="round"/>
+
+    <text x="1660" y="984" text-anchor="middle" font-size="18" font-weight="900" fill="#991B1B" ><tspan x="1660" dy="0">blocked by design / 设计上禁止</tspan></text>
+  </g>
+
+  <g id="safety-boundary">
+    <rect x="90" y="1105" width="2220" height="205" rx="28" fill="#FFF7F7" stroke="#DC2626" stroke-width="4" stroke-dasharray="18 18" />
+    <text x="120" y="1138" text-anchor="start" font-size="20" font-weight="900" fill="#991B1B" ><tspan x="120" dy="0">Safety Boundary / 安全边界</tspan></text>
+    <text x="1200" y="1188" text-anchor="middle" font-size="42" font-weight="950" fill="#0F172A" ><tspan x="1200" dy="0">READ_ONLY_NO_ORDER_NO_CANCEL_NO_TRADE</tspan></text>
+    <text x="1200" y="1226" text-anchor="middle" font-size="19" font-weight="800" fill="#991B1B" ><tspan x="1200" dy="0">External agents may reason, review, and challenge. They must not execute trades.</tspan></text>
+    <text x="1200" y="1254" text-anchor="middle" font-size="18" font-weight="750" fill="#991B1B" ><tspan x="1200" dy="0">外部 Agent 可以推理、复盘、质疑，但不能执行交易。</tspan></text>
+
+    <circle cx="390" cy="1286" r="24" fill="#FFF7F7" stroke="#DC2626" stroke-width="5"/>
+    <line x1="374.4" y1="1270.4" x2="405.6" y2="1301.6" stroke="#DC2626" stroke-width="5" stroke-linecap="round"/>
+  <text x="440" y="1294" text-anchor="start" font-size="18" font-weight="800" fill="#991B1B" ><tspan x="440" dy="0">No broker connector / 不接券商</tspan></text>
+    <circle cx="830" cy="1286" r="24" fill="#FFF7F7" stroke="#DC2626" stroke-width="5"/>
+    <line x1="814.4" y1="1270.4" x2="845.6" y2="1301.6" stroke="#DC2626" stroke-width="5" stroke-linecap="round"/>
+  <text x="880" y="1294" text-anchor="start" font-size="18" font-weight="800" fill="#991B1B" ><tspan x="880" dy="0">No order placement / 不下单</tspan></text>
+    <circle cx="1270" cy="1286" r="24" fill="#FFF7F7" stroke="#DC2626" stroke-width="5"/>
+    <line x1="1254.4" y1="1270.4" x2="1285.6" y2="1301.6" stroke="#DC2626" stroke-width="5" stroke-linecap="round"/>
+  <text x="1320" y="1294" text-anchor="start" font-size="18" font-weight="800" fill="#991B1B" ><tspan x="1320" dy="0">No order cancellation / 不撤单</tspan></text>
+    <circle cx="1710" cy="1286" r="24" fill="#FFF7F7" stroke="#DC2626" stroke-width="5"/>
+    <line x1="1694.4" y1="1270.4" x2="1725.6" y2="1301.6" stroke="#DC2626" stroke-width="5" stroke-linecap="round"/>
+  <text x="1760" y="1294" text-anchor="start" font-size="18" font-weight="800" fill="#991B1B" ><tspan x="1760" dy="0">No account automation / 不做账户自动化</tspan></text>
+  </g>
+</svg>

@@ -4,11 +4,11 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "smartmoney-cub-harness"
-version = "0.1.0"
+version = "0.2.0"
 description = "A read-only trading companion harness for decision logging, outcome review, and rule evolution."
 readme = "README.md"
 requires-python = ">=3.10"
-license = { text = "MIT" }
+license = { text = "Apache-2.0" }
 authors = [{ name = "smartmoney-cub-harness contributors" }]
 keywords = [
   "agent-harness",
@@ -31,7 +31,7 @@ keywords = [
 classifiers = [
   "Development Status :: 3 - Alpha",
   "Intended Audience :: Financial and Insurance Industry",
-  "License :: OSI Approved :: MIT License",
+  "License :: OSI Approved :: Apache Software License",
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
@@ -52,4 +52,4 @@ where = ["src"]
 [tool.pytest.ini_options]
 pythonpath = ["src"]
 testpaths = ["tests"]
-addopts = "-p no:dash"
+addopts = "-p no:dash --ignore-glob=*冲突文件* --ignore-glob=*.baiduyun.uploading.cfg"

@@ -2,6 +2,20 @@
 
 Agents can use this repository as a disciplined artifact layer for subjective trading review. They must behave like reviewers, challengers, archivists, and drift detectors, never like stock pickers or execution systems.
 
+`smartmoney-cub-harness` is agent-agnostic. The harness itself does not embed or
+require an OpenAI API key, Anthropic API key, Gemini API key, or any built-in
+LLM provider. External agents bring their own reasoning environment, read the
+local contract files, and call the `smcub` CLI.
+
+See [external-review-brain.md](external-review-brain.md) for the higher-level
+positioning.
+
+## External Review Brain Flow
+
+```text
+External Agent -> read contract -> run smcub CLI -> inspect artifacts -> write review/challenger notes -> human approves rule promotion
+```
+
 ## Recommended Flow
 
 1. Run `smcub capture-run` against an offline command, toy fixture, screenshot extraction step, or user-provided local note parser.
@@ -57,6 +71,8 @@ These inputs are for local review and structured analysis only. They must not be
 ## Agent Rules
 
 - Never ask the harness to place or cancel orders.
+- Never treat an external agent's research view as an executable order.
+- Never require a built-in LLM provider or API key for the harness runtime.
 - Never infer missing invalidation fields.
 - Never soften future-leakage failures.
 - Never put private user data into public examples.

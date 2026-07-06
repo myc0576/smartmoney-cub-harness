@@ -12,6 +12,11 @@ REGISTRY_SCHEMA = "smartmoney_cub_rule_registry.v1"
 CASE_SCHEMA = "smartmoney_cub_case_record.v1"
 LEDGER_SCHEMA = "smartmoney_cub_evolution_ledger.v1"
 MEMORY_SCHEMA = "smartmoney_cub_markdown_memory.v1"
+PRIVATE_CASE_CSV_SCHEMA = "smartmoney_cub_private_case_csv.v1"
+SELF_EVOLVE_CONTRACT_SCHEMA = "smartmoney_cub_self_evolve_contract.v1"
+SELF_EVOLVE_STATE_SCHEMA = "smartmoney_cub_self_evolve_state.v1"
+PROMOTION_PACKET_SCHEMA = "smartmoney_cub_promotion_packet.v1"
+EXTERNAL_ANALYSIS_SCHEMA = "external_analysis_artifact.v1"
 
 VALID_ACTION_LABELS = {"SILENT", "ALERT", "ERROR", "WATCH", "AVOID", "EMPTY_POSITION"}
 VALID_DATA_QUALITY_FLAGS = {"ok", "stale", "partial", "missing", "error"}
