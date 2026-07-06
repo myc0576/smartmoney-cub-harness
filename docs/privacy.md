@@ -26,6 +26,8 @@ Private trading plans, journals, screenshots, exports, rule notes, and review me
 
 The CLI redacts common sensitive strings before printing JSON output, including email, phone, token, cookie, account-like keys, Windows paths, and Unix home paths.
 
+The TradingAgents adapter is optional and user-configured. External LLM/API credentials remain outside this repository and must never be committed or captured in artifacts.
+
 ## What Public Examples May Contain
 
 Public examples must use toy offline data only. They may demonstrate schemas, case records, memory files, and ledger events, but not real trades, private watchlists, credentials, cookies, account identifiers, or local private paths.

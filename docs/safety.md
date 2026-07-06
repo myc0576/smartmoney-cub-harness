@@ -36,3 +36,5 @@ Do not commit:
 - private notes.
 
 Examples must remain toy-only and offline.
+
+The TradingAgents adapter is optional and user-configured. External LLM/API credentials remain outside this repository and must never be committed or captured in artifacts.

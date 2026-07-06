@@ -16,6 +16,7 @@ PRIVATE_CASE_CSV_SCHEMA = "smartmoney_cub_private_case_csv.v1"
 SELF_EVOLVE_CONTRACT_SCHEMA = "smartmoney_cub_self_evolve_contract.v1"
 SELF_EVOLVE_STATE_SCHEMA = "smartmoney_cub_self_evolve_state.v1"
 PROMOTION_PACKET_SCHEMA = "smartmoney_cub_promotion_packet.v1"
+TRADINGAGENTS_REVIEW_PACKET_SCHEMA = "smartmoney_cub_tradingagents_review_packet.v1"
 
 VALID_ACTION_LABELS = {"SILENT", "ALERT", "ERROR", "WATCH", "AVOID", "EMPTY_POSITION"}
 VALID_DATA_QUALITY_FLAGS = {"ok", "stale", "partial", "missing", "error"}

@@ -15,6 +15,7 @@
 [![Local-first](https://img.shields.io/badge/local--first-no%20telemetry-success)](docs/privacy.md)
 [![Agent-ready](https://img.shields.io/badge/agent--ready-loop%20artifacts-blueviolet)](docs/agent-loop.md)
 [![UZI-Skill](https://img.shields.io/badge/ecosystem-UZI--Skill-orange)](docs/integrations.md)
+[![TradingAgents-ready](https://img.shields.io/badge/TradingAgents--ready-optional--adapter-informational)](docs/tradingagents-adapter.md)
 
 只读 AI 复盘与规则进化 harness · 决策记录 · D1/D3 结果验证 · 本地 Markdown 记忆 · challenger -> champion 治理
 
@@ -173,6 +174,7 @@ AI 助手在这个仓库里只能扮演 reviewer、challenger、archivist、drif
 | 项目 / 类别 | 当前状态 | 可以怎样接入 harness | 安全边界 |
 | --- | --- | --- | --- |
 | [wbh604/UZI-Skill](https://github.com/wbh604/UZI-Skill) | 推荐搭配 / 生态接入位 | 作为外部分析报告或 agent skill 灵感来源，输出只能作为本地复盘材料进入 reviewer / challenger 流程 | 不声明内置运行时集成；不把分析结论变成买卖指令 |
+| [TauricResearch/TradingAgents](https://github.com/TauricResearch/TradingAgents) | optional documented adapter / 用户自选外部引擎 | 用户本地运行 TradingAgents 生成多智能体分析/候选报告，或显式开启 optional local bridge 生成只读 review packet；该 packet 进入 reviewer / challenger / D1-D3 outcome review / rule candidate 流程 | 用户自行配置 LLM/API key；harness 不保存、不收集、不上传 key；不连接券商；不下单；不把 TradingAgents 输出直接当交易指令 |
 | 数据源适配项目 | 预留 | 只读导出、toy fixture、公开样例 schema | 不接 broker execution，不写账户，不下单 |
 | 报告生成项目 | 预留 | 把 `loop_report.md`、case record、ledger 转成更好的本地阅读材料 | 不上传私有复盘，不发布真实持仓 |
 | Agent skill 项目 | 预留 | 增强 reviewer、challenger、archivist、drift detector 的协作体验 | 不允许越权到交易执行 |
@@ -180,6 +182,35 @@ AI 助手在这个仓库里只能扮演 reviewer、challenger、archivist、drif
 | 知识记忆项目 | 预留 | 管理本地 Markdown memory、case bank、evolution ledger | 不上传私有交易逻辑 |
 
 接入规则见 [docs/integrations.md](docs/integrations.md)。
+
+## 可选接入 TradingAgents
+
+TradingAgents 适合已经会配置 LLM provider、并希望把外部多智能体金融分析能力接入本地复盘系统的用户。默认 toy loop 不需要 TradingAgents，也不需要任何 LLM/API key；`smartmoney-cub-harness` 本身不托管、不读取明文、不提交、不上传 TradingAgents 的 key。
+
+推荐两种模式：
+
+1. `report-only mode`：用户独立运行 TradingAgents，把本地报告导入 harness，生成只读 review packet。
+2. `optional local bridge mode`：用户已经在本地安装并配置 TradingAgents 后，显式传入 `--allow-network` 和 `--ack-external-llm`，由 adapter 包装外部分析结果为 review packet。
+
+```bash
+# report-only：用户先在 TradingAgents 中生成报告，然后导入本 harness
+smcub tradingagents-ingest \
+  --report path/to/tradingagents_report.md \
+  --ticker 600519.SS \
+  --analysis-date 2026-07-06 \
+  --output artifacts/tradingagents_review_packet.json
+
+# optional local bridge：仅当用户本地已经安装并配置 TradingAgents 后使用
+smcub tradingagents-doctor
+smcub tradingagents-run \
+  --ticker 600519.SS \
+  --analysis-date 2026-07-06 \
+  --output artifacts/tradingagents_review_packet.json \
+  --allow-network \
+  --ack-external-llm
+```
+
+TradingAgents 的输出只会进入 reviewer / challenger / evidence / case-review 流程。它不能成为买入、卖出、下单、撤单、自动执行或账户操作的指令；任何 rule candidate 进入 champion 仍然必须由人显式确认。
 
 ## 安全边界：你的系统，只属于你
 
@@ -237,6 +268,9 @@ smcub inspect-artifacts <run_dir>
 smcub collect-case <run_dir>
 smcub append-ledger --event EVENT --payload-json FILE
 smcub save-memory --case-record FILE
+smcub tradingagents-doctor
+smcub tradingagents-ingest --report path/to/tradingagents_report.md --ticker 600519.SS --analysis-date 2026-07-06
+smcub tradingagents-run --ticker 600519.SS --analysis-date 2026-07-06 --allow-network --ack-external-llm
 smcub doctor
 smcub validate-manifest examples/sample_run/run_manifest.json
 ```

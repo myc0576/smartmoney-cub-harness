@@ -21,6 +21,11 @@ from smartmoney_cub_harness.run_capture import capture_run, get_command_preset, 
 from smartmoney_cub_harness.safety import redact
 from smartmoney_cub_harness.schemas import SAFETY_DECLARATION
 from smartmoney_cub_harness.self_evolve import confirm_promotion, run_self_evolve
+from smartmoney_cub_harness.tradingagents_adapter import (
+    check_tradingagents_environment,
+    ingest_tradingagents_report,
+    run_tradingagents_local_bridge,
+)
 
 
 def _read_json(path: str | Path) -> dict[str, Any]:
@@ -28,6 +33,7 @@ def _read_json(path: str | Path) -> dict[str, Any]:
 
 
 def _write_json(path: Path, payload: dict[str, Any]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(redact(payload), ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
 
@@ -147,6 +153,26 @@ def build_parser() -> argparse.ArgumentParser:
     privacy_cmd = sub.add_parser("privacy-audit", help="Show offline privacy and safety settings")
     privacy_cmd.set_defaults(command="privacy-audit")
 
+    ta_doctor = sub.add_parser("tradingagents-doctor", help="Check optional TradingAgents adapter readiness")
+    ta_doctor.set_defaults(command="tradingagents-doctor")
+
+    ta_ingest = sub.add_parser("tradingagents-ingest", help="Import a local TradingAgents report as a review packet")
+    ta_ingest.add_argument("--report", required=True)
+    ta_ingest.add_argument("--ticker", required=True)
+    ta_ingest.add_argument("--analysis-date", required=True)
+    ta_ingest.add_argument("--output")
+
+    ta_run = sub.add_parser("tradingagents-run", help="Run optional local TradingAgents bridge as review-only evidence")
+    ta_run.add_argument("--ticker", required=True)
+    ta_run.add_argument("--analysis-date", required=True)
+    ta_run.add_argument("--output")
+    ta_run.add_argument("--allow-network", action="store_true")
+    ta_run.add_argument("--ack-external-llm", action="store_true")
+    ta_run.add_argument("--provider")
+    ta_run.add_argument("--deep-model")
+    ta_run.add_argument("--quick-model")
+    ta_run.add_argument("--max-debate-rounds", type=int)
+
     inspect = sub.add_parser("inspect-artifacts", help="Inspect a loop run directory for required safe artifacts")
     inspect.add_argument("run_dir")
 
@@ -243,6 +269,48 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "privacy-audit":
         _print_json(privacy_audit())
         return 0
+
+    if args.command == "tradingagents-doctor":
+        _print_json(check_tradingagents_environment())
+        return 0
+
+    if args.command == "tradingagents-ingest":
+        try:
+            result = ingest_tradingagents_report(
+                report=args.report,
+                ticker=args.ticker,
+                analysis_date=args.analysis_date,
+            )
+        except FileNotFoundError as exc:
+            result = {
+                "status": "error",
+                "error": {"code": "report_missing", "message": str(exc)},
+                "safety": SAFETY_DECLARATION,
+            }
+            _print_json(result)
+            return 2
+        if args.output:
+            _write_json(Path(args.output), result)
+            result["output"] = str(Path(args.output))
+        _print_json(result)
+        return 0
+
+    if args.command == "tradingagents-run":
+        result = run_tradingagents_local_bridge(
+            ticker=args.ticker,
+            analysis_date=args.analysis_date,
+            allow_network=args.allow_network,
+            ack_external_llm=args.ack_external_llm,
+            provider=args.provider,
+            deep_model=args.deep_model,
+            quick_model=args.quick_model,
+            max_debate_rounds=args.max_debate_rounds,
+        )
+        if args.output and result.get("status") == "ok":
+            _write_json(Path(args.output), result)
+            result["output"] = str(Path(args.output))
+        _print_json(result)
+        return 0 if result.get("status") == "ok" else 2
 
     if args.command == "inspect-artifacts":
         _print_json(inspect_run_artifacts(args.run_dir))

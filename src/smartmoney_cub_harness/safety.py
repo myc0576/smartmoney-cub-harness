@@ -28,6 +28,14 @@ HOME_PATH_RE = re.compile(r"(?i)(?:/Users|/home)/[^\s\"'<>|]+")
 SECRET_ASSIGNMENT_RE = re.compile(
     r"(?i)\b(token|api_key|apikey|password|passwd|cookie|secret|account|session)\s*=\s*([^\s,;]+)"
 )
+SECRET_VALUE_RE = re.compile(
+    r"(?i)\b("
+    r"sk-[A-Za-z0-9_-]{8,}|"
+    r"ghp_[A-Za-z0-9_]{8,}|"
+    r"AIza[A-Za-z0-9_-]{8,}|"
+    r"AKIA[A-Z0-9]{8,}"
+    r")\b"
+)
 
 
 def looks_sensitive_key(key: str) -> bool:
@@ -37,6 +45,7 @@ def looks_sensitive_key(key: str) -> bool:
 
 def redact_string(value: str) -> str:
     text = SECRET_ASSIGNMENT_RE.sub(lambda match: f"{match.group(1)}={REDACTED}", value)
+    text = SECRET_VALUE_RE.sub(REDACTED, text)
     text = EMAIL_RE.sub(REDACTED, text)
     text = PHONE_RE.sub(REDACTED, text)
     text = WINDOWS_PATH_RE.sub(REDACTED, text)
