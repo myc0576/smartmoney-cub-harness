@@ -14,6 +14,7 @@ from smartmoney_cub_harness.evolution_ledger import append_ledger_event
 from smartmoney_cub_harness.loop import run_agent_loop
 from smartmoney_cub_harness.manifest import validate_run_manifest
 from smartmoney_cub_harness.memory import save_memory_record
+from smartmoney_cub_harness.mentor_fit import build_mentor_fit
 from smartmoney_cub_harness.outcome import build_outcome
 from smartmoney_cub_harness.privacy_audit import inspect_run_artifacts, load_payload_json, privacy_audit
 from smartmoney_cub_harness.registry import register_candidate
@@ -136,6 +137,9 @@ def build_parser() -> argparse.ArgumentParser:
     loop_cmd.add_argument("--horizon", choices=["d1", "d3"], default="d1")
     loop_cmd.add_argument("--json", action="store_true", help="Print the final loop summary as JSON")
 
+    mentor_fit = sub.add_parser("mentor-fit", help="Build offline toy mentor-fit style anchor JSON")
+    mentor_fit.add_argument("input", help="JSON payload with toy cases and optional public templates")
+
     self_evolve = sub.add_parser("self-evolve", help="Run the local private CSV self-evolution loop")
     self_evolve.add_argument("--input-csv", required=True)
     self_evolve.add_argument("--max-iterations", type=int, default=20)
@@ -241,6 +245,10 @@ def main(argv: list[str] | None = None) -> int:
                 agent_trigger=args.agent_trigger,
             )
         )
+        return 0
+
+    if args.command == "mentor-fit":
+        _print_json(build_mentor_fit(_read_json(args.input)))
         return 0
 
     if args.command == "self-evolve":
