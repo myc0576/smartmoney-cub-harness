@@ -11,6 +11,7 @@ from smartmoney_cub_harness import __version__
 from smartmoney_cub_harness.evaluator import evaluate_decision
 from smartmoney_cub_harness.loop import run_agent_loop
 from smartmoney_cub_harness.manifest import validate_run_manifest
+from smartmoney_cub_harness.mentor_fit import build_mentor_fit
 from smartmoney_cub_harness.outcome import build_outcome
 from smartmoney_cub_harness.registry import register_candidate
 from smartmoney_cub_harness.run_capture import capture_run, get_command_preset, parse_command
@@ -71,6 +72,12 @@ def doctor() -> dict[str, Any]:
         "platform": platform.platform(),
         "cwd": str(Path.cwd()),
         "network_required": False,
+        "telemetry": False,
+        "upload": False,
+        "credentials_required": False,
+        "github_auth_required": False,
+        "external_api_required": False,
+        "broker_api_required": False,
         "execution_integrations": "disabled",
         "default_data_mode": "offline_json_fixtures",
         "safety": SAFETY_DECLARATION,
@@ -118,6 +125,9 @@ def build_parser() -> argparse.ArgumentParser:
     loop_cmd.add_argument("--agent-trigger", default="")
     loop_cmd.add_argument("--horizon", choices=["d1", "d3"], default="d1")
     loop_cmd.add_argument("--json", action="store_true", help="Print the final loop summary as JSON")
+
+    mentor_fit = sub.add_parser("mentor-fit", help="Build offline toy mentor-fit style anchor JSON")
+    mentor_fit.add_argument("input", help="JSON payload with toy cases and optional public templates")
     return parser
 
 
@@ -171,6 +181,10 @@ def main(argv: list[str] | None = None) -> int:
                 agent_trigger=args.agent_trigger,
             )
         )
+        return 0
+
+    if args.command == "mentor-fit":
+        _print_json(build_mentor_fit(_read_json(args.input)))
         return 0
 
     parser.error(f"unknown command: {args.command}")

@@ -16,7 +16,7 @@ An offline, read-only Agent Loop Harness for subjective A-share trading review: 
 git clone https://github.com/myc0576/smartmoney-cub-harness.git
 cd smartmoney-cub-harness
 python -m pip install -e ".[dev]"
-smcub loop --preset toy --agent-trigger "loop"
+smcub loop --preset toy --agent-trigger "自进化"
 ```
 
 Expected output:

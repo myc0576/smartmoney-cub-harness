@@ -11,6 +11,8 @@ OUTCOME_SCHEMA = "smartmoney_cub_outcome.v1"
 REGISTRY_SCHEMA = "smartmoney_cub_rule_registry.v1"
 CASE_SCHEMA = "smartmoney_cub_case_record.v1"
 LEDGER_SCHEMA = "smartmoney_cub_evolution_ledger.v1"
+MEMORY_SCHEMA = "smartmoney_cub_markdown_memory.v1"
+MENTOR_FIT_SCHEMA = "smartmoney_cub_mentor_fit.v1"
 
 VALID_ACTION_LABELS = {"SILENT", "ALERT", "ERROR", "WATCH", "AVOID", "EMPTY_POSITION"}
 VALID_DATA_QUALITY_FLAGS = {"ok", "stale", "partial", "missing", "error"}
