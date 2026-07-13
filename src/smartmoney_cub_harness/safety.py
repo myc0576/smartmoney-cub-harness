@@ -25,6 +25,7 @@ EMAIL_RE = re.compile(r"\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b", re.IGNORECAS
 PHONE_RE = re.compile(r"(?<!\d)(?:\+?86[- ]?)?1[3-9]\d{9}(?!\d)")
 WINDOWS_PATH_RE = re.compile(r"(?i)\b[A-Z]:\\[^\s\"'<>|]+")
 HOME_PATH_RE = re.compile(r"(?i)(?:/Users|/home)/[^\s\"'<>|]+")
+POSIX_PATH_RE = re.compile(r"(?<![:/\w])/(?!/)[^\s\"'<>|]+")
 SECRET_ASSIGNMENT_RE = re.compile(
     r"(?i)\b(token|api_key|apikey|password|passwd|cookie|secret|account|session)\s*=\s*([^\s,;]+)"
 )
@@ -50,6 +51,7 @@ def redact_string(value: str) -> str:
     text = PHONE_RE.sub(REDACTED, text)
     text = WINDOWS_PATH_RE.sub(REDACTED, text)
     text = HOME_PATH_RE.sub(REDACTED, text)
+    text = POSIX_PATH_RE.sub(REDACTED, text)
     return text
 
 

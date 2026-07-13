@@ -5,6 +5,7 @@ from pathlib import Path
 
 from smartmoney_cub_harness.memory import save_memory_record
 from smartmoney_cub_harness.schemas import SAFETY_DECLARATION
+from smartmoney_cub_harness.safety import REDACTED, redact
 
 
 def test_save_memory_redacts_email_phone_token_cookie_account_and_paths(tmp_path: Path):
@@ -53,3 +54,8 @@ def test_save_memory_redacts_email_phone_token_cookie_account_and_paths(tmp_path
     assert "C:\\Users\\Trader" not in memory
     assert "/home/trader" not in memory
     assert "[REDACTED]" in memory
+
+
+def test_redact_covers_posix_absolute_paths_without_redacting_urls():
+    assert redact("/tmp/private/private_cases.csv") == REDACTED
+    assert redact("https://example.com/public/report.json") == "https://example.com/public/report.json"
