@@ -8,18 +8,38 @@
 [![Human-in-the-loop](https://img.shields.io/badge/human--in--the--loop-required-blueviolet)](docs/harness-contract.md)
 [![Agent-ready](https://img.shields.io/badge/agent--ready-offline%20artifacts-success)](docs/agent-integration.md)
 
-An offline, read-only Agent Loop Harness for subjective A-share trading review: decision logging, D1/D3 replay, evaluation, and safe rule evolution.
+`smartmoney-cub-harness` is a **local-first, read-only, agent-agnostic control plane for trading review and evidence governance**. It turns an external caller's offline run into portable, reviewable artifacts without taking trading authority.
 
-## 5-second Agent Loop Demo
+External Agent or CLI caller → Run Envelope → frozen Benchmark/Evidence Pack → deterministic replay → explicit human promotion gate.
+
+It has **no embedded LLM**, **no broker connection**, and **no automatic trading**. It does not place, cancel, or execute trades; select stocks; mutate accounts; run a background autonomous trading Agent; or automatically mutate core rules.
+
+## Toy/offline control-plane workflow
+
+Install the package, then capture one deterministic toy run with external-Agent metadata:
 
 ```bash
 git clone https://github.com/myc0576/smartmoney-cub-harness.git
 cd smartmoney-cub-harness
 python -m pip install -e ".[dev]"
+smcub capture-run --mode after-close --preset toy --sandbox --decision-time "2026-06-01T15:31:00+08:00" --agent-name "toy-doc-agent" --agent-version "1.0" --agent-interface "cli"
+smcub validate-envelope tmp/sandbox/20260601/20260601_153100-after-close/run_envelope.json
+smcub build-outcome tmp/sandbox/20260601/20260601_153100-after-close --horizon d1 --price-source examples/toy_strategy/sample_prices.json
+smcub build-evidence-pack tmp/toy-evidence-pack --sample tmp/sandbox/20260601/20260601_153100-after-close --rule-candidate examples/toy_strategy/sample_rule_candidate.json --horizon d1
+smcub replay-evidence-pack tmp/toy-evidence-pack
+```
+
+Run this sequence in a clean checkout; if you reuse the fixed decision time, `capture-run` adds a numeric suffix to avoid overwriting the earlier run. All inputs are toy/offline. The machine contracts are [Run Envelope](schemas/run-envelope.schema.json) and [Evidence Pack](schemas/evidence-pack.schema.json).
+
+The workflow states are review states, never trading actions: a Run Envelope is `completed`, `pending_review`, or `blocked`; an Evidence Pack is `challenger`, `ready_for_review`, `pending_review`, or `blocked`; a replay report is `verified`, `pending_review`, or `blocked`. Only `action_label` describes a recorded observation such as `SILENT` or `ALERT`.
+
+The existing toy Agent Loop remains supported:
+
+```bash
 smcub loop --preset toy --agent-trigger "自进化"
 ```
 
-Expected output:
+Example loop output:
 
 ```json
 {
@@ -29,18 +49,6 @@ Expected output:
   "safety": "READ_ONLY_NO_ORDER_NO_CANCEL_NO_TRADE",
   "champion_mutated": false
 }
-```
-
-Skills give agents abilities. MCP gives agents tools. Smartmoney Cub Harness gives a subjective trading review loop a runtime.
-
-Tell your coding agent: "run loop", "review this", or "自进化". The agent should call `smcub loop`, inspect the generated report and trace, then propose safe improvements. It must never place trades.
-
-```mermaid
-flowchart TD
-  A["Human phrase"] --> B["Agent trigger resolver"]
-  B --> C["smcub loop"]
-  C --> D["Observe -> Candidate -> Plan -> Position Check -> Outcome -> Review -> Rule Update"]
-  D --> E["Report + Trace + Challenger Rule Proposal"]
 ```
 
 AI decision harness for subjective A-share traders.  

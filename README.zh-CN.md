@@ -8,29 +8,35 @@
 [![Human-in-the-loop](https://img.shields.io/badge/human--in--the--loop-required-blueviolet)](docs/harness-contract.md)
 [![Agent-ready](https://img.shields.io/badge/agent--ready-offline%20artifacts-success)](docs/agent-integration.md)
 
-一个离线、只读、可由 Agent 执行的 A 股主观交易复盘 Harness：记录决策、D1/D3 回放、评分复盘、规则进化。
+`smartmoney-cub-harness` 是一个**本地优先、只读、不绑定任何 Agent 的交易复盘与证据治理控制平面**。外部调用方只提交离线运行，Harness 负责生成可移植、可审查的产物，不取得任何交易权限。
 
-## 5 秒跑通 Agent Loop
+外部 Agent 或 CLI 调用方 → Run Envelope → 冻结的 Benchmark/Evidence Pack → 确定性回放 → 人工显式晋级门禁。
+
+它**不内置 LLM**、**不连接券商**、**不自动交易**；不下单、不撤单、不执行交易、不选股、不修改账户、不运行后台自主交易 Agent，也不自动修改核心规则。
+
+## Toy/离线控制平面工作流
+
+安装后，用外部 Agent 元数据捕获一次确定性的 toy run：
 
 ```bash
 git clone https://github.com/myc0576/smartmoney-cub-harness.git
 cd smartmoney-cub-harness
 python -m pip install -e ".[dev]"
-smcub loop --preset toy --agent-trigger "自进化"
+smcub capture-run --mode after-close --preset toy --sandbox --decision-time "2026-06-01T15:31:00+08:00" --agent-name "toy-doc-agent-zh" --agent-version "1.0" --agent-interface "cli"
+smcub validate-envelope tmp/sandbox/20260601/20260601_153100-after-close/run_envelope.json
+smcub build-outcome tmp/sandbox/20260601/20260601_153100-after-close --horizon d1 --price-source examples/toy_strategy/sample_prices.json
+smcub build-evidence-pack tmp/toy-evidence-pack --sample tmp/sandbox/20260601/20260601_153100-after-close --rule-candidate examples/toy_strategy/sample_rule_candidate.json --horizon d1
+smcub replay-evidence-pack tmp/toy-evidence-pack
 ```
 
-Skill 给 Agent 能力，MCP 给 Agent 工具，Harness 给交易复盘闭环一个可执行运行时。
+请在干净 checkout 中运行；若复用固定的决策时间，`capture-run` 会添加数字后缀，避免覆盖已有 run。全部输入均为 toy/离线数据。机器可读契约见 [Run Envelope](schemas/run-envelope.schema.json) 与 [Evidence Pack](schemas/evidence-pack.schema.json)。
 
-你只需要对 Claude Code / Codex / Cursor 说："跑一轮 loop"、"自进化一下"、"复盘一下"，Agent 就应该执行 `smcub loop`，读取 trace 和 report，再提出安全的规则改进建议。
+这些状态只描述审查工作流，绝不是交易动作：Run Envelope 使用 `completed`、`pending_review`、`blocked`；Evidence Pack 使用 `challenger`、`ready_for_review`、`pending_review`、`blocked`；回放报告使用 `verified`、`pending_review`、`blocked`。只有 `action_label` 描述 `SILENT`、`ALERT` 等已记录观察。
 
-这不是 AI 自动炒股，也不是荐股系统；它只是 read-only 的主观交易决策记录、复盘和规则进化 harness。
+原有 toy Agent Loop 继续受支持：
 
-```mermaid
-flowchart TD
-  A["Human phrase / 人的一句话"] --> B["Agent trigger resolver"]
-  B --> C["smcub loop"]
-  C --> D["Observe -> Candidate -> Plan -> Position Check -> Outcome -> Review -> Rule Update"]
-  D --> E["Report + Trace + Challenger Rule Proposal"]
+```bash
+smcub loop --preset toy --agent-trigger "自进化"
 ```
 
 不是荐股机器人，而是陪主观交易者复盘、质询、进化的 AI 决策 Harness。

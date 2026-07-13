@@ -1,92 +1,74 @@
 # Architecture
 
-`smartmoney-cub-harness` is a semi-quant AI decision harness for subjective trading review. The public core stays offline and toy-first, but its boundaries are designed around read-only inputs, provenance, delayed outcomes, and rule evolution.
-
-It is not a broker connector or execution layer. Any future account adapter must remain read-only and local.
+`smartmoney-cub-harness` is a local-first, read-only, agent-agnostic control plane for trading review and evidence governance. An external Agent or CLI can call it, but the caller does not own the resulting provenance, replay, or promotion decision.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#f6f8fa", "primaryTextColor": "#24292f", "primaryBorderColor": "#8c959f", "lineColor": "#57606a", "secondaryColor": "#ddf4ff", "tertiaryColor": "#fff8c5"}}}%%
-flowchart TD
-  subgraph Inputs["Read-only Inputs"]
-    I1["Toy JSON<br/>public examples"]
-    I2["Account Export<br/>read-only local"]
-    I3["Screenshots<br/>positions / fills"]
-    I4["Notes & Watchlists<br/>user-provided"]
+flowchart LR
+  subgraph Caller["External caller — outside the harness"]
+    A["Any Agent or CLI"]
   end
 
-  subgraph Core["Harness Core"]
-    C1["capture-run"]
-    C2["run_manifest.json"]
-    C3["decision.json"]
-    C4["manifest validation"]
-    C5["outcome_d1/d3.json"]
-    C6["eval.json"]
-    C7["rule registry"]
-    C8["Markdown memory"]
+  subgraph Control["Read-only control plane"]
+    C["capture-run"]
+    R["Run Envelope"]
+    V["validate-envelope"]
+    B["Frozen Benchmark / Evidence Pack"]
+    P["Deterministic replay"]
   end
 
-  subgraph Agent["Agent Companion"]
-    A1["Reviewer"]
-    A2["Challenger"]
-    A3["Archivist"]
-    A4["Drift Detector"]
+  subgraph Governance["Human governance"]
+    H["Explicit confirmation gate"]
+    G["Champion registry mutation"]
   end
 
-  I1 --> C1
-  I2 --> C1
-  I3 --> C1
-  I4 --> C1
-  C1 --> C2 --> C4
-  C1 --> C3
-  C3 --> C5 --> C6 --> C7 --> C8
-  A1 --> C6
-  A2 --> C3
-  A3 --> C8
-  A4 --> C7
+  A --> C --> R --> V --> B --> P --> H
+  H -->|"confirmed only"| G
 ```
 
-## Module Map
+The Run Envelope and Evidence Pack are control-plane artifacts outside the external Agent. The caller supplies metadata and offline commands; the harness records the actual results, restricts paths to portable relative paths, freezes hashes, and recomputes evaluation during replay. A passing replay can make evidence eligible for human review, but it cannot mutate the champion registry. Registry mutation remains behind the explicit `register-candidate --confirm-promote` action.
 
-- `cli.py`: command surface for capture, manifest validation, outcome building, evaluation, registry updates, and doctor output.
-- `run_capture.py`: captures offline commands, stores stdout/stderr/meta, writes manifests, and creates decisions.
+Machine-readable contracts:
+
+- [`schemas/run-envelope.schema.json`](../schemas/run-envelope.schema.json)
+- [`schemas/evidence-pack.schema.json`](../schemas/evidence-pack.schema.json)
+
+## Artifact flow
+
+1. `capture-run` executes only the requested offline command or toy preset and writes `run_manifest.json`, `run_envelope.json`, `decision.json`, and captured stdout/stderr metadata.
+2. `validate-envelope` checks Agent identity, permissions, evidence paths, tool outcomes, failure counts, and the safety declaration.
+3. D1/D3 outcome data is added from a local toy fixture.
+4. `build-evidence-pack` freezes the rule candidate plus manifest, decision, outcome, and evaluation for every sample and records SHA-256 hashes and review metrics.
+5. `replay-evidence-pack` verifies hashes and deterministically recomputes validation, evaluation, metrics, and failure state.
+6. A human reviews eligible evidence. Rule promotion still requires explicit confirmation.
+
+## Status ownership
+
+| Artifact | Status field | Values | Meaning |
+| --- | --- | --- | --- |
+| Run Envelope | `status` | `completed`, `pending_review`, `blocked` | Tool-run completion and failure state |
+| Evidence Pack | `review_status` | `challenger`, `ready_for_review`, `pending_review`, `blocked` | Frozen evidence readiness for human review |
+| Replay report | `evidence_status` | `verified`, `pending_review`, `blocked` | Integrity and deterministic replay result |
+| Decision | `action_label` | `SILENT`, `ALERT`, `ERROR`, `WATCH`, `AVOID`, `EMPTY_POSITION` | Recorded observation context, never an order |
+
+Workflow statuses are not trading action labels.
+
+## Module map
+
+- `run_capture.py`: runs offline commands and writes portable run artifacts.
+- `run_envelope.py`: records Agent metadata, actual tool results, output evidence, permissions, and failure state.
 - `manifest.py`: validates provenance, data quality, and anti-future-leakage constraints.
-- `decision.py`: derives `SILENT`, `ALERT`, or `ERROR` and extracts structured toy observation candidates.
-- `outcome.py`: builds D1/D3 outcomes from local JSON fixtures.
-- `evaluator.py`: checks the safety contract and scores decisions against outcomes and risk controls.
-- `registry.py`: keeps challenger rules, promotion recommendations, and explicit champion updates.
-- `case_bank.py`: normalizes offline runs into portable case records.
-- `evolution_ledger.py`: appends review and rule-evolution events as text records.
-- `safety.py`: redacts sensitive keys, emails, phone numbers, and local paths.
+- `decision.py`: derives recorded observation labels and required risk context.
+- `outcome.py` and `evaluator.py`: build and review delayed D1/D3 toy outcomes.
+- `evidence_pack.py`: freezes evidence, hashes artifacts, and performs deterministic replay.
+- `registry.py`: stores challengers and enforces explicit champion promotion.
+- `safety.py`: redacts sensitive values and local absolute paths.
 
-## Input Boundary
+## Trust boundaries
 
-The architecture allows several input classes, always under review-only semantics:
+The public core has no network requirement, embedded LLM, broker access, account mutation, order, cancel, or trade permission. Its only write permission is the selected run/evidence directory. Public fixtures contain toy data only.
 
-| Input | Public repo status | Safety boundary |
-| --- | --- | --- |
-| Toy JSON fixtures | Included | Safe for tests and docs |
-| Trading notes | User-provided locally | Do not commit private notes |
-| Watchlist files | User-provided locally | Do not commit private watchlists |
-| Broker/QMT export | Local read-only extension | Never execute orders or modify accounts |
-| TongHuaShun/broker screenshots | User-provided locally | Use for local review and structure extraction only |
+Every applicable artifact carries:
 
-Screenshots are a deliberate safety-friendly path: they let a trader review account context without giving the harness execution permissions.
-
-## Decision Artifact Flow
-
-1. **Plan / observe**: user or offline command emits a toy observation candidate, note, or structured context.
-2. **Record**: `capture-run` writes `run_manifest.json`, captured artifacts, and `decision.json`.
-3. **Validate**: `manifest.py` rejects future leakage and invalid provenance.
-4. **Outcome**: `outcome.py` waits for D1/D3 fixture data.
-5. **Evaluate**: `evaluator.py` scores the decision and flags risk-contract violations.
-6. **Evolve**: `registry.py` keeps rules in challenger state until metrics and explicit confirmation support promotion.
-7. **Remember**: case and ledger utilities keep portable text memory rather than private databases.
-
-## Non-Goals
-
-- Live order placement.
-- Order cancellation.
-- Account modification.
-- Broker automation.
-- Public examples with real holdings, real trades, real returns, or real stock recommendations.
-- Price prediction or signal selling.
+```text
+READ_ONLY_NO_ORDER_NO_CANCEL_NO_TRADE
+```
