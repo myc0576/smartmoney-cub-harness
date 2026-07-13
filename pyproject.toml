@@ -52,4 +52,4 @@ where = ["src"]
 [tool.pytest.ini_options]
 pythonpath = ["src"]
 testpaths = ["tests"]
-addopts = "--ignore-glob=*冲突文件*"
+addopts = "-p no:dash --ignore-glob=*冲突文件*"

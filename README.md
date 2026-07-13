@@ -35,6 +35,8 @@ The workflow states are review states, never trading actions: a Run Envelope is 
 
 Run Envelope permissions are a **declarative, unverified policy record** (`enforcement: declarative`, `verified: false`), not a subprocess sandbox or proof that an external command obeyed the policy. The CLI's `--sandbox` flag only selects the disposable `tmp/sandbox` output namespace; it does not isolate the process. Run untrusted commands inside an OS/container sandbox. `evidence_pack.sha256` seals the exact pack manifest for local tamper detection; it is not an authenticated signature. Replay rejects a missing, malformed, mismatched, or structurally invalid seal/manifest as `pending_review`.
 
+Optional ecosystem integrations remain outside the trusted core. See [docs/integrations.md](docs/integrations.md), including the recommended companion [wbh604/UZI-Skill](https://github.com/wbh604/UZI-Skill), and [the TradingAgents adapter boundary](docs/tradingagents-adapter.md). External LLM/network credentials stay outside this repository, and imported reports remain review evidence rather than trading authority.
+
 The existing toy Agent Loop remains supported:
 
 ```bash

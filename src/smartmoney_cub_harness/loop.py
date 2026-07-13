@@ -8,7 +8,10 @@ from typing import Any
 
 from smartmoney_cub_harness import __version__
 from smartmoney_cub_harness.agent_trigger import AgentIntent, normalize_agent_trigger_text, resolve_agent_trigger
+from smartmoney_cub_harness.case_bank import collect_offline_case
 from smartmoney_cub_harness.evaluator import evaluate_decision
+from smartmoney_cub_harness.evolution_ledger import append_ledger_event
+from smartmoney_cub_harness.memory import save_memory_record
 from smartmoney_cub_harness.outcome import build_outcome
 from smartmoney_cub_harness.registry import register_candidate
 from smartmoney_cub_harness.run_capture import capture_run, get_command_preset
@@ -177,6 +180,9 @@ def _generate_report(
     plan: dict[str, Any],
     position_check: dict[str, Any],
     proposal: dict[str, Any],
+    case_record_path: str,
+    memory_record_path: str,
+    ledger_path: str,
 ) -> str:
     scores = evaluation.get("scores", {})
     failure_tags = evaluation.get("failure_tags", [])
@@ -242,6 +248,14 @@ def _generate_report(
             f"* confidence: {proposal.get('confidence')}",
             "* champion_mutated: false",
             "* requires human confirmation: true",
+            "",
+            "## Local Memory Artifacts",
+            "",
+            f"* case_record: {case_record_path}",
+            f"* memory_record: {memory_record_path}",
+            f"* evolution_ledger: {ledger_path}",
+            "* network_required: false",
+            "* telemetry: false",
             "",
             "## What this proves",
             "",
@@ -436,6 +450,62 @@ def run_agent_loop(
         )
     )
 
+    case_result = collect_offline_case(run_dir, run_dir / "case_record.json")
+    case_record_path = Path(case_result["case_record_path"])
+    case_record_path_rel = _display_path(case_record_path, root_path)
+    entries.append(
+        _trace_entry(
+            "collect_case",
+            "ok",
+            input_payload={"run_dir": run_dir_rel},
+            output_payload={"case_record": case_record_path_rel, "case_id": case_result.get("case_id")},
+            decision_time=decision_time,
+            available_at=decision.get("available_at"),
+            no_future_leakage=no_future_leakage,
+        )
+    )
+
+    memory_result = save_memory_record(case_record_path, run_dir / "memory.md")
+    memory_record_path = Path(memory_result["memory_record_path"])
+    memory_record_path_rel = _display_path(memory_record_path, root_path)
+    entries.append(
+        _trace_entry(
+            "save_memory",
+            "ok",
+            input_payload={"case_record": case_record_path_rel},
+            output_payload={"memory_record": memory_record_path_rel},
+            decision_time=decision_time,
+            available_at=decision.get("available_at"),
+            no_future_leakage=no_future_leakage,
+        )
+    )
+
+    ledger_path = run_dir / "evolution_ledger.jsonl"
+    ledger_event = append_ledger_event(
+        ledger_path,
+        "case_memory_saved",
+        {
+            "case_id": case_result.get("case_id"),
+            "grade": evaluation.get("grade"),
+            "case_record": case_record_path_rel,
+            "memory_record": memory_record_path_rel,
+            "champion_mutated": False,
+            "requires_human_confirmation": True,
+        },
+    )
+    ledger_path_rel = _display_path(ledger_path, root_path)
+    entries.append(
+        _trace_entry(
+            "append_evolution_ledger",
+            "ok",
+            input_payload={"memory_record": memory_record_path_rel},
+            output_payload={"ledger": ledger_path_rel, "event": ledger_event.get("event")},
+            decision_time=decision_time,
+            available_at=decision.get("available_at"),
+            no_future_leakage=no_future_leakage,
+        )
+    )
+
     proposal = _challenger_rule_proposal(evaluation)
     proposal_path = run_dir / "proposed_challenger_rule.json"
     _write_json(proposal_path, proposal)
@@ -470,6 +540,9 @@ def run_agent_loop(
         plan=plan,
         position_check=position_check,
         proposal=proposal,
+        case_record_path=case_record_path_rel,
+        memory_record_path=memory_record_path_rel,
+        ledger_path=ledger_path_rel,
     )
     report_path.write_text(report_text, encoding="utf-8")
     report_path_rel = _display_path(report_path, root_path)
@@ -499,6 +572,9 @@ def run_agent_loop(
         "run_dir": run_dir_rel,
         "loop_report": report_path_rel,
         "trace": trace_path_rel,
+        "case_record": case_record_path_rel,
+        "memory_record": memory_record_path_rel,
+        "ledger": ledger_path_rel,
         "report_path": report_path_rel,
         "trace_path": trace_path_rel,
         "decision_path": decision_path_rel,
@@ -509,11 +585,6 @@ def run_agent_loop(
         "grade": evaluation.get("grade"),
         "network_required": False,
         "telemetry": False,
-        "upload": False,
-        "credentials_required": False,
-        "github_auth_required": False,
-        "external_api_required": False,
-        "broker_api_required": False,
         "safety": SAFETY_DECLARATION,
         "champion_mutated": False,
     }

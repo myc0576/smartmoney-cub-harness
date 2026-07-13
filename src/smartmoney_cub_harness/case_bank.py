@@ -32,11 +32,14 @@ def collect_offline_case(run_dir: str | Path, output_path: str | Path | None = N
         "symbol": symbol,
         "action_label": decision.get("action_label", ""),
         "source_paths": {
-            "decision": str(decision_path),
-            "outcome": str(outcome_path) if outcome_path else None,
-            "evaluation": str(eval_path) if eval_path.exists() else None,
+            "decision": decision_path.name,
+            "outcome": outcome_path.name if outcome_path else None,
+            "evaluation": eval_path.name if eval_path.exists() else None,
         },
         "payloads": redact({"decision": decision, "outcome": outcome, "evaluation": evaluation}),
+        "network_required": False,
+        "telemetry": False,
+        "champion_mutated": False,
         "safety": SAFETY_DECLARATION,
     }
     target = Path(output_path) if output_path else run_path / "case_record.json"

@@ -53,6 +53,10 @@ An Agent may summarize or challenge this evidence. It must not rewrite frozen ev
 
 These are workflow statuses, not trading action labels.
 
+## Optional external adapters
+
+Optional TradingAgents reports may enter this flow as user-configured external LLM analysis artifacts. The adapter is outside the trusted core: credentials stay outside this repository, network/model access requires explicit acknowledgement, and imported output remains review evidence only. It cannot place or cancel orders, mutate accounts, promote rules, or bypass the Run Envelope and human review gates. See [the adapter boundary](tradingagents-adapter.md) and [the integration matrix](integrations.md).
+
 ## Agent responsibilities
 
 - Preserve invalidation, time stop, give-up conditions, source availability, and data quality for every non-silent observation.
