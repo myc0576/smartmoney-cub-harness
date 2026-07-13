@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 
 import pytest
@@ -295,3 +296,31 @@ def test_evidence_pack_schema_matches_runtime_artifact_and_fixed_contract(tmp_pa
     sample_schema = properties["samples"]["items"]
     assert set(sample_schema["required"]) == set(artifact["samples"][0])
     assert "$defs" in schema and "relativePath" in schema["$defs"]
+
+
+@pytest.mark.parametrize(
+    "schema_name",
+    ["run-envelope.schema.json", "evidence-pack.schema.json"],
+)
+@pytest.mark.parametrize(
+    ("path", "is_relative"),
+    [
+        ("artifacts/signal.stdout.txt", True),
+        (r"samples\toy-run\decision.json", True),
+        ("/abs", False),
+        (r"\rooted", False),
+        (r"\\server\share\file", False),
+        (r"C:\private\file", False),
+        ("../private/file", False),
+        ("samples/../private/file", False),
+    ],
+)
+def test_schema_relative_path_patterns_reject_rooted_and_traversal_paths(
+    schema_name: str,
+    path: str,
+    is_relative: bool,
+) -> None:
+    schema = json.loads((SCHEMA_ROOT / schema_name).read_text(encoding="utf-8"))
+    pattern = re.compile(schema["$defs"]["relativePath"]["pattern"])
+
+    assert (pattern.fullmatch(path) is not None) is is_relative
