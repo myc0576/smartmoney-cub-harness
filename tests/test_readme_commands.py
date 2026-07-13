@@ -59,6 +59,10 @@ def test_readmes_document_control_plane_commands_and_boundaries():
     assert "no embedded LLM" in readme
     assert "no broker connection" in readme
     assert "no automatic trading" in readme
+    assert "declarative, unverified policy record" in readme
+    assert "not a subprocess sandbox" in readme
+    assert "only selects the disposable `tmp/sandbox` output namespace" in readme
+    assert "evidence_pack.sha256" in readme
     assert SAFETY_DECLARATION in readme
 
     assert "本地优先" in zh_readme
@@ -66,6 +70,10 @@ def test_readmes_document_control_plane_commands_and_boundaries():
     assert "不内置 LLM" in zh_readme
     assert "不连接券商" in zh_readme
     assert "不自动交易" in zh_readme
+    assert "声明式、未经验证的策略记录" in zh_readme
+    assert "不是子进程沙箱" in zh_readme
+    assert "只选择一次性的 `tmp/sandbox` 输出目录" in zh_readme
+    assert "evidence_pack.sha256" in zh_readme
     assert SAFETY_DECLARATION in zh_readme
 
 
@@ -79,10 +87,13 @@ def test_toy_rule_candidate_is_challenger_only_and_read_only():
     assert candidate["safety"] == SAFETY_DECLARATION
 
 
-def test_architecture_scopes_capture_writes_separately_from_governance():
+def test_architecture_distinguishes_declared_policy_from_enforcement():
     architecture = (REPO_ROOT / "docs" / "architecture.md").read_text(encoding="utf-8")
 
-    assert "`writes: run_directory_only` applies to captured external tool calls" in architecture
+    assert "`enforcement: declarative`" in architecture
+    assert "`verified: false`" in architecture
+    assert "does not sandbox arbitrary captured commands" in architecture
     assert "governance commands may write local evidence and registry artifacts" in architecture
+    assert "not an authenticated signature" in architecture
     assert "`register-candidate --confirm-promote`" in architecture
     assert "Its only write permission is the selected run/evidence directory" not in architecture

@@ -106,7 +106,11 @@ def build_parser() -> argparse.ArgumentParser:
     capture.add_argument("--command", dest="inline_commands", action="append", default=[])
     capture.add_argument("--decision-time")
     capture.add_argument("--timeout-seconds", type=int, default=300)
-    capture.add_argument("--sandbox", action="store_true")
+    capture.add_argument(
+        "--sandbox",
+        action="store_true",
+        help="Write under tmp/sandbox; this does not isolate the subprocess",
+    )
     capture.add_argument("--agent-name", default="external-agent")
     capture.add_argument("--agent-version")
     capture.add_argument("--agent-interface", default="command")

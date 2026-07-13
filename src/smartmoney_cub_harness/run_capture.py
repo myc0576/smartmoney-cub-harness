@@ -136,13 +136,23 @@ def capture_run(
 ) -> dict[str, Any]:
     root_path = Path(root).expanduser().resolve()
     command_results = [run_command(root_path, command, timeout_seconds) for command in commands]
+    used_artifact_names: set[str] = set()
+    for attempt, result in enumerate(command_results, start=1):
+        base_name = str(result["name"])
+        artifact_name = base_name
+        suffix = attempt
+        while artifact_name in used_artifact_names:
+            artifact_name = f"{base_name}-{suffix}"
+            suffix += 1
+        used_artifact_names.add(artifact_name)
+        result["artifact_name"] = artifact_name
     effective_decision_time = decision_time or now_iso()
     run_dir = unique_run_dir(root_path, effective_decision_time, mode, sandbox=sandbox)
     artifact_dir = run_dir / "artifacts"
     artifact_dir.mkdir(parents=True, exist_ok=True)
 
     for result in command_results:
-        name = result["name"]
+        name = result["artifact_name"]
         stored_stdout = redact(result["stdout"])
         stored_stderr = redact(result["stderr"])
         (artifact_dir / f"{name}.stdout.txt").write_text(str(stored_stdout), encoding="utf-8")
@@ -167,9 +177,9 @@ def capture_run(
                 "fetch_time": effective_decision_time,
                 "available_at": effective_decision_time,
                 "data_quality_flag": "ok" if item["returncode"] == 0 else "error",
-                "artifact_stdout": f"artifacts/{item['name']}.stdout.txt",
-                "artifact_stderr": f"artifacts/{item['name']}.stderr.txt",
-                "artifact_meta": f"artifacts/{item['name']}.meta.json",
+                "artifact_stdout": f"artifacts/{item['artifact_name']}.stdout.txt",
+                "artifact_stderr": f"artifacts/{item['artifact_name']}.stderr.txt",
+                "artifact_meta": f"artifacts/{item['artifact_name']}.meta.json",
             }
             for item in command_results
         ],

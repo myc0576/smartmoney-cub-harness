@@ -80,6 +80,10 @@ def test_build_freezes_three_runs_with_hashes_metrics_and_human_gate(tmp_path: P
     )
 
     saved = json.loads((output_dir / "evidence_pack.json").read_text(encoding="utf-8"))
+    manifest_bytes = (output_dir / "evidence_pack.json").read_bytes()
+    assert (output_dir / "evidence_pack.sha256").read_text(encoding="ascii").strip() == hashlib.sha256(
+        manifest_bytes
+    ).hexdigest()
     assert result == saved
     assert saved["metrics"] == {
         "sample_count": 3,
@@ -220,6 +224,187 @@ def test_replay_detects_tampered_frozen_file(tmp_path: Path) -> None:
     assert "samples/sample-tampered/decision.json" in replay["hash_mismatches"]
     assert "evaluation:sample-tampered" in replay["result_mismatches"]
     assert replay["promotion_gate"]["champion_mutated"] is False
+
+
+@pytest.mark.parametrize("seal_state", ["missing", "malformed", "non_ascii", "mismatch"])
+def test_replay_rejects_missing_or_invalid_manifest_seal(tmp_path: Path, seal_state: str) -> None:
+    sample = _make_run(tmp_path, "sample-seal", _alert(), {"d1_return_pct": 4.0})
+    output_dir = tmp_path / "evidence"
+    build_evidence_pack(output_dir, [sample], {"rule_id": "toy-rule", "family": "toy"})
+    seal_path = output_dir / "evidence_pack.sha256"
+    if seal_state == "missing":
+        seal_path.unlink()
+    elif seal_state == "malformed":
+        seal_path.write_text("not-a-hash\n", encoding="ascii")
+    elif seal_state == "non_ascii":
+        seal_path.write_bytes(b"\xff\xfe\n")
+    else:
+        seal_path.write_text("0" * 64 + "\n", encoding="ascii")
+
+    replay = replay_evidence_pack(output_dir)
+
+    assert replay["evidence_status"] == "pending_review"
+    assert replay["promotion_gate"]["eligible_for_human_review"] is False
+    assert any("manifest_seal" in item for item in replay["result_mismatches"])
+
+
+def _rewrite_pack_and_seal(output_dir: Path, pack: dict) -> None:
+    content = (json.dumps(pack, ensure_ascii=False, sort_keys=True, separators=(",", ":")) + "\n").encode(
+        "utf-8"
+    )
+    (output_dir / "evidence_pack.json").write_bytes(content)
+    (output_dir / "evidence_pack.sha256").write_text(
+        hashlib.sha256(content).hexdigest() + "\n", encoding="ascii"
+    )
+
+
+def test_replay_rejects_resealed_pack_with_incomplete_hash_inventory(tmp_path: Path) -> None:
+    sample = _make_run(tmp_path, "sample-inventory", _alert(), {"d1_return_pct": 4.0})
+    output_dir = tmp_path / "evidence"
+    pack = build_evidence_pack(output_dir, [sample], {"rule_id": "toy-rule", "family": "toy"})
+    pack["hashes"].pop("samples/sample-inventory/decision.json")
+    _rewrite_pack_and_seal(output_dir, pack)
+
+    replay = replay_evidence_pack(output_dir)
+
+    assert replay["evidence_status"] == "pending_review"
+    assert "invalid_pack:hash_inventory_mismatch" in replay["result_mismatches"]
+    assert replay["promotion_gate"]["eligible_for_human_review"] is False
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    [
+        "wrong_schema",
+        "wrong_safety",
+        "unsafe_path",
+        "mutated_gate",
+        "removed_sample",
+        "missing_sample_field",
+        "invalid_metrics",
+    ],
+)
+def test_replay_rejects_resealed_invalid_pack_manifest(tmp_path: Path, mutation: str) -> None:
+    sample = _make_run(tmp_path, "sample-manifest", _alert(), {"d1_return_pct": 4.0})
+    output_dir = tmp_path / "evidence"
+    pack = build_evidence_pack(output_dir, [sample], {"rule_id": "toy-rule", "family": "toy"})
+    if mutation == "wrong_schema":
+        pack["schema"] = "wrong.v1"
+    elif mutation == "wrong_safety":
+        pack["safety"] = "WRONG"
+    elif mutation == "unsafe_path":
+        pack["rule_candidate_path"] = "../rule.json"
+    elif mutation == "mutated_gate":
+        pack["promotion_gate"]["champion_mutated"] = True
+    elif mutation == "removed_sample":
+        pack["samples"] = []
+    elif mutation == "missing_sample_field":
+        pack["samples"][0].pop("evaluation_grade")
+    else:
+        pack["metrics"]["false_alert_rate"] = "not-a-rate"
+    _rewrite_pack_and_seal(output_dir, pack)
+
+    replay = replay_evidence_pack(output_dir)
+
+    assert replay["evidence_status"] == "pending_review"
+    assert replay["promotion_gate"]["eligible_for_human_review"] is False
+    assert any(item.startswith("invalid_pack:") for item in replay["result_mismatches"])
+
+
+def test_replay_handles_malformed_pack_manifest_without_raising(tmp_path: Path) -> None:
+    output_dir = tmp_path / "evidence"
+    output_dir.mkdir()
+    content = b"{not json\n"
+    (output_dir / "evidence_pack.json").write_bytes(content)
+    (output_dir / "evidence_pack.sha256").write_text(
+        hashlib.sha256(content).hexdigest() + "\n", encoding="ascii"
+    )
+
+    replay = replay_evidence_pack(output_dir)
+
+    assert replay["evidence_status"] == "pending_review"
+    assert "invalid_pack:malformed_json" in replay["result_mismatches"]
+    assert replay["safety"] == SAFETY_DECLARATION
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    ["evaluation_grade", "sample_failed", "review_status", "review_eligibility"],
+)
+def test_replay_rejects_resealed_semantically_inconsistent_summaries(
+    tmp_path: Path, mutation: str
+) -> None:
+    sample = _make_run(tmp_path, "sample-summary", _alert(), {"d1_return_pct": 4.0})
+    output_dir = tmp_path / "evidence"
+    pack = build_evidence_pack(output_dir, [sample], {"rule_id": "toy-rule", "family": "toy"})
+    if mutation == "evaluation_grade":
+        pack["samples"][0]["evaluation_grade"] = "false_alert"
+    elif mutation == "sample_failed":
+        pack["samples"][0]["failed"] = True
+    elif mutation == "review_status":
+        pack["review_status"] = "ready_for_review"
+    else:
+        pack["promotion_gate"]["eligible_for_human_review"] = True
+    _rewrite_pack_and_seal(output_dir, pack)
+
+    replay = replay_evidence_pack(output_dir)
+
+    assert replay["evidence_status"] == "pending_review"
+    assert replay["promotion_gate"]["eligible_for_human_review"] is False
+    assert replay["result_mismatches"]
+
+
+@pytest.mark.parametrize(
+    "relative_path",
+    [
+        "rule_candidate.json",
+        "samples/sample-safety/run_manifest.json",
+        "samples/sample-safety/decision.json",
+        "samples/sample-safety/outcome_d1.json",
+        "samples/sample-safety/evaluation.json",
+    ],
+)
+def test_replay_requires_safety_declaration_on_every_frozen_artifact(
+    tmp_path: Path, relative_path: str
+) -> None:
+    sample = _make_run(tmp_path, "sample-safety", _alert(), {"d1_return_pct": 4.0})
+    output_dir = tmp_path / "evidence"
+    pack = build_evidence_pack(output_dir, [sample], {"rule_id": "toy-rule", "family": "toy"})
+    artifact_path = output_dir / relative_path
+    artifact = json.loads(artifact_path.read_text(encoding="utf-8"))
+    artifact["safety"] = "WRONG"
+    content = (json.dumps(artifact, ensure_ascii=False, sort_keys=True, separators=(",", ":")) + "\n").encode(
+        "utf-8"
+    )
+    artifact_path.write_bytes(content)
+    pack["hashes"][relative_path] = hashlib.sha256(content).hexdigest()
+    _rewrite_pack_and_seal(output_dir, pack)
+
+    replay = replay_evidence_pack(output_dir)
+
+    assert replay["evidence_status"] == "pending_review"
+    assert replay["promotion_gate"]["eligible_for_human_review"] is False
+    assert any("safety" in item or "evaluation" in item for item in replay["result_mismatches"])
+
+
+def test_build_disambiguates_sample_ids_until_unique(tmp_path: Path) -> None:
+    samples = [
+        _make_run(tmp_path, "source-a", _alert(), {"d1_return_pct": 4.0}),
+        _make_run(tmp_path, "source-b", _alert(), {"d1_return_pct": 4.0}),
+        _make_run(tmp_path, "source-c", _alert(), {"d1_return_pct": 4.0}),
+    ]
+    for sample, run_id in zip(samples, ["x-3", "x", "x"], strict=True):
+        manifest_path = sample / "run_manifest.json"
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        manifest["run_id"] = run_id
+        manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+
+    output_dir = tmp_path / "evidence"
+    pack = build_evidence_pack(output_dir, samples, {"rule_id": "toy-rule", "family": "toy"})
+
+    sample_ids = [sample["sample_id"] for sample in pack["samples"]]
+    assert len(sample_ids) == len(set(sample_ids)) == 3
+    assert replay_evidence_pack(output_dir)["evidence_status"] == "verified"
 
 
 def test_build_uses_pending_and_blocked_failure_transitions(tmp_path: Path) -> None:

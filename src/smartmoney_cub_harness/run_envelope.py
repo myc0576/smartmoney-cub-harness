@@ -4,10 +4,9 @@ import hashlib
 import json
 import re
 from datetime import datetime
-from pathlib import PurePosixPath, PureWindowsPath
 from typing import Any
 
-from smartmoney_cub_harness.safety import redact
+from smartmoney_cub_harness.safety import is_relative_artifact_path, redact
 from smartmoney_cub_harness.schemas import RUN_ENVELOPE_SCHEMA, SAFETY_DECLARATION
 
 
@@ -20,18 +19,43 @@ PERMISSION_SCOPE = {
     "trade": False,
     "embedded_llm": False,
     "writes": "run_directory_only",
+    "enforcement": "declarative",
+    "verified": False,
 }
+RUN_ENVELOPE_FIELDS = {
+    "schema",
+    "run_id",
+    "decision_time",
+    "mode",
+    "safety",
+    "agent",
+    "input_snapshot_sha256",
+    "tool_calls",
+    "output_evidence",
+    "failure_count",
+    "trailing_consecutive_failure_count",
+    "status",
+    "permission_scope",
+    "champion_mutated",
+    "core_rules_mutated",
+}
+AGENT_FIELDS = {"name", "version", "interface"}
+TOOL_CALL_FIELDS = {
+    "name",
+    "started_at",
+    "finished_at",
+    "returncode",
+    "timed_out",
+    "status",
+    "attempt",
+    "evidence",
+}
+EVIDENCE_FIELDS = {"stdout", "stderr", "metadata"}
 
 
 def _canonical_sha256(value: Any) -> str:
     encoded = json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
     return hashlib.sha256(encoded).hexdigest()
-
-
-def _is_absolute_path(value: object) -> bool:
-    return isinstance(value, str) and (
-        PurePosixPath(value).is_absolute() or PureWindowsPath(value).is_absolute()
-    )
 
 
 def _is_non_empty_string(value: object) -> bool:
@@ -41,11 +65,13 @@ def _is_non_empty_string(value: object) -> bool:
 def _is_iso_datetime(value: object) -> bool:
     if not _is_non_empty_string(value):
         return False
+    if "T" not in value and "t" not in value:
+        return False
     try:
-        datetime.fromisoformat(value.replace("Z", "+00:00"))
+        parsed = datetime.fromisoformat(value.replace("Z", "+00:00").replace("z", "+00:00"))
     except ValueError:
         return False
-    return True
+    return parsed.tzinfo is not None and parsed.utcoffset() is not None
 
 
 def _actual_tool_status(returncode: int, timed_out: bool) -> str:
@@ -86,12 +112,13 @@ def build_run_envelope(
     output_evidence: list[str] = []
     for attempt, result in enumerate(command_results, start=1):
         name = str(redact(str(result["name"])))
+        artifact_name = str(redact(str(result.get("artifact_name", name))))
         returncode = result["returncode"]
         timed_out = bool(result.get("timed_out", False))
         evidence = {
-            "stdout": f"artifacts/{name}.stdout.txt",
-            "stderr": f"artifacts/{name}.stderr.txt",
-            "metadata": f"artifacts/{name}.meta.json",
+            "stdout": f"artifacts/{artifact_name}.stdout.txt",
+            "stderr": f"artifacts/{artifact_name}.stderr.txt",
+            "metadata": f"artifacts/{artifact_name}.meta.json",
         }
         tool_calls.append(
             {
@@ -129,8 +156,17 @@ def build_run_envelope(
     return envelope
 
 
-def validate_run_envelope(envelope: dict[str, Any]) -> dict[str, Any]:
+def validate_run_envelope(envelope: object) -> dict[str, Any]:
+    if not isinstance(envelope, dict):
+        return {
+            "valid": False,
+            "errors": ["run envelope must be an object"],
+            "permission_scope_verified": False,
+            "safety": SAFETY_DECLARATION,
+        }
     errors: list[str] = []
+    if set(envelope) != RUN_ENVELOPE_FIELDS:
+        errors.append("run envelope fields do not match schema")
     if envelope.get("schema") != RUN_ENVELOPE_SCHEMA:
         errors.append(f"schema must be {RUN_ENVELOPE_SCHEMA}")
     if not _is_non_empty_string(envelope.get("run_id")):
@@ -142,7 +178,9 @@ def validate_run_envelope(envelope: dict[str, Any]) -> dict[str, Any]:
     agent = envelope.get("agent")
     if not (
         isinstance(agent, dict)
+        and set(agent) == AGENT_FIELDS
         and _is_non_empty_string(agent.get("name"))
+        and (agent.get("version") is None or isinstance(agent.get("version"), str))
         and _is_non_empty_string(agent.get("interface"))
     ):
         errors.append("agent must contain non-empty name and interface strings")
@@ -164,7 +202,12 @@ def validate_run_envelope(envelope: dict[str, Any]) -> dict[str, Any]:
     for field in ("champion_mutated", "core_rules_mutated"):
         if envelope.get(field) is not False:
             errors.append(f"{field} must be false")
-    permissions = envelope.get("permission_scope", {})
+    raw_permissions = envelope.get("permission_scope")
+    if not isinstance(raw_permissions, dict):
+        errors.append("permission_scope must be an object")
+    permissions = raw_permissions if isinstance(raw_permissions, dict) else {}
+    if isinstance(raw_permissions, dict) and set(raw_permissions) != set(PERMISSION_SCOPE):
+        errors.append("permission_scope fields do not match schema")
     for field in (
         "network",
         "broker_access",
@@ -178,6 +221,10 @@ def validate_run_envelope(envelope: dict[str, Any]) -> dict[str, Any]:
             errors.append(f"permission_scope.{field} must be false")
     if permissions.get("writes") != "run_directory_only":
         errors.append("permission_scope.writes must be run_directory_only")
+    if permissions.get("enforcement") != "declarative":
+        errors.append("permission_scope.enforcement must be declarative")
+    if permissions.get("verified") is not False:
+        errors.append("permission_scope.verified must be false")
     evidence_paths: list[str] = []
     reconciled_tool_calls: list[dict[str, str]] = []
     for index, call in enumerate(tool_calls):
@@ -185,6 +232,8 @@ def validate_run_envelope(envelope: dict[str, Any]) -> dict[str, Any]:
         if not isinstance(call, dict):
             errors.append(f"{prefix} must be an object")
             continue
+        if set(call) != TOOL_CALL_FIELDS:
+            errors.append(f"{prefix} fields do not match schema")
 
         for field in ("name", "started_at", "finished_at"):
             if not _is_non_empty_string(call.get(field)):
@@ -210,14 +259,20 @@ def validate_run_envelope(envelope: dict[str, Any]) -> dict[str, Any]:
             errors.append(f"{prefix}.status is invalid")
 
         evidence = call.get("evidence")
-        evidence_valid = isinstance(evidence, dict) and all(
-            _is_non_empty_string(evidence.get(field))
-            for field in ("stdout", "stderr", "metadata")
+        evidence_valid = (
+            isinstance(evidence, dict)
+            and set(evidence) == EVIDENCE_FIELDS
+            and all(is_relative_artifact_path(evidence.get(field)) for field in EVIDENCE_FIELDS)
         )
         if not evidence_valid:
             errors.append(
                 f"{prefix}.evidence must contain relative string stdout, stderr, and metadata paths"
             )
+            if isinstance(evidence, dict) and any(
+                not is_relative_artifact_path(evidence.get(field))
+                for field in ("stdout", "stderr", "metadata")
+            ):
+                errors.append("tool_calls evidence paths must be relative")
         else:
             evidence_paths.extend(evidence[field] for field in ("stdout", "stderr", "metadata"))
 
@@ -227,15 +282,26 @@ def validate_run_envelope(envelope: dict[str, Any]) -> dict[str, Any]:
             if status_valid and claimed_status != actual_status:
                 errors.append(f"{prefix}.status does not match returncode/timed_out")
 
-    if any(_is_absolute_path(path) for path in evidence_paths):
+    if any(not is_relative_artifact_path(path) for path in evidence_paths):
         errors.append("tool_calls evidence paths must be relative")
-    if any(_is_absolute_path(path) for path in output_evidence):
-        errors.append("output_evidence paths must be relative")
+    if any(not is_relative_artifact_path(path) for path in output_evidence):
+        errors.append("output_evidence paths must be relative strings")
+    if output_evidence != evidence_paths:
+        errors.append("output_evidence must exactly match tool call evidence paths")
     failure_count, trailing_failure_count, status = _failure_state(reconciled_tool_calls)
+    for field in ("failure_count", "trailing_consecutive_failure_count"):
+        value = envelope.get(field)
+        if not isinstance(value, int) or isinstance(value, bool) or value < 0:
+            errors.append(f"{field} must be a non-negative integer")
     if (
         envelope.get("failure_count") != failure_count
         or envelope.get("trailing_consecutive_failure_count") != trailing_failure_count
         or envelope.get("status") != status
     ):
         errors.append("failure counts and status do not match tool calls")
-    return {"valid": not errors, "errors": errors, "safety": SAFETY_DECLARATION}
+    return {
+        "valid": not errors,
+        "errors": errors,
+        "permission_scope_verified": False,
+        "safety": SAFETY_DECLARATION,
+    }

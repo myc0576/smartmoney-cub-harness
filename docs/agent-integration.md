@@ -14,7 +14,7 @@ See the [Run Envelope schema](../schemas/run-envelope.schema.json) and [Evidence
 
 ## Permission scope
 
-The Run Envelope fixes the caller's effective scope:
+The Run Envelope records the caller's intended scope as a declarative policy:
 
 | Capability | Allowed value |
 | --- | --- |
@@ -24,12 +24,16 @@ The Run Envelope fixes the caller's effective scope:
 | Order / cancel / trade | `false` |
 | Embedded LLM | `false` |
 | Writes | `run_directory_only` |
+| Enforcement | `declarative` |
+| Verified | `false` |
+
+These fields are provenance, not a sandbox attestation. `capture-run` does not isolate or inspect an arbitrary subprocess deeply enough to prove network, broker, account, or filesystem compliance. Its `--sandbox` option only selects the `tmp/sandbox` output namespace. Put untrusted commands inside an OS/container sandbox and record that separately; the harness deliberately reports its own policy as unverified.
 
 Do not interpret access to local notes, screenshots, or exported data as permission to act. Public examples must remain toy-only and must not contain private watchlists, account identifiers, credentials, cookies, personal trading records, or local absolute paths.
 
 ## Output evidence
 
-Each tool call records its name, timestamps, return code, timeout flag, attempt number, reconciled success/failure status, and relative paths to stdout, stderr, and metadata. `output_evidence` lists those paths. The harness hashes frozen Evidence Pack artifacts and replay recomputes validation, evaluation, metrics, and failure counts instead of trusting the external Agent's claims.
+Each tool call records its name, timestamps, return code, timeout flag, attempt number, reconciled success/failure status, and relative paths to stdout, stderr, and metadata. `output_evidence` lists those paths. The harness hashes frozen Evidence Pack artifacts and replay recomputes validation, evaluation, metrics, and failure counts instead of trusting the external Agent's claims. It also writes `evidence_pack.sha256` over the exact manifest bytes. This is local tamper evidence, not an authenticated signature; replay fails closed to `pending_review` when the seal or manifest contract is invalid.
 
 An Agent may summarize or challenge this evidence. It must not rewrite frozen evidence, convert `ALERT` or another `action_label` into an instruction, or claim that review eligibility equals promotion.
 

@@ -244,6 +244,8 @@ def test_run_envelope_schema_matches_runtime_artifact_and_fixed_contract() -> No
     )
     permission_properties = properties["permission_scope"]["properties"]
     assert permission_properties["writes"]["const"] == "run_directory_only"
+    assert permission_properties["enforcement"]["const"] == "declarative"
+    assert permission_properties["verified"]["const"] is False
     assert all(
         permission_properties[name]["const"] is False
         for name in (

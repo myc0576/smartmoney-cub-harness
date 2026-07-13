@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/myc0576/smartmoney-cub-harness/schemas/run-envelope.schema.json",
   "title": "Smartmoney Cub Run Envelope v1",
-  "description": "Read-only provenance envelope for one offline harness run.",
+  "description": "Read-only provenance envelope for one offline harness run. Permission scope is declarative and unverified; it is not a sandbox attestation.",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -96,7 +96,9 @@
         "cancel",
         "trade",
         "embedded_llm",
-        "writes"
+        "writes",
+        "enforcement",
+        "verified"
       ],
       "properties": {
         "network": { "const": false },
@@ -106,7 +108,9 @@
         "cancel": { "const": false },
         "trade": { "const": false },
         "embedded_llm": { "const": false },
-        "writes": { "const": "run_directory_only" }
+        "writes": { "const": "run_directory_only" },
+        "enforcement": { "const": "declarative" },
+        "verified": { "const": false }
       }
     },
     "champion_mutated": { "const": false },

@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import copy
+
 import pytest
 
 from smartmoney_cub_harness.run_envelope import build_run_envelope, validate_run_envelope
@@ -54,6 +56,8 @@ def test_build_run_envelope_records_normalized_success_provenance():
         "trade": False,
         "embedded_llm": False,
         "writes": "run_directory_only",
+        "enforcement": "declarative",
+        "verified": False,
     }
     assert envelope["champion_mutated"] is False
     assert envelope["core_rules_mutated"] is False
@@ -123,6 +127,8 @@ def test_build_run_envelope_marks_three_trailing_failures_blocked():
         ("trade", True),
         ("embedded_llm", True),
         ("writes", "anywhere"),
+        ("enforcement", "enforced"),
+        ("verified", True),
     ],
 )
 def test_validate_run_envelope_rejects_enabled_permissions(field: str, value: object):
@@ -140,6 +146,64 @@ def test_validate_run_envelope_rejects_enabled_permissions(field: str, value: ob
     assert validation["valid"] is False
     assert any(error.startswith(f"permission_scope.{field} ") for error in validation["errors"])
     assert validation["safety"] == SAFETY_DECLARATION
+    assert validation["permission_scope_verified"] is False
+
+
+def test_validate_run_envelope_rejects_non_object_permission_scope_without_raising():
+    envelope = _single_success_call_envelope()
+    envelope["permission_scope"] = []
+
+    validation = validate_run_envelope(envelope)
+
+    assert validation["valid"] is False
+    assert "permission_scope must be an object" in validation["errors"]
+    assert validation["permission_scope_verified"] is False
+
+
+def test_validate_run_envelope_rejects_non_object_top_level_without_raising():
+    validation = validate_run_envelope([])
+
+    assert validation["valid"] is False
+    assert validation["errors"] == ["run envelope must be an object"]
+    assert validation["permission_scope_verified"] is False
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    [
+        "top_extra",
+        "agent_missing_version",
+        "agent_extra",
+        "tool_extra",
+        "evidence_extra",
+        "permission_extra",
+        "invalid_agent_version",
+        "boolean_failure_count",
+    ],
+)
+def test_validate_run_envelope_matches_strict_object_schema(mutation: str):
+    envelope = copy.deepcopy(_single_success_call_envelope())
+    if mutation == "top_extra":
+        envelope["unexpected"] = True
+    elif mutation == "agent_missing_version":
+        envelope["agent"].pop("version")
+    elif mutation == "agent_extra":
+        envelope["agent"]["unexpected"] = True
+    elif mutation == "tool_extra":
+        envelope["tool_calls"][0]["unexpected"] = True
+    elif mutation == "evidence_extra":
+        envelope["tool_calls"][0]["evidence"]["unexpected"] = "artifact.txt"
+    elif mutation == "permission_extra":
+        envelope["permission_scope"]["unexpected"] = False
+    elif mutation == "invalid_agent_version":
+        envelope["agent"]["version"] = 1
+    else:
+        envelope["failure_count"] = False
+
+    validation = validate_run_envelope(envelope)
+
+    assert validation["valid"] is False
+    assert validation["errors"]
 
 
 @pytest.mark.parametrize("path_style", ["windows", "posix"])
@@ -312,6 +376,20 @@ def test_validate_run_envelope_rejects_invalid_required_provenance(
 
     assert validation["valid"] is False
     assert expected_error in validation["errors"]
+
+
+@pytest.mark.parametrize(
+    "decision_time",
+    ["2026-01-01", "2026-01-01T00:00:00"],
+)
+def test_validate_run_envelope_requires_rfc3339_time_and_timezone(decision_time: str):
+    envelope = _single_success_call_envelope()
+    envelope["decision_time"] = decision_time
+
+    validation = validate_run_envelope(envelope)
+
+    assert validation["valid"] is False
+    assert "decision_time must be an ISO-8601 timestamp" in validation["errors"]
     assert validation["safety"] == SAFETY_DECLARATION
 
 
@@ -382,6 +460,41 @@ def test_validate_run_envelope_rejects_malformed_tool_evidence():
         "tool_calls[0].evidence must contain relative string stdout, stderr, and metadata paths"
         in validation["errors"]
     )
+
+
+@pytest.mark.parametrize(
+    "unsafe_path",
+    [
+        "../private/file",
+        "samples/../private/file",
+        r"\rooted\private",
+        r"\\server\share\private",
+        r"C:\private\file",
+        42,
+        "",
+    ],
+)
+def test_validate_run_envelope_rejects_unsafe_or_non_string_evidence_paths(
+    unsafe_path: object,
+):
+    envelope = _single_success_call_envelope()
+    envelope["tool_calls"][0]["evidence"]["stdout"] = unsafe_path
+    envelope["output_evidence"][0] = unsafe_path
+
+    validation = validate_run_envelope(envelope)
+
+    assert validation["valid"] is False
+    assert any("relative" in error for error in validation["errors"])
+
+
+def test_validate_run_envelope_reconciles_output_evidence_with_tool_calls():
+    envelope = _single_success_call_envelope()
+    envelope["output_evidence"] = []
+
+    validation = validate_run_envelope(envelope)
+
+    assert validation["valid"] is False
+    assert "output_evidence must exactly match tool call evidence paths" in validation["errors"]
 
 
 @pytest.mark.parametrize(

@@ -33,6 +33,8 @@ smcub replay-evidence-pack tmp/toy-evidence-pack
 
 这些状态只描述审查工作流，绝不是交易动作：Run Envelope 使用 `completed`、`pending_review`、`blocked`；Evidence Pack 使用 `challenger`、`ready_for_review`、`pending_review`、`blocked`；回放报告使用 `verified`、`pending_review`、`blocked`。只有 `action_label` 描述 `SILENT`、`ALERT` 等已记录观察。
 
+Run Envelope 的权限范围是**声明式、未经验证的策略记录**（`enforcement: declarative`、`verified: false`），不是子进程沙箱，也不能证明外部命令遵守了该策略。CLI 的 `--sandbox` 只选择一次性的 `tmp/sandbox` 输出目录，并不隔离进程；不可信命令必须放在操作系统或容器沙箱中运行。`evidence_pack.sha256` 对 Pack 清单的精确字节做本地篡改检测，但不是经过身份认证的数字签名；封印缺失、格式错误、不匹配或清单结构无效时，回放只会进入 `pending_review`。
+
 原有 toy Agent Loop 继续受支持：
 
 ```bash

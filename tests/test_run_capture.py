@@ -125,6 +125,31 @@ def test_capture_run_redacts_local_path_components_from_command_name(tmp_path: P
         assert (run_dir / evidence_path).exists()
 
 
+def test_capture_run_preserves_evidence_for_duplicate_command_names(tmp_path: Path):
+    first = tmp_path / "first.py"
+    second = tmp_path / "second.py"
+    first.write_text("print('first')\n", encoding="utf-8")
+    second.write_text("print('second')\n", encoding="utf-8")
+
+    result = capture_run(
+        root=tmp_path,
+        mode="after-close",
+        commands=[
+            {"name": "signal", "argv": [sys.executable, str(first)]},
+            {"name": "signal", "argv": [sys.executable, str(second)]},
+        ],
+        decision_time="2026-06-01T15:30:00+08:00",
+    )
+
+    run_dir = Path(result["run_dir"])
+    stdout_paths = [call["evidence"]["stdout"] for call in result["run_envelope"]["tool_calls"]]
+    assert len(stdout_paths) == len(set(stdout_paths)) == 2
+    assert [(run_dir / path).read_text(encoding="utf-8").strip() for path in stdout_paths] == [
+        "first",
+        "second",
+    ]
+
+
 def test_unique_run_dir_reserves_directory_to_avoid_collisions(tmp_path: Path):
     first = unique_run_dir(tmp_path, "2026-06-01T15:30:00+08:00", "after-close", sandbox=True)
     second = unique_run_dir(tmp_path, "2026-06-01T15:30:00+08:00", "after-close", sandbox=True)
