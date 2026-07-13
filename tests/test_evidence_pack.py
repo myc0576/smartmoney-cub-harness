@@ -4,6 +4,8 @@ import hashlib
 import json
 from pathlib import Path
 
+import pytest
+
 from smartmoney_cub_harness.evidence_pack import build_evidence_pack, replay_evidence_pack
 from smartmoney_cub_harness.schemas import SAFETY_DECLARATION
 
@@ -115,6 +117,26 @@ def test_build_freezes_three_runs_with_hashes_metrics_and_human_gate(tmp_path: P
     assert saved["promotion_gate"]["champion_mutated"] is False
 
 
+def test_build_overwrites_invalid_safety_on_every_frozen_artifact(tmp_path: Path) -> None:
+    sample = _make_run(tmp_path, "sample-wrong-safety", _alert(), {"d1_return_pct": 4.0})
+    for filename in ("run_manifest.json", "decision.json", "outcome_d1.json"):
+        path = sample / filename
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        payload["safety"] = "WRONG_SAFETY"
+        _write_json(path, payload)
+    output_dir = tmp_path / "evidence"
+
+    pack = build_evidence_pack(
+        output_dir,
+        [sample],
+        {"rule_id": "toy-rule", "family": "toy", "safety": "WRONG_SAFETY"},
+    )
+
+    for relative_path in pack["hashes"]:
+        frozen = json.loads((output_dir / relative_path).read_text(encoding="utf-8"))
+        assert frozen["safety"] == SAFETY_DECLARATION
+
+
 def test_replay_clean_pack_verifies_frozen_results(tmp_path: Path) -> None:
     sample = _make_run(tmp_path, "sample-clean", _alert(), {"d1_return_pct": 4.0})
     output_dir = tmp_path / "evidence"
@@ -129,6 +151,58 @@ def test_replay_clean_pack_verifies_frozen_results(tmp_path: Path) -> None:
     assert replay["failure_count"] == built["failure_count"]
     assert replay["trailing_consecutive_failure_count"] == built["trailing_consecutive_failure_count"]
     assert replay["safety"] == SAFETY_DECLARATION
+
+
+@pytest.mark.parametrize(
+    ("failure_count", "expected_status"),
+    [(1, "pending_review"), (2, "pending_review"), (3, "blocked")],
+)
+def test_replay_clean_pack_status_reflects_recomputed_failures(
+    tmp_path: Path, failure_count: int, expected_status: str
+) -> None:
+    samples = [
+        _make_run(tmp_path, f"failed-{index}", {"action_label": "ERROR"}, {})
+        for index in range(failure_count)
+    ]
+    output_dir = tmp_path / "evidence"
+    build_evidence_pack(output_dir, samples, {"rule_id": "toy-rule", "family": "toy"})
+
+    replay = replay_evidence_pack(output_dir)
+
+    assert replay["hash_mismatches"] == []
+    assert replay["result_mismatches"] == []
+    assert replay["failure_count"] == failure_count
+    assert replay["trailing_consecutive_failure_count"] == failure_count
+    assert replay["evidence_status"] == expected_status
+    assert replay["promotion_gate"]["eligible_for_human_review"] is False
+
+
+def test_replay_never_qualifies_threshold_passing_failed_samples(tmp_path: Path) -> None:
+    failed = _make_run(tmp_path, "failed-first", {"action_label": "ERROR"}, {})
+    successful = [
+        _make_run(tmp_path, f"successful-{index}", _alert(), {"d1_return_pct": 4.0})
+        for index in range(19)
+    ]
+    output_dir = tmp_path / "evidence"
+    build_evidence_pack(
+        output_dir,
+        [failed, *successful],
+        {"rule_id": "toy-rule", "family": "toy"},
+    )
+
+    replay = replay_evidence_pack(output_dir)
+
+    assert replay["metrics"] == {
+        "sample_count": 20,
+        "false_alert_rate": 0.0,
+        "missed_opportunity_rate": 0.0,
+        "future_leakage_count": 0,
+        "risk_contract_violation_rate": 0.0,
+    }
+    assert replay["failure_count"] == 1
+    assert replay["trailing_consecutive_failure_count"] == 0
+    assert replay["evidence_status"] == "pending_review"
+    assert replay["promotion_gate"]["eligible_for_human_review"] is False
 
 
 def test_replay_detects_tampered_frozen_file(tmp_path: Path) -> None:
@@ -169,7 +243,5 @@ def test_build_uses_pending_and_blocked_failure_transitions(tmp_path: Path) -> N
 
 
 def test_build_rejects_zero_samples(tmp_path: Path) -> None:
-    import pytest
-
     with pytest.raises(ValueError, match="at least one sample"):
         build_evidence_pack(tmp_path / "empty", [], {"rule_id": "empty", "family": "toy"})

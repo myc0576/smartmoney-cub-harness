@@ -9,7 +9,7 @@ from smartmoney_cub_harness.evaluator import evaluate_decision
 from smartmoney_cub_harness.manifest import validate_run_manifest
 from smartmoney_cub_harness.registry import promotion_blockers
 from smartmoney_cub_harness.safety import safety_envelope
-from smartmoney_cub_harness.schemas import EVIDENCE_PACK_SCHEMA, EVIDENCE_REPLAY_SCHEMA
+from smartmoney_cub_harness.schemas import EVIDENCE_PACK_SCHEMA, EVIDENCE_REPLAY_SCHEMA, SAFETY_DECLARATION
 
 
 def _canonical_bytes(payload: dict[str, Any]) -> bytes:
@@ -17,7 +17,9 @@ def _canonical_bytes(payload: dict[str, Any]) -> bytes:
 
 
 def _write_frozen(path: Path, payload: dict[str, Any]) -> str:
-    content = _canonical_bytes(safety_envelope(payload))
+    frozen = safety_envelope(payload)
+    frozen["safety"] = SAFETY_DECLARATION
+    content = _canonical_bytes(frozen)
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_bytes(content)
     return hashlib.sha256(content).hexdigest()
@@ -224,7 +226,12 @@ def replay_evidence_pack(pack_dir: str | Path) -> dict[str, Any]:
         result_mismatches.append("trailing_consecutive_failure_count")
 
     mismatched = bool(hash_mismatches or result_mismatches)
-    evidence_status = "verified" if not mismatched else ("blocked" if trailing_failures >= 3 else "pending_review")
+    if trailing_failures >= 3:
+        evidence_status = "blocked"
+    elif failure_count or mismatched:
+        evidence_status = "pending_review"
+    else:
+        evidence_status = "verified"
     report = safety_envelope(
         {
             "schema": EVIDENCE_REPLAY_SCHEMA,
@@ -236,7 +243,11 @@ def replay_evidence_pack(pack_dir: str | Path) -> dict[str, Any]:
             "trailing_consecutive_failure_count": trailing_failures,
             "samples": replayed_samples,
             "promotion_gate": {
-                "eligible_for_human_review": evidence_status == "verified" and not promotion_blockers(metrics),
+                "eligible_for_human_review": (
+                    evidence_status == "verified"
+                    and failure_count == 0
+                    and not promotion_blockers(metrics)
+                ),
                 "human_confirmation_required": True,
                 "champion_mutated": False,
                 "core_rules_mutated": False,
