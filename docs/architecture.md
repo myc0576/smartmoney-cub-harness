@@ -65,7 +65,7 @@ Workflow statuses are not trading action labels.
 
 ## Trust boundaries
 
-The public core has no network requirement, embedded LLM, broker access, account mutation, order, cancel, or trade permission. Its only write permission is the selected run/evidence directory. Public fixtures contain toy data only.
+The public core has no network requirement, embedded LLM, broker access, account mutation, order, cancel, or trade capability. In the Run Envelope, `writes: run_directory_only` applies to captured external tool calls: they may write only within the selected run directory. Separately, harness governance commands may write local evidence and registry artifacts. Champion registry mutation still requires a human to invoke `register-candidate --confirm-promote`. Public fixtures contain toy data only.
 
 Every applicable artifact carries:
 

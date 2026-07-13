@@ -77,3 +77,12 @@ def test_toy_rule_candidate_is_challenger_only_and_read_only():
     assert candidate["champion_mutated"] is False
     assert candidate["core_rules_mutated"] is False
     assert candidate["safety"] == SAFETY_DECLARATION
+
+
+def test_architecture_scopes_capture_writes_separately_from_governance():
+    architecture = (REPO_ROOT / "docs" / "architecture.md").read_text(encoding="utf-8")
+
+    assert "`writes: run_directory_only` applies to captured external tool calls" in architecture
+    assert "governance commands may write local evidence and registry artifacts" in architecture
+    assert "`register-candidate --confirm-promote`" in architecture
+    assert "Its only write permission is the selected run/evidence directory" not in architecture
