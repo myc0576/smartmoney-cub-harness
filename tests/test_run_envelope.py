@@ -313,3 +313,100 @@ def test_validate_run_envelope_rejects_invalid_required_provenance(
     assert validation["valid"] is False
     assert expected_error in validation["errors"]
     assert validation["safety"] == SAFETY_DECLARATION
+
+
+def _single_success_call_envelope() -> dict[str, object]:
+    return build_run_envelope(
+        run_id="toy-run",
+        decision_time="2026-06-01T15:30:00+08:00",
+        mode="after-close",
+        commands=[{"name": "signal", "argv": ["toy"]}],
+        command_results=[
+            {
+                "name": "signal",
+                "started_at": "2026-06-01T07:30:00+00:00",
+                "finished_at": "2026-06-01T07:30:01+00:00",
+                "returncode": 0,
+                "timed_out": False,
+            }
+        ],
+    )
+
+
+def test_validate_run_envelope_rejects_returncode_status_mismatch_using_actual_outcome():
+    envelope = _single_success_call_envelope()
+    envelope["tool_calls"][0]["status"] = "failed"
+
+    validation = validate_run_envelope(envelope)
+
+    assert validation["valid"] is False
+    assert "tool_calls[0].status does not match returncode/timed_out" in validation["errors"]
+    assert "failure counts and status do not match tool calls" not in validation["errors"]
+
+
+def test_validate_run_envelope_rejects_timeout_status_mismatch_using_actual_outcome():
+    envelope = _single_success_call_envelope()
+    envelope["tool_calls"][0]["timed_out"] = True
+
+    validation = validate_run_envelope(envelope)
+
+    assert validation["valid"] is False
+    assert "tool_calls[0].status does not match returncode/timed_out" in validation["errors"]
+    assert "failure counts and status do not match tool calls" in validation["errors"]
+
+
+def test_validate_run_envelope_rejects_non_object_tool_call_without_raising():
+    envelope = _single_success_call_envelope()
+    envelope["tool_calls"] = ["not-an-object"]
+
+    try:
+        validation = validate_run_envelope(envelope)
+    except Exception as exc:  # pragma: no cover - the assertion documents the regression
+        pytest.fail(f"validator raised for malformed tool call: {exc}")
+
+    assert validation["valid"] is False
+    assert "tool_calls[0] must be an object" in validation["errors"]
+
+
+def test_validate_run_envelope_rejects_malformed_tool_evidence():
+    envelope = _single_success_call_envelope()
+    envelope["tool_calls"][0]["evidence"] = {
+        "stdout": "artifacts/signal.stdout.txt",
+        "stderr": 42,
+    }
+
+    validation = validate_run_envelope(envelope)
+
+    assert validation["valid"] is False
+    assert (
+        "tool_calls[0].evidence must contain relative string stdout, stderr, and metadata paths"
+        in validation["errors"]
+    )
+
+
+@pytest.mark.parametrize(
+    ("field", "invalid_value"),
+    [
+        ("name", ""),
+        ("started_at", ""),
+        ("finished_at", ""),
+        ("returncode", "0"),
+        ("timed_out", 0),
+        ("attempt", 0),
+        ("status", []),
+    ],
+)
+def test_validate_run_envelope_rejects_malformed_normalized_tool_fields(
+    field: str,
+    invalid_value: object,
+):
+    envelope = _single_success_call_envelope()
+    envelope["tool_calls"][0][field] = invalid_value
+
+    try:
+        validation = validate_run_envelope(envelope)
+    except Exception as exc:  # pragma: no cover - the assertion documents the regression
+        pytest.fail(f"validator raised for malformed tool field: {exc}")
+
+    assert validation["valid"] is False
+    assert f"tool_calls[0].{field} is invalid" in validation["errors"]

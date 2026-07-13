@@ -48,6 +48,10 @@ def _is_iso_datetime(value: object) -> bool:
     return True
 
 
+def _actual_tool_status(returncode: int, timed_out: bool) -> str:
+    return "succeeded" if returncode == 0 and not timed_out else "failed"
+
+
 def _failure_state(tool_calls: list[dict[str, Any]]) -> tuple[int, int, str]:
     failure_count = sum(call.get("status") == "failed" for call in tool_calls)
     trailing_failure_count = 0
@@ -82,6 +86,8 @@ def build_run_envelope(
     output_evidence: list[str] = []
     for attempt, result in enumerate(command_results, start=1):
         name = str(redact(str(result["name"])))
+        returncode = result["returncode"]
+        timed_out = bool(result.get("timed_out", False))
         evidence = {
             "stdout": f"artifacts/{name}.stdout.txt",
             "stderr": f"artifacts/{name}.stderr.txt",
@@ -92,9 +98,9 @@ def build_run_envelope(
                 "name": name,
                 "started_at": result["started_at"],
                 "finished_at": result["finished_at"],
-                "returncode": result["returncode"],
-                "timed_out": bool(result.get("timed_out", False)),
-                "status": "succeeded" if result["returncode"] == 0 else "failed",
+                "returncode": returncode,
+                "timed_out": timed_out,
+                "status": _actual_tool_status(returncode, timed_out),
                 "attempt": attempt,
                 "evidence": evidence,
             }
@@ -172,16 +178,60 @@ def validate_run_envelope(envelope: dict[str, Any]) -> dict[str, Any]:
             errors.append(f"permission_scope.{field} must be false")
     if permissions.get("writes") != "run_directory_only":
         errors.append("permission_scope.writes must be run_directory_only")
-    evidence_paths = [
-        path
-        for call in tool_calls
-        for path in call.get("evidence", {}).values()
-    ]
+    evidence_paths: list[str] = []
+    reconciled_tool_calls: list[dict[str, str]] = []
+    for index, call in enumerate(tool_calls):
+        prefix = f"tool_calls[{index}]"
+        if not isinstance(call, dict):
+            errors.append(f"{prefix} must be an object")
+            continue
+
+        for field in ("name", "started_at", "finished_at"):
+            if not _is_non_empty_string(call.get(field)):
+                errors.append(f"{prefix}.{field} is invalid")
+
+        returncode = call.get("returncode")
+        returncode_valid = isinstance(returncode, int) and not isinstance(returncode, bool)
+        if not returncode_valid:
+            errors.append(f"{prefix}.returncode is invalid")
+
+        timed_out = call.get("timed_out")
+        timed_out_valid = isinstance(timed_out, bool)
+        if not timed_out_valid:
+            errors.append(f"{prefix}.timed_out is invalid")
+
+        attempt = call.get("attempt")
+        if not (isinstance(attempt, int) and not isinstance(attempt, bool) and attempt > 0):
+            errors.append(f"{prefix}.attempt is invalid")
+
+        claimed_status = call.get("status")
+        status_valid = isinstance(claimed_status, str) and claimed_status in {"succeeded", "failed"}
+        if not status_valid:
+            errors.append(f"{prefix}.status is invalid")
+
+        evidence = call.get("evidence")
+        evidence_valid = isinstance(evidence, dict) and all(
+            _is_non_empty_string(evidence.get(field))
+            for field in ("stdout", "stderr", "metadata")
+        )
+        if not evidence_valid:
+            errors.append(
+                f"{prefix}.evidence must contain relative string stdout, stderr, and metadata paths"
+            )
+        else:
+            evidence_paths.extend(evidence[field] for field in ("stdout", "stderr", "metadata"))
+
+        if returncode_valid and timed_out_valid:
+            actual_status = _actual_tool_status(returncode, timed_out)
+            reconciled_tool_calls.append({"status": actual_status})
+            if status_valid and claimed_status != actual_status:
+                errors.append(f"{prefix}.status does not match returncode/timed_out")
+
     if any(_is_absolute_path(path) for path in evidence_paths):
         errors.append("tool_calls evidence paths must be relative")
     if any(_is_absolute_path(path) for path in output_evidence):
         errors.append("output_evidence paths must be relative")
-    failure_count, trailing_failure_count, status = _failure_state(tool_calls)
+    failure_count, trailing_failure_count, status = _failure_state(reconciled_tool_calls)
     if (
         envelope.get("failure_count") != failure_count
         or envelope.get("trailing_consecutive_failure_count") != trailing_failure_count
