@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Any
 
 from smartmoney_cub_harness import __version__
+from smartmoney_cub_harness.evidence_pack import build_evidence_pack, replay_evidence_pack
 from smartmoney_cub_harness.evaluator import evaluate_decision
 from smartmoney_cub_harness.loop import run_agent_loop
 from smartmoney_cub_harness.manifest import validate_run_manifest
@@ -15,6 +16,7 @@ from smartmoney_cub_harness.mentor_fit import build_mentor_fit
 from smartmoney_cub_harness.outcome import build_outcome
 from smartmoney_cub_harness.registry import register_candidate
 from smartmoney_cub_harness.run_capture import capture_run, get_command_preset, parse_command
+from smartmoney_cub_harness.run_envelope import validate_run_envelope
 from smartmoney_cub_harness.safety import redact
 from smartmoney_cub_harness.schemas import SAFETY_DECLARATION
 
@@ -94,6 +96,9 @@ def build_parser() -> argparse.ArgumentParser:
     validate = sub.add_parser("validate-manifest", help="Validate a run manifest JSON file")
     validate.add_argument("manifest")
 
+    validate_envelope = sub.add_parser("validate-envelope", help="Validate a run envelope JSON file")
+    validate_envelope.add_argument("envelope")
+
     capture = sub.add_parser("capture-run", help="Run offline commands and save replay artifacts")
     capture.add_argument("--root", default=".")
     capture.add_argument("--mode", required=True, choices=["intraday", "after-close"])
@@ -102,6 +107,22 @@ def build_parser() -> argparse.ArgumentParser:
     capture.add_argument("--decision-time")
     capture.add_argument("--timeout-seconds", type=int, default=300)
     capture.add_argument("--sandbox", action="store_true")
+    capture.add_argument("--agent-name", default="external-agent")
+    capture.add_argument("--agent-version")
+    capture.add_argument("--agent-interface", default="command")
+
+    build_evidence = sub.add_parser(
+        "build-evidence-pack", help="Freeze offline runs into a replayable evidence pack"
+    )
+    build_evidence.add_argument("output_dir")
+    build_evidence.add_argument("--sample", dest="sample_dirs", action="append", required=True)
+    build_evidence.add_argument("--rule-candidate", required=True)
+    build_evidence.add_argument("--horizon", choices=["d1", "d3"], default="d1")
+
+    replay_evidence = sub.add_parser(
+        "replay-evidence-pack", help="Verify and replay a frozen evidence pack"
+    )
+    replay_evidence.add_argument("pack_dir")
 
     build_outcome_cmd = sub.add_parser("build-outcome", help="Build D1/D3 outcome JSON for a run")
     build_outcome_cmd.add_argument("run_dir")
@@ -140,6 +161,11 @@ def main(argv: list[str] | None = None) -> int:
         _print_json(result)
         return 0 if result["ok"] else 2
 
+    if args.command == "validate-envelope":
+        result = validate_run_envelope(_read_json(args.envelope))
+        _print_json(result)
+        return 0 if result["valid"] else 2
+
     if args.command == "capture-run":
         commands = [parse_command(value) for value in args.inline_commands]
         if not commands:
@@ -152,9 +178,27 @@ def main(argv: list[str] | None = None) -> int:
                 decision_time=args.decision_time,
                 timeout_seconds=args.timeout_seconds,
                 sandbox=args.sandbox,
+                agent_name=args.agent_name,
+                agent_version=args.agent_version,
+                agent_interface=args.agent_interface,
             )
         )
         return 0
+
+    if args.command == "build-evidence-pack":
+        result = build_evidence_pack(
+            args.output_dir,
+            args.sample_dirs,
+            _read_json(args.rule_candidate),
+            horizon=args.horizon,
+        )
+        _print_json(result)
+        return 0
+
+    if args.command == "replay-evidence-pack":
+        result = replay_evidence_pack(args.pack_dir)
+        _print_json(result)
+        return 0 if result.get("evidence_status") == "verified" else 2
 
     if args.command == "build-outcome":
         outcome_path = build_outcome(args.run_dir, horizon=args.horizon, price_source=args.price_source)
