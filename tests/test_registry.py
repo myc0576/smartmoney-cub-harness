@@ -62,3 +62,22 @@ def test_registry_keeps_weak_candidate_as_challenger(tmp_path: Path):
 
     assert result["status"] == "challenger"
     assert result["reasons"] == ["sample_count_below_20"]
+
+
+def test_registry_refuses_failed_or_pending_evidence_even_with_confirmation(tmp_path: Path):
+    for suffix, review_status, failure_count in (
+        ("blocked", "blocked", 0),
+        ("pending", "pending_review", 0),
+        ("failed", "ready_for_review", 1),
+    ):
+        registry_path = tmp_path / f"registry-{suffix}.json"
+        candidate = strong_candidate()
+        candidate["review_status"] = review_status
+        candidate["failure_count"] = failure_count
+
+        result = register_candidate(registry_path, candidate, confirm_promote=True)
+        saved = json.loads(registry_path.read_text(encoding="utf-8"))
+
+        assert result["status"] == "challenger"
+        assert saved["champions"] == {}
+        assert saved["promotion_recommendations"] == []
