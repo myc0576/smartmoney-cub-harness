@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
+from datetime import datetime
 from pathlib import PurePosixPath, PureWindowsPath
 from typing import Any
 
@@ -30,6 +32,20 @@ def _is_absolute_path(value: object) -> bool:
     return isinstance(value, str) and (
         PurePosixPath(value).is_absolute() or PureWindowsPath(value).is_absolute()
     )
+
+
+def _is_non_empty_string(value: object) -> bool:
+    return isinstance(value, str) and bool(value.strip())
+
+
+def _is_iso_datetime(value: object) -> bool:
+    if not _is_non_empty_string(value):
+        return False
+    try:
+        datetime.fromisoformat(value.replace("Z", "+00:00"))
+    except ValueError:
+        return False
+    return True
 
 
 def _failure_state(tool_calls: list[dict[str, Any]]) -> tuple[int, int, str]:
@@ -109,6 +125,32 @@ def build_run_envelope(
 
 def validate_run_envelope(envelope: dict[str, Any]) -> dict[str, Any]:
     errors: list[str] = []
+    if envelope.get("schema") != RUN_ENVELOPE_SCHEMA:
+        errors.append(f"schema must be {RUN_ENVELOPE_SCHEMA}")
+    if not _is_non_empty_string(envelope.get("run_id")):
+        errors.append("run_id must be a non-empty string")
+    if not _is_iso_datetime(envelope.get("decision_time")):
+        errors.append("decision_time must be an ISO-8601 timestamp")
+    if not _is_non_empty_string(envelope.get("mode")):
+        errors.append("mode must be a non-empty string")
+    agent = envelope.get("agent")
+    if not (
+        isinstance(agent, dict)
+        and _is_non_empty_string(agent.get("name"))
+        and _is_non_empty_string(agent.get("interface"))
+    ):
+        errors.append("agent must contain non-empty name and interface strings")
+    input_hash = envelope.get("input_snapshot_sha256")
+    if not isinstance(input_hash, str) or re.fullmatch(r"[0-9a-fA-F]{64}", input_hash) is None:
+        errors.append("input_snapshot_sha256 must be 64 hexadecimal characters")
+    raw_tool_calls = envelope.get("tool_calls")
+    if not isinstance(raw_tool_calls, list):
+        errors.append("tool_calls must be a list")
+    tool_calls = raw_tool_calls if isinstance(raw_tool_calls, list) else []
+    raw_output_evidence = envelope.get("output_evidence")
+    if not isinstance(raw_output_evidence, list):
+        errors.append("output_evidence must be a list")
+    output_evidence = raw_output_evidence if isinstance(raw_output_evidence, list) else []
     if envelope.get("safety") != SAFETY_DECLARATION:
         errors.append("safety declaration is missing or invalid")
     if envelope.get("status") not in {"completed", "pending_review", "blocked"}:
@@ -132,14 +174,14 @@ def validate_run_envelope(envelope: dict[str, Any]) -> dict[str, Any]:
         errors.append("permission_scope.writes must be run_directory_only")
     evidence_paths = [
         path
-        for call in envelope.get("tool_calls", [])
+        for call in tool_calls
         for path in call.get("evidence", {}).values()
     ]
     if any(_is_absolute_path(path) for path in evidence_paths):
         errors.append("tool_calls evidence paths must be relative")
-    if any(_is_absolute_path(path) for path in envelope.get("output_evidence", [])):
+    if any(_is_absolute_path(path) for path in output_evidence):
         errors.append("output_evidence paths must be relative")
-    failure_count, trailing_failure_count, status = _failure_state(envelope.get("tool_calls", []))
+    failure_count, trailing_failure_count, status = _failure_state(tool_calls)
     if (
         envelope.get("failure_count") != failure_count
         or envelope.get("trailing_consecutive_failure_count") != trailing_failure_count

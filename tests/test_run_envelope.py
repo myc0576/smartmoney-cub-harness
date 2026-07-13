@@ -270,3 +270,46 @@ def test_build_run_envelope_redacts_agent_commands_and_tool_name_before_persiste
     assert "Trader" not in serialized
     assert first["tool_calls"][0]["name"] == "[REDACTED]"
     assert first["input_snapshot_sha256"] == second["input_snapshot_sha256"]
+
+
+@pytest.mark.parametrize(
+    ("field", "invalid_value", "expected_error"),
+    [
+        ("schema", "wrong.v1", f"schema must be {RUN_ENVELOPE_SCHEMA}"),
+        ("run_id", "", "run_id must be a non-empty string"),
+        ("decision_time", "not-a-time", "decision_time must be an ISO-8601 timestamp"),
+        ("mode", "", "mode must be a non-empty string"),
+        ("agent", {}, "agent must contain non-empty name and interface strings"),
+        (
+            "input_snapshot_sha256",
+            "not-a-hash",
+            "input_snapshot_sha256 must be 64 hexadecimal characters",
+        ),
+        ("tool_calls", (), "tool_calls must be a list"),
+        ("output_evidence", (), "output_evidence must be a list"),
+    ],
+)
+@pytest.mark.parametrize("missing", [False, True], ids=["invalid", "missing"])
+def test_validate_run_envelope_rejects_invalid_required_provenance(
+    field: str,
+    invalid_value: object,
+    expected_error: str,
+    missing: bool,
+):
+    envelope = build_run_envelope(
+        run_id="toy-run",
+        decision_time="2026-06-01T15:30:00+08:00",
+        mode="after-close",
+        commands=[],
+        command_results=[],
+    )
+    if missing:
+        envelope.pop(field)
+    else:
+        envelope[field] = invalid_value
+
+    validation = validate_run_envelope(envelope)
+
+    assert validation["valid"] is False
+    assert expected_error in validation["errors"]
+    assert validation["safety"] == SAFETY_DECLARATION

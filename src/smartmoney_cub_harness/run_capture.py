@@ -32,18 +32,22 @@ def safe_name(value: str) -> str:
     return cleaned.strip("._") or "command"
 
 
+def safe_command_name(value: object) -> str:
+    return safe_name(str(redact(str(value))))
+
+
 def parse_command(value: str) -> dict[str, Any]:
     if "=" in value and not value.split("=", 1)[0].strip().count(" "):
         name, raw_argv = value.split("=", 1)
         argv = [part for part in raw_argv.split("|") if part]
         if not name or not argv:
             raise ValueError("command must include name and at least one argv part")
-        return {"name": safe_name(name), "argv": argv}
+        return {"name": safe_command_name(name), "argv": argv}
     argv = shlex.split(value)
     if not argv:
         raise ValueError("command cannot be empty")
     name = Path(argv[1]).stem if len(argv) > 1 else Path(argv[0]).stem
-    return {"name": safe_name(name), "argv": argv}
+    return {"name": safe_command_name(name), "argv": argv}
 
 
 def get_command_preset(name: str) -> list[dict[str, Any]]:
@@ -64,7 +68,7 @@ def normalize_argv(argv: list[str]) -> list[str]:
 
 
 def run_command(root: Path, command: dict[str, Any], timeout_seconds: int) -> dict[str, Any]:
-    name = safe_name(str(command["name"]))
+    name = safe_command_name(command["name"])
     argv = normalize_argv([str(part) for part in command["argv"]])
     started_at = now_iso()
     try:

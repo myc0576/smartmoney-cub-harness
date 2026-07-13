@@ -104,6 +104,27 @@ def test_capture_run_redacts_sensitive_artifacts(tmp_path: Path):
     assert json.loads((run_dir / "artifacts" / "leak.meta.json").read_text(encoding="utf-8"))["argv"]
 
 
+def test_capture_run_redacts_local_path_components_from_command_name(tmp_path: Path):
+    script = tmp_path / "emit.py"
+    script.write_text("print('toy context')\n", encoding="utf-8")
+    private_command_name = "C:" + "\\Users\\Trader\\signal"
+
+    result = capture_run(
+        root=tmp_path,
+        mode="after-close",
+        commands=[{"name": private_command_name, "argv": [sys.executable, str(script)]}],
+        decision_time="2026-06-01T15:30:00+08:00",
+    )
+
+    run_dir = Path(result["run_dir"])
+    persisted = json.loads((run_dir / "run_envelope.json").read_text(encoding="utf-8"))
+    assert persisted["tool_calls"][0]["name"] == "REDACTED"
+    assert "Users" not in json.dumps(persisted)
+    assert "Trader" not in json.dumps(persisted)
+    for evidence_path in persisted["tool_calls"][0]["evidence"].values():
+        assert (run_dir / evidence_path).exists()
+
+
 def test_unique_run_dir_reserves_directory_to_avoid_collisions(tmp_path: Path):
     first = unique_run_dir(tmp_path, "2026-06-01T15:30:00+08:00", "after-close", sandbox=True)
     second = unique_run_dir(tmp_path, "2026-06-01T15:30:00+08:00", "after-close", sandbox=True)
