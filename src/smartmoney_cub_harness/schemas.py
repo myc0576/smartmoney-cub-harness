@@ -6,6 +6,7 @@ PACKAGE_NAME = "smartmoney-cub-harness"
 PACKAGE_IMPORT_NAME = "smartmoney_cub_harness"
 
 MANIFEST_SCHEMA = "smartmoney_cub_run_manifest.v1"
+RUN_ENVELOPE_SCHEMA = "smartmoney_cub_run_envelope.v1"
 DECISION_SCHEMA = "smartmoney_cub_decision.v1"
 OUTCOME_SCHEMA = "smartmoney_cub_outcome.v1"
 REGISTRY_SCHEMA = "smartmoney_cub_rule_registry.v1"

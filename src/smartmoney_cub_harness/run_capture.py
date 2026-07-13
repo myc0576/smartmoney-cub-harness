@@ -11,6 +11,7 @@ from typing import Any
 
 from smartmoney_cub_harness.decision import derive_decision
 from smartmoney_cub_harness.manifest import validate_run_manifest
+from smartmoney_cub_harness.run_envelope import build_run_envelope
 from smartmoney_cub_harness.safety import redact
 from smartmoney_cub_harness.schemas import MANIFEST_SCHEMA, SAFETY_DECLARATION
 
@@ -125,6 +126,9 @@ def capture_run(
     decision_time: str | None = None,
     timeout_seconds: int = 300,
     sandbox: bool = False,
+    agent_name: str = "external-agent",
+    agent_version: str | None = None,
+    agent_interface: str = "command",
 ) -> dict[str, Any]:
     root_path = Path(root).expanduser().resolve()
     command_results = [run_command(root_path, command, timeout_seconds) for command in commands]
@@ -170,6 +174,16 @@ def capture_run(
     decision = derive_decision(mode, command_results, effective_decision_time)
     decision["run_id"] = manifest["run_id"]
     decision["decision_time"] = effective_decision_time
+    run_envelope = build_run_envelope(
+        run_id=manifest["run_id"],
+        decision_time=effective_decision_time,
+        mode=mode,
+        commands=commands,
+        command_results=command_results,
+        agent_name=agent_name,
+        agent_version=agent_version,
+        agent_interface=agent_interface,
+    )
 
     (run_dir / "run_manifest.json").write_text(
         json.dumps(redact(manifest), ensure_ascii=False, indent=2) + "\n",
@@ -177,6 +191,10 @@ def capture_run(
     )
     (run_dir / "manifest_validation.json").write_text(
         json.dumps(redact(manifest_validation), ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+    (run_dir / "run_envelope.json").write_text(
+        json.dumps(run_envelope, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
     )
     (run_dir / "decision.json").write_text(
@@ -188,6 +206,7 @@ def capture_run(
         "run_dir": str(run_dir),
         "manifest": redact(manifest),
         "manifest_validation": redact(manifest_validation),
+        "run_envelope": run_envelope,
         "decision": redact(decision),
         "commands": [redact({k: v for k, v in item.items() if k not in {"stdout", "stderr"}}) for item in command_results],
     }

@@ -23,7 +23,9 @@ def test_capture_run_writes_manifest_decision_and_artifacts(tmp_path: Path):
     assert result["decision"]["action_label"] == "ALERT"
     assert result["decision"]["signal_sources"] == ["signal"]
     assert result["manifest"]["safety"] == SAFETY_DECLARATION
+    assert result["run_envelope"]["safety"] == SAFETY_DECLARATION
     assert (run_dir / "run_manifest.json").exists()
+    assert json.loads((run_dir / "run_envelope.json").read_text(encoding="utf-8")) == result["run_envelope"]
     assert (run_dir / "decision.json").exists()
     assert (run_dir / "artifacts" / "signal.stdout.txt").read_text(encoding="utf-8").strip() == "toy context"
 
