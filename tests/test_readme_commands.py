@@ -53,3 +53,36 @@ def test_readme_points_to_integration_contract():
     assert "recommended-companion" in integrations
     assert "runtime-integrated" in integrations
     assert SAFETY_DECLARATION in integrations
+
+
+def test_readmes_document_isolated_installation_and_cli_upgrades():
+    readmes = [
+        (REPO_ROOT / "README.md").read_text(encoding="utf-8"),
+        (REPO_ROOT / "README.zh-CN.md").read_text(encoding="utf-8"),
+    ]
+
+    for readme in readmes:
+        assert "python -m venv .venv" in readme
+        assert "py -m venv .venv" in readme
+        assert "pipx install smartmoney-cub-harness" in readme
+        assert "pipx upgrade smartmoney-cub-harness" in readme
+        assert "smcub --version" in readme
+        assert "docs/versioning.md" in readme
+
+
+def test_versioning_policy_covers_all_supported_update_paths():
+    policy = (REPO_ROOT / "docs" / "versioning.md").read_text(encoding="utf-8")
+
+    assert "Semantic Versioning" in policy
+    assert "git pull" in policy
+    assert "python -m pip install --upgrade smartmoney-cub-harness" in policy
+    assert "pipx upgrade smartmoney-cub-harness" in policy
+    assert "Trusted Publishing" in policy
+    assert "vX.Y.Z" in policy
+    assert "does not update automatically" in policy.lower()
+
+
+def test_local_virtual_environment_is_ignored():
+    gitignore = (REPO_ROOT / ".gitignore").read_text(encoding="utf-8").splitlines()
+
+    assert ".venv/" in gitignore
