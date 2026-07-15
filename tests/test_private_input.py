@@ -4,6 +4,7 @@ import csv
 from pathlib import Path
 
 from smartmoney_cub_harness.private_input import REQUIRED_PRIVATE_CASE_FIELDS, fingerprint_file, load_private_cases
+from smartmoney_cub_harness.safety import REDACTED
 from smartmoney_cub_harness.schemas import SAFETY_DECLARATION
 
 
@@ -99,4 +100,5 @@ def test_fingerprint_redacts_private_local_path(tmp_path: Path):
 
     assert result["safety"] == SAFETY_DECLARATION
     assert result["sha256"]
+    assert result["path"] == REDACTED
     assert str(csv_path) not in str(result)
