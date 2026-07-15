@@ -2,6 +2,8 @@
 
 `smartmoney-cub-harness` uses Semantic Versioning for its CLI, Python package, and portable artifact contracts.
 
+Current release channel: GitHub Releases. Each release provides a Git tag, wheel, and source distribution. PyPI publication is optional and deferred until a project owner configures Trusted Publishing.
+
 ## Version meanings
 
 - Patch (`0.1.0` -> `0.1.1`): compatible fixes, packaging improvements, diagnostics, and documentation.
@@ -35,7 +37,15 @@ smcub --version
 
 ### pipx installation
 
-pipx is the preferred end-user CLI installation because it isolates the command from unrelated Python environments:
+pipx is the preferred end-user CLI installation because it isolates the command from unrelated Python environments. Install the current GitHub tag directly:
+
+```bash
+pipx install "git+https://github.com/myc0576/smartmoney-cub-harness.git@v0.1.1"
+smcub --version
+smcub doctor
+```
+
+To move an existing pipx installation to a future GitHub tag, install that tag with `--force`. After a future PyPI publication, the shorter commands become available:
 
 ```bash
 pipx install smartmoney-cub-harness
@@ -70,14 +80,14 @@ Every public release follows the same order:
 3. Merge the reviewed change into `main`.
 4. Create an annotated `vX.Y.Z` Git tag for the merged commit.
 5. Create a GitHub Release from the same tag and describe user-visible changes and safety-contract impact.
-6. Publish the matching wheel and source distribution to PyPI through Trusted Publishing.
-7. Install or upgrade the release in a clean pipx environment and verify `smcub --version`, `smcub doctor`, and the toy loop.
+6. Attach the matching wheel and source distribution to the GitHub Release.
+7. Install the tag in a clean pipx environment and verify `smcub --version`, `smcub doctor`, and the toy loop.
 
-The Git tag, GitHub Release, Python package metadata, and PyPI version must match exactly.
+The Git tag, GitHub Release, and Python package metadata must match exactly. If PyPI is enabled later, its version must match them too.
 
 ## PyPI publication boundary
 
-The repository must use PyPI Trusted Publishing rather than storing a long-lived PyPI token. Publication must not begin until the PyPI project and its GitHub repository/environment trust relationship are configured and verified.
+PyPI is not required for the current GitHub Release channel. If it is enabled later, the repository must use PyPI Trusted Publishing rather than storing a long-lived PyPI token. Publication must not begin until the PyPI project and its GitHub repository/environment trust relationship are configured and verified.
 
 This CLI does not perform background update checks and does not modify its own Python environment. It remains offline by default with no telemetry or upload. Users initiate upgrades explicitly with Git, pip, or pipx.
 
