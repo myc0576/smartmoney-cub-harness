@@ -16,3 +16,15 @@ def test_doctor_reports_offline_no_credentials_required():
     assert result["broker_api_required"] is False
     assert result["execution_integrations"] == "disabled"
     assert result["safety"] == SAFETY_DECLARATION
+
+
+def test_doctor_includes_path_free_launcher_diagnostics():
+    result = doctor()
+
+    assert set(result["launcher"]) == {
+        "launcher_found",
+        "launcher_count",
+        "multiple_launchers",
+        "resolved_to_current_environment",
+    }
+    assert all(not isinstance(value, str) for value in result["launcher"].values())
