@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 import os
+import re
 import subprocess
 import sys
-import tomllib
 from pathlib import Path
 
 from smartmoney_cub_harness import __version__
@@ -29,10 +29,9 @@ def test_cli_version_matches_package_version():
 
 
 def test_build_metadata_uses_package_version_attribute():
-    payload = tomllib.loads((REPO_ROOT / "pyproject.toml").read_text(encoding="utf-8"))
+    payload = (REPO_ROOT / "pyproject.toml").read_text(encoding="utf-8")
 
-    assert payload["project"]["dynamic"] == ["version"]
-    assert "version" not in payload["project"]
-    assert payload["tool"]["setuptools"]["dynamic"]["version"] == {
-        "attr": "smartmoney_cub_harness.__version__"
-    }
+    assert 'dynamic = ["version"]' in payload
+    assert re.search(r"(?m)^version\s*=\s*['\"]", payload) is None
+    assert '[tool.setuptools.dynamic]' in payload
+    assert 'version = { attr = "smartmoney_cub_harness.__version__" }' in payload
