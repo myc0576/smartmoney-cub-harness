@@ -25,4 +25,5 @@ def test_release_workflow_validates_version_and_publishes_release_assets():
     assert 'actions/download-artifact@v4' in workflow
     assert 'needs: build' in workflow
     assert 'gh release create' in workflow
+    assert '--repo "${GITHUB_REPOSITORY}"' in workflow
     assert 'dist/*' in workflow
