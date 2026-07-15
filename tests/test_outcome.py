@@ -45,6 +45,26 @@ def test_build_outcome_writes_d1_price_fields_with_provenance(tmp_path: Path):
     assert outcome["met_user_pattern"] is True
 
 
+def test_build_outcome_can_publish_logical_provenance_instead_of_physical_path(tmp_path: Path):
+    run_dir = tmp_path / "run"
+    run_dir.mkdir()
+    (run_dir / "decision.json").write_text(
+        json.dumps({"symbol": "TOY.CUB", "decision_time": "2026-06-01T15:30:00+08:00"}),
+        encoding="utf-8",
+    )
+
+    outcome_path = build_outcome(
+        run_dir,
+        horizon="d1",
+        price_source=_prices(tmp_path),
+        price_source_label="smartmoney_cub_harness:data/sample_prices.json",
+    )
+
+    outcome = json.loads(outcome_path.read_text(encoding="utf-8"))
+    assert outcome["price_source"] == "smartmoney_cub_harness:data/sample_prices.json"
+    assert str(tmp_path) not in outcome_path.read_text(encoding="utf-8")
+
+
 def test_build_outcome_derives_symbol_from_artifact_candidate(tmp_path: Path):
     run_dir = tmp_path / "run"
     artifact_dir = run_dir / "artifacts"

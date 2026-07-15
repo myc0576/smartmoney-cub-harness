@@ -49,6 +49,9 @@ smcub = "smartmoney_cub_harness.cli:main"
 [tool.setuptools.packages.find]
 where = ["src"]
 
+[tool.setuptools.package-data]
+smartmoney_cub_harness = ["data/*.json"]
+
 [tool.setuptools.dynamic]
 version = { attr = "smartmoney_cub_harness.__version__" }
 

@@ -102,7 +102,13 @@ def _price_value(day_data: dict[str, Any], field: str) -> float:
     return float(day_data[field])
 
 
-def build_outcome(run_dir: str | Path, horizon: str, price_source: str | Path) -> Path:
+def build_outcome(
+    run_dir: str | Path,
+    horizon: str,
+    price_source: str | Path,
+    *,
+    price_source_label: str | None = None,
+) -> Path:
     if horizon not in VALID_HORIZONS:
         raise ValueError("horizon must be one of: d1, d3")
 
@@ -149,7 +155,7 @@ def build_outcome(run_dir: str | Path, horizon: str, price_source: str | Path) -
         f"{horizon}_return_pct": return_pct,
         "max_adverse_excursion_pct": adverse_pct,
         "met_user_pattern": bool(symbol_prices[exit_date].get("met_user_pattern", False)),
-        "price_source": str(redact(str(price_source))),
+        "price_source": str(redact(price_source_label or str(price_source))),
         "price_source_type": "json_fixture",
         "safety": SAFETY_DECLARATION,
     }

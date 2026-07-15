@@ -42,6 +42,10 @@ PRIVATE_TEXT_MARKERS = [
     "C:\\Users\\",
     "/Users/",
     "/home/",
+    "/usr/",
+    "/opt/",
+    "/tmp/",
+    "/var/",
 ]
 
 

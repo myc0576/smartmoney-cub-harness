@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import platform
 import sys
+from importlib.resources import as_file, files
 from pathlib import Path
 from typing import Any
 
@@ -20,7 +21,7 @@ from smartmoney_cub_harness.schemas import SAFETY_DECLARATION, VALID_HORIZONS
 
 LOOP_NAME = "observe_candidate_plan_position_outcome_review_rule_update"
 TOY_DECISION_TIME = "2026-06-01T15:30:00+08:00"
-TOY_PRICE_SOURCE = "examples/toy_strategy/sample_prices.json"
+TOY_PRICE_SOURCE = "smartmoney_cub_harness:data/sample_prices.json"
 
 
 def _read_json(path: Path) -> dict[str, Any]:
@@ -395,7 +396,14 @@ def run_agent_loop(
         )
     )
 
-    outcome_path = build_outcome(run_dir_rel, horizon=horizon, price_source=TOY_PRICE_SOURCE)
+    toy_prices = files("smartmoney_cub_harness").joinpath("data", "sample_prices.json")
+    with as_file(toy_prices) as toy_price_path:
+        outcome_path = build_outcome(
+            run_dir_rel,
+            horizon=horizon,
+            price_source=toy_price_path,
+            price_source_label=TOY_PRICE_SOURCE,
+        )
     outcome_path = Path(outcome_path)
     outcome = _read_json(outcome_path)
     outcome_path_rel = _display_path(outcome_path, root_path)
