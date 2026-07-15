@@ -21,6 +21,10 @@ def test_release_workflow_validates_version_and_publishes_release_assets():
 
     assert 'Verify tag matches package version' in workflow
     assert 'python -m build' in workflow
+    assert 'Verify installed toy loop outside checkout' in workflow
+    assert 'smcub loop --preset toy' in workflow
+    assert 'smcub inspect-artifacts' in workflow
+    assert 'mktemp -d' in workflow
     assert 'actions/upload-artifact@v4' in workflow
     assert 'actions/download-artifact@v4' in workflow
     assert 'needs: build' in workflow

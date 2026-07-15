@@ -1,6 +1,6 @@
 # Toy Strategy Example
 
-This example is intentionally simple and offline. It reads `sample_prices.json` and emits a toy observation candidate for `TOY.CUB`.
+This example is intentionally simple and offline. It reads the packaged toy price fixture and emits a toy observation candidate for `TOY.CUB`.
 
 It is not a trading recommendation. It exists only to exercise the harness loop.
 

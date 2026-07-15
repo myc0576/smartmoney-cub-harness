@@ -39,6 +39,16 @@ jobs:
           smcub --version
           smcub doctor
 
+      - name: Verify installed toy loop outside checkout
+        run: |
+          run_root="$(mktemp -d)"
+          cd "${run_root}"
+          smcub loop --preset toy --agent-trigger loop --json > loop-summary.json
+          run_dir="$(python -c "import json; print(json.load(open('loop-summary.json'))['run_dir'])")"
+          smcub inspect-artifacts "${run_dir}" > artifact-inspection.json
+          python -c "import json; result=json.load(open('artifact-inspection.json')); assert result['status'] == 'ok', result"
+          python -c "from pathlib import Path; text='\n'.join(p.read_text(encoding='utf-8', errors='replace') for p in Path('.').rglob('*') if p.is_file()); forbidden=('/home/', '/usr/', '/opt/', '/tmp/'); assert not any(item in text for item in forbidden), forbidden"
+
       - name: Upload distributions
         uses: actions/upload-artifact@v4
         with:

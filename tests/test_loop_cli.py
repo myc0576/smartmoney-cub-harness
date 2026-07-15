@@ -3,7 +3,6 @@ from __future__ import annotations
 import json
 import os
 import re
-import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -51,12 +50,12 @@ FORBIDDEN_PHRASES = [
 ABSOLUTE_PATH_RE = re.compile(r"(?i)([A-Z]:\\|/Users/|/home/)")
 
 
-def run_cli(*args: str) -> subprocess.CompletedProcess[str]:
+def run_cli(*args: str, cwd: Path = REPO_ROOT) -> subprocess.CompletedProcess[str]:
     env = dict(os.environ)
     env["PYTHONPATH"] = SRC_PATH + os.pathsep + env.get("PYTHONPATH", "")
     return subprocess.run(
         [sys.executable, "-m", "smartmoney_cub_harness.cli", *args],
-        cwd=REPO_ROOT,
+        cwd=cwd,
         env=env,
         text=True,
         capture_output=True,
@@ -102,6 +101,19 @@ def test_loop_preset_toy_exits_successfully_and_prints_safe_summary():
     assert summary["grade"] == "useful_alert"
     assert SAFETY_DECLARATION in result.stdout
     assert '"champion_mutated": false' in result.stdout
+
+
+def test_loop_preset_toy_works_outside_repository(tmp_path: Path):
+    result = run_cli("loop", "--preset", "toy", "--agent-trigger", "loop", "--json", cwd=tmp_path)
+
+    summary = load_summary(result)
+
+    assert summary["status"] == "ok"
+    assert (tmp_path / summary["loop_report"]).is_file()
+    assert (tmp_path / summary["trace"]).is_file()
+    outcome = json.loads((tmp_path / summary["outcome_path"]).read_text(encoding="utf-8"))
+    assert outcome["price_source"] == "smartmoney_cub_harness:data/sample_prices.json"
+    assert str(tmp_path) not in json.dumps(outcome)
 
 
 def test_loop_accepts_chinese_and_english_agent_triggers():
@@ -158,18 +170,8 @@ def test_challenger_rule_proposal_does_not_mutate_champion_registry():
     assert proposal["requires_human_confirmation"] is True
 
 
-def test_readme_demo_command_shape_works_when_console_script_is_available():
-    smcub = shutil.which("smcub")
-    if smcub is None:
-        result = run_cli("loop", "--preset", "toy", "--agent-trigger", "loop")
-    else:
-        result = subprocess.run(
-            [smcub, "loop", "--preset", "toy", "--agent-trigger", "loop"],
-            cwd=REPO_ROOT,
-            text=True,
-            capture_output=True,
-            check=False,
-        )
+def test_readme_demo_command_shape_works_with_current_source():
+    result = run_cli("loop", "--preset", "toy", "--agent-trigger", "loop")
 
     summary = load_summary(result)
 
