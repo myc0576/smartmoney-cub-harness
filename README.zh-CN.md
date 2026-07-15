@@ -70,7 +70,13 @@ python -m venv .venv
 
 如果电脑里安装过多个 Python，直接输入 `smcub` 可能命中另一个环境中的旧版本。安装后请运行 `smcub --version` 和 `smcub doctor`；`doctor` 会以不暴露本地路径的方式提示启动器冲突。
 
-正式发布到 PyPI 后，普通 CLI 用户推荐使用 pipx，让命令拥有独立环境：
+当前发行渠道是 GitHub Releases。`v0.1.1` 发布后，普通 CLI 用户可用 pipx 从固定 tag 安装，让命令拥有独立环境：
+
+```bash
+pipx install "git+https://github.com/myc0576/smartmoney-cub-harness.git@v0.1.1"
+```
+
+未来正式发布到 PyPI 后，可改用更短的安装和升级命令：
 
 ```bash
 pipx install smartmoney-cub-harness

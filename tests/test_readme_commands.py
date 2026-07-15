@@ -80,6 +80,8 @@ def test_versioning_policy_covers_all_supported_update_paths():
     assert "Trusted Publishing" in policy
     assert "vX.Y.Z" in policy
     assert "does not update automatically" in policy.lower()
+    assert "Current release channel: GitHub Releases" in policy
+    assert "git+https://github.com/myc0576/smartmoney-cub-harness.git@v0.1.1" in policy
 
 
 def test_local_virtual_environment_is_ignored():
