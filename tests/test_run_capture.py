@@ -23,7 +23,9 @@ def test_capture_run_writes_manifest_decision_and_artifacts(tmp_path: Path):
     assert result["decision"]["action_label"] == "ALERT"
     assert result["decision"]["signal_sources"] == ["signal"]
     assert result["manifest"]["safety"] == SAFETY_DECLARATION
+    assert result["run_envelope"]["safety"] == SAFETY_DECLARATION
     assert (run_dir / "run_manifest.json").exists()
+    assert json.loads((run_dir / "run_envelope.json").read_text(encoding="utf-8")) == result["run_envelope"]
     assert (run_dir / "decision.json").exists()
     assert (run_dir / "artifacts" / "signal.stdout.txt").read_text(encoding="utf-8").strip() == "toy context"
 
@@ -100,6 +102,52 @@ def test_capture_run_redacts_sensitive_artifacts(tmp_path: Path):
     assert "Trader" not in saved
     assert "[REDACTED]" in saved
     assert json.loads((run_dir / "artifacts" / "leak.meta.json").read_text(encoding="utf-8"))["argv"]
+
+
+def test_capture_run_redacts_local_path_components_from_command_name(tmp_path: Path):
+    script = tmp_path / "emit.py"
+    script.write_text("print('toy context')\n", encoding="utf-8")
+    private_command_name = "C:" + "\\Users\\Trader\\signal"
+
+    result = capture_run(
+        root=tmp_path,
+        mode="after-close",
+        commands=[{"name": private_command_name, "argv": [sys.executable, str(script)]}],
+        decision_time="2026-06-01T15:30:00+08:00",
+    )
+
+    run_dir = Path(result["run_dir"])
+    persisted = json.loads((run_dir / "run_envelope.json").read_text(encoding="utf-8"))
+    assert persisted["tool_calls"][0]["name"] == "REDACTED"
+    assert "Users" not in json.dumps(persisted)
+    assert "Trader" not in json.dumps(persisted)
+    for evidence_path in persisted["tool_calls"][0]["evidence"].values():
+        assert (run_dir / evidence_path).exists()
+
+
+def test_capture_run_preserves_evidence_for_duplicate_command_names(tmp_path: Path):
+    first = tmp_path / "first.py"
+    second = tmp_path / "second.py"
+    first.write_text("print('first')\n", encoding="utf-8")
+    second.write_text("print('second')\n", encoding="utf-8")
+
+    result = capture_run(
+        root=tmp_path,
+        mode="after-close",
+        commands=[
+            {"name": "signal", "argv": [sys.executable, str(first)]},
+            {"name": "signal", "argv": [sys.executable, str(second)]},
+        ],
+        decision_time="2026-06-01T15:30:00+08:00",
+    )
+
+    run_dir = Path(result["run_dir"])
+    stdout_paths = [call["evidence"]["stdout"] for call in result["run_envelope"]["tool_calls"]]
+    assert len(stdout_paths) == len(set(stdout_paths)) == 2
+    assert [(run_dir / path).read_text(encoding="utf-8").strip() for path in stdout_paths] == [
+        "first",
+        "second",
+    ]
 
 
 def test_unique_run_dir_reserves_directory_to_avoid_collisions(tmp_path: Path):

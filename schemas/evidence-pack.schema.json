@@ -1,0 +1,136 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/myc0576/smartmoney-cub-harness/schemas/evidence-pack.schema.json",
+  "title": "Smartmoney Cub Evidence Pack v1",
+  "description": "Frozen, replayable offline evidence for human challenger review.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "horizon",
+    "rule_candidate_path",
+    "samples",
+    "hashes",
+    "metrics",
+    "failure_count",
+    "trailing_consecutive_failure_count",
+    "review_status",
+    "promotion_gate",
+    "safety"
+  ],
+  "properties": {
+    "schema": { "const": "smartmoney_cub_evidence_pack.v1" },
+    "horizon": { "enum": ["d1", "d3"] },
+    "rule_candidate_path": { "$ref": "#/$defs/relativePath" },
+    "samples": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "sample_id",
+          "paths",
+          "manifest_validation",
+          "evaluation_grade",
+          "failed",
+          "safety"
+        ],
+        "properties": {
+          "sample_id": { "type": "string", "minLength": 1 },
+          "paths": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["manifest", "decision", "outcome", "evaluation"],
+            "properties": {
+              "manifest": { "$ref": "#/$defs/relativePath" },
+              "decision": { "$ref": "#/$defs/relativePath" },
+              "outcome": { "$ref": "#/$defs/relativePath" },
+              "evaluation": { "$ref": "#/$defs/relativePath" }
+            }
+          },
+          "manifest_validation": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["ok", "errors", "warnings", "source_count", "safety"],
+            "properties": {
+              "ok": { "type": "boolean" },
+              "errors": { "type": "array", "items": { "type": "string" } },
+              "warnings": { "type": "array", "items": { "type": "string" } },
+              "source_count": { "type": "integer", "minimum": 0 },
+              "safety": { "const": "READ_ONLY_NO_ORDER_NO_CANCEL_NO_TRADE" }
+            }
+          },
+          "evaluation_grade": {
+            "enum": [
+              "missed_opportunity",
+              "true_silent",
+              "not_evaluated",
+              "invalid",
+              "false_alert",
+              "useful_alert"
+            ]
+          },
+          "failed": { "type": "boolean" },
+          "safety": { "const": "READ_ONLY_NO_ORDER_NO_CANCEL_NO_TRADE" }
+        }
+      }
+    },
+    "hashes": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": { "$ref": "#/$defs/relativePath" },
+      "additionalProperties": {
+        "type": "string",
+        "pattern": "^[0-9a-fA-F]{64}$"
+      }
+    },
+    "metrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sample_count",
+        "false_alert_rate",
+        "missed_opportunity_rate",
+        "future_leakage_count",
+        "risk_contract_violation_rate"
+      ],
+      "properties": {
+        "sample_count": { "type": "integer", "minimum": 1 },
+        "false_alert_rate": { "type": "number", "minimum": 0, "maximum": 1 },
+        "missed_opportunity_rate": { "type": "number", "minimum": 0, "maximum": 1 },
+        "future_leakage_count": { "type": "integer", "minimum": 0 },
+        "risk_contract_violation_rate": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    },
+    "failure_count": { "type": "integer", "minimum": 0 },
+    "trailing_consecutive_failure_count": { "type": "integer", "minimum": 0 },
+    "review_status": {
+      "enum": ["challenger", "ready_for_review", "pending_review", "blocked"]
+    },
+    "promotion_gate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "eligible_for_human_review",
+        "human_confirmation_required",
+        "champion_mutated",
+        "core_rules_mutated"
+      ],
+      "properties": {
+        "eligible_for_human_review": { "type": "boolean" },
+        "human_confirmation_required": { "const": true },
+        "champion_mutated": { "const": false },
+        "core_rules_mutated": { "const": false }
+      }
+    },
+    "safety": { "const": "READ_ONLY_NO_ORDER_NO_CANCEL_NO_TRADE" }
+  },
+  "$defs": {
+    "relativePath": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?![\\\\/])(?![A-Za-z]:[\\\\/])(?!\\.\\.(?:[\\\\/]|$))(?!.*[\\\\/]\\.\\.(?:[\\\\/]|$)).+"
+    }
+  }
+}

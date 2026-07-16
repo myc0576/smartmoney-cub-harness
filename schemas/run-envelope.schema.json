@@ -1,0 +1,126 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/myc0576/smartmoney-cub-harness/schemas/run-envelope.schema.json",
+  "title": "Smartmoney Cub Run Envelope v1",
+  "description": "Read-only provenance envelope for one offline harness run. Permission scope is declarative and unverified; it is not a sandbox attestation.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "run_id",
+    "decision_time",
+    "mode",
+    "safety",
+    "agent",
+    "input_snapshot_sha256",
+    "tool_calls",
+    "output_evidence",
+    "failure_count",
+    "trailing_consecutive_failure_count",
+    "status",
+    "permission_scope",
+    "champion_mutated",
+    "core_rules_mutated"
+  ],
+  "properties": {
+    "schema": { "const": "smartmoney_cub_run_envelope.v1" },
+    "run_id": { "type": "string", "minLength": 1 },
+    "decision_time": { "type": "string", "format": "date-time" },
+    "mode": { "type": "string", "minLength": 1 },
+    "safety": { "const": "READ_ONLY_NO_ORDER_NO_CANCEL_NO_TRADE" },
+    "agent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "version", "interface"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "version": { "type": ["string", "null"] },
+        "interface": { "type": "string", "minLength": 1 }
+      }
+    },
+    "input_snapshot_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-fA-F]{64}$"
+    },
+    "tool_calls": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "started_at",
+          "finished_at",
+          "returncode",
+          "timed_out",
+          "status",
+          "attempt",
+          "evidence"
+        ],
+        "properties": {
+          "name": { "type": "string", "minLength": 1 },
+          "started_at": { "type": "string", "minLength": 1 },
+          "finished_at": { "type": "string", "minLength": 1 },
+          "returncode": { "type": "integer" },
+          "timed_out": { "type": "boolean" },
+          "status": { "enum": ["succeeded", "failed"] },
+          "attempt": { "type": "integer", "minimum": 1 },
+          "evidence": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["stdout", "stderr", "metadata"],
+            "properties": {
+              "stdout": { "$ref": "#/$defs/relativePath" },
+              "stderr": { "$ref": "#/$defs/relativePath" },
+              "metadata": { "$ref": "#/$defs/relativePath" }
+            }
+          }
+        }
+      }
+    },
+    "output_evidence": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/relativePath" }
+    },
+    "failure_count": { "type": "integer", "minimum": 0 },
+    "trailing_consecutive_failure_count": { "type": "integer", "minimum": 0 },
+    "status": { "enum": ["completed", "pending_review", "blocked"] },
+    "permission_scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "network",
+        "broker_access",
+        "account_mutation",
+        "order",
+        "cancel",
+        "trade",
+        "embedded_llm",
+        "writes",
+        "enforcement",
+        "verified"
+      ],
+      "properties": {
+        "network": { "const": false },
+        "broker_access": { "const": false },
+        "account_mutation": { "const": false },
+        "order": { "const": false },
+        "cancel": { "const": false },
+        "trade": { "const": false },
+        "embedded_llm": { "const": false },
+        "writes": { "const": "run_directory_only" },
+        "enforcement": { "const": "declarative" },
+        "verified": { "const": false }
+      }
+    },
+    "champion_mutated": { "const": false },
+    "core_rules_mutated": { "const": false }
+  },
+  "$defs": {
+    "relativePath": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?![\\\\/])(?![A-Za-z]:[\\\\/])(?!\\.\\.(?:[\\\\/]|$))(?!.*[\\\\/]\\.\\.(?:[\\\\/]|$)).+"
+    }
+  }
+}

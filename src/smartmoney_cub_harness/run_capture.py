@@ -11,6 +11,7 @@ from typing import Any
 
 from smartmoney_cub_harness.decision import derive_decision
 from smartmoney_cub_harness.manifest import validate_run_manifest
+from smartmoney_cub_harness.run_envelope import build_run_envelope
 from smartmoney_cub_harness.safety import redact
 from smartmoney_cub_harness.schemas import MANIFEST_SCHEMA, SAFETY_DECLARATION
 
@@ -31,18 +32,22 @@ def safe_name(value: str) -> str:
     return cleaned.strip("._") or "command"
 
 
+def safe_command_name(value: object) -> str:
+    return safe_name(str(redact(str(value))))
+
+
 def parse_command(value: str) -> dict[str, Any]:
     if "=" in value and not value.split("=", 1)[0].strip().count(" "):
         name, raw_argv = value.split("=", 1)
         argv = [part for part in raw_argv.split("|") if part]
         if not name or not argv:
             raise ValueError("command must include name and at least one argv part")
-        return {"name": safe_name(name), "argv": argv}
+        return {"name": safe_command_name(name), "argv": argv}
     argv = shlex.split(value)
     if not argv:
         raise ValueError("command cannot be empty")
     name = Path(argv[1]).stem if len(argv) > 1 else Path(argv[0]).stem
-    return {"name": safe_name(name), "argv": argv}
+    return {"name": safe_command_name(name), "argv": argv}
 
 
 def get_command_preset(name: str) -> list[dict[str, Any]]:
@@ -63,7 +68,7 @@ def normalize_argv(argv: list[str]) -> list[str]:
 
 
 def run_command(root: Path, command: dict[str, Any], timeout_seconds: int) -> dict[str, Any]:
-    name = safe_name(str(command["name"]))
+    name = safe_command_name(command["name"])
     argv = normalize_argv([str(part) for part in command["argv"]])
     started_at = now_iso()
     try:
@@ -125,16 +130,29 @@ def capture_run(
     decision_time: str | None = None,
     timeout_seconds: int = 300,
     sandbox: bool = False,
+    agent_name: str = "external-agent",
+    agent_version: str | None = None,
+    agent_interface: str = "command",
 ) -> dict[str, Any]:
     root_path = Path(root).expanduser().resolve()
     command_results = [run_command(root_path, command, timeout_seconds) for command in commands]
+    used_artifact_names: set[str] = set()
+    for attempt, result in enumerate(command_results, start=1):
+        base_name = str(result["name"])
+        artifact_name = base_name
+        suffix = attempt
+        while artifact_name in used_artifact_names:
+            artifact_name = f"{base_name}-{suffix}"
+            suffix += 1
+        used_artifact_names.add(artifact_name)
+        result["artifact_name"] = artifact_name
     effective_decision_time = decision_time or now_iso()
     run_dir = unique_run_dir(root_path, effective_decision_time, mode, sandbox=sandbox)
     artifact_dir = run_dir / "artifacts"
     artifact_dir.mkdir(parents=True, exist_ok=True)
 
     for result in command_results:
-        name = result["name"]
+        name = result["artifact_name"]
         stored_stdout = redact(result["stdout"])
         stored_stderr = redact(result["stderr"])
         (artifact_dir / f"{name}.stdout.txt").write_text(str(stored_stdout), encoding="utf-8")
@@ -159,9 +177,9 @@ def capture_run(
                 "fetch_time": effective_decision_time,
                 "available_at": effective_decision_time,
                 "data_quality_flag": "ok" if item["returncode"] == 0 else "error",
-                "artifact_stdout": f"artifacts/{item['name']}.stdout.txt",
-                "artifact_stderr": f"artifacts/{item['name']}.stderr.txt",
-                "artifact_meta": f"artifacts/{item['name']}.meta.json",
+                "artifact_stdout": f"artifacts/{item['artifact_name']}.stdout.txt",
+                "artifact_stderr": f"artifacts/{item['artifact_name']}.stderr.txt",
+                "artifact_meta": f"artifacts/{item['artifact_name']}.meta.json",
             }
             for item in command_results
         ],
@@ -170,6 +188,16 @@ def capture_run(
     decision = derive_decision(mode, command_results, effective_decision_time)
     decision["run_id"] = manifest["run_id"]
     decision["decision_time"] = effective_decision_time
+    run_envelope = build_run_envelope(
+        run_id=manifest["run_id"],
+        decision_time=effective_decision_time,
+        mode=mode,
+        commands=commands,
+        command_results=command_results,
+        agent_name=agent_name,
+        agent_version=agent_version,
+        agent_interface=agent_interface,
+    )
 
     (run_dir / "run_manifest.json").write_text(
         json.dumps(redact(manifest), ensure_ascii=False, indent=2) + "\n",
@@ -177,6 +205,10 @@ def capture_run(
     )
     (run_dir / "manifest_validation.json").write_text(
         json.dumps(redact(manifest_validation), ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+    (run_dir / "run_envelope.json").write_text(
+        json.dumps(run_envelope, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
     )
     (run_dir / "decision.json").write_text(
@@ -188,6 +220,7 @@ def capture_run(
         "run_dir": str(run_dir),
         "manifest": redact(manifest),
         "manifest_validation": redact(manifest_validation),
+        "run_envelope": run_envelope,
         "decision": redact(decision),
         "commands": [redact({k: v for k, v in item.items() if k not in {"stdout", "stderr"}}) for item in command_results],
     }

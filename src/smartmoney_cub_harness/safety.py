@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import re
-from pathlib import Path
+from pathlib import Path, PurePosixPath, PureWindowsPath
 from typing import Any
 
 from smartmoney_cub_harness.schemas import SAFETY_DECLARATION
@@ -73,6 +73,17 @@ def redact(value: Any) -> Any:
     if isinstance(value, str):
         return redact_string(value)
     return value
+
+
+def is_relative_artifact_path(value: object) -> bool:
+    """Return whether a portable artifact reference stays below its pack root."""
+    if not isinstance(value, str) or not value.strip():
+        return False
+    windows_path = PureWindowsPath(value)
+    posix_path = PurePosixPath(value)
+    if windows_path.drive or windows_path.root or posix_path.root:
+        return False
+    return ".." not in re.split(r"[\\/]", value)
 
 
 def safety_envelope(payload: dict[str, Any]) -> dict[str, Any]:

@@ -59,6 +59,11 @@ def register_candidate(
 
     metrics = candidate.get("metrics") or {}
     reasons = promotion_blockers(metrics)
+    review_status = candidate.get("review_status")
+    if review_status in {"blocked", "pending_review"}:
+        reasons.append(f"review_status_{review_status}")
+    if int(candidate.get("failure_count") or 0) > 0:
+        reasons.append("evidence_failures_detected")
     eligible = not reasons
     status = "promoted" if eligible and confirm_promote else ("promotion_recommended" if eligible else "challenger")
 

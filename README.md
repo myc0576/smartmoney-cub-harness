@@ -1,334 +1,323 @@
 # smartmoney-cub-harness
 
-<div align="center">
-
-![smartmoney-cub-harness cover](assets/smartmoney-cub-harness-cover.png)
-
-## 游资复盘引擎 · 让每一次决策都变成系统的进化
-
-*"散户靠感觉，高手靠系统。把你的感觉，变成可复盘、可验证、可进化的规则。"*
-
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Tests](https://img.shields.io/badge/tests-pytest-informational)](tests/)
 [![Read-only](https://img.shields.io/badge/mode-read--only-brightgreen)](docs/safety.md)
-[![Local-first](https://img.shields.io/badge/local--first-no%20telemetry-success)](docs/privacy.md)
-[![Agent-ready](https://img.shields.io/badge/agent--ready-loop%20artifacts-blueviolet)](docs/agent-loop.md)
-[![UZI-Skill](https://img.shields.io/badge/ecosystem-UZI--Skill-orange)](docs/integrations.md)
-[![TradingAgents-ready](https://img.shields.io/badge/TradingAgents--ready-optional--adapter-informational)](docs/tradingagents-adapter.md)
+[![No financial advice](https://img.shields.io/badge/no-financial%20advice-critical)](docs/safety.md)
+[![Human-in-the-loop](https://img.shields.io/badge/human--in--the--loop-required-blueviolet)](docs/harness-contract.md)
+[![Agent-ready](https://img.shields.io/badge/agent--ready-offline%20artifacts-success)](docs/agent-integration.md)
 
-只读 AI 复盘与规则进化 harness · 决策记录 · D1/D3 结果验证 · 本地 Markdown 记忆 · challenger -> champion 治理
+`smartmoney-cub-harness` is a **local-first, read-only, agent-agnostic control plane for trading review and evidence governance**. It turns an external caller's offline run into portable, reviewable artifacts without taking trading authority.
 
-[30 秒上手](#30-秒上手) · [5 秒体验闭环](#5-秒体验复盘闭环) · [核心理念](#核心理念系统--感觉) · [AI 助手接入](#给-ai-助手只读复盘协作) · [开源生态矩阵](#优秀开源项目集成矩阵) · [安全边界](#安全边界你的系统只属于你) · [CLI](#cli-commands)
+External Agent or CLI caller → Run Envelope → frozen Benchmark/Evidence Pack → deterministic replay → explicit human promotion gate.
 
-`READ_ONLY_NO_ORDER_NO_CANCEL_NO_TRADE`
+It has **no embedded LLM**, **no broker connection**, and **no automatic trading**. It does not place, cancel, or execute trades; select stocks; mutate accounts; run a background autonomous trading Agent; or automatically mutate core rules.
 
-</div>
+## Toy/offline control-plane workflow
 
----
+Install the package, then capture one deterministic toy run with external-Agent metadata:
 
-游资和散户最大的区别是什么？不是信息差，不是资金量，而是系统。
+```bash
+git clone https://github.com/myc0576/smartmoney-cub-harness.git
+cd smartmoney-cub-harness
+python -m pip install -e ".[dev]"
+smcub capture-run --mode after-close --preset toy --sandbox --decision-time "2026-06-01T15:31:00+08:00" --agent-name "toy-doc-agent" --agent-version "1.0" --agent-interface "cli"
+smcub validate-envelope tmp/sandbox/20260601/20260601_153100-after-close/run_envelope.json
+smcub build-outcome tmp/sandbox/20260601/20260601_153100-after-close --horizon d1 --price-source examples/toy_strategy/sample_prices.json
+smcub build-evidence-pack tmp/toy-evidence-pack --sample tmp/sandbox/20260601/20260601_153100-after-close --rule-candidate examples/toy_strategy/sample_rule_candidate.json --horizon d1
+smcub replay-evidence-pack tmp/toy-evidence-pack
+```
 
-高手每一次决策都有计划、有证据、有复盘、有规则迭代。普通人最容易掉进的坑，是复盘时翻聊天记录、翻交易软件、翻截图，折腾半天还是说不清当时为什么买、错在什么地方、下一次该怎么改。
+Run this sequence in a clean checkout; if you reuse the fixed decision time, `capture-run` adds a numeric suffix to avoid overwriting the earlier run. All inputs are toy/offline. The machine contracts are [Run Envelope](schemas/run-envelope.schema.json) and [Evidence Pack](schemas/evidence-pack.schema.json).
 
-`smartmoney-cub-harness` 是一个本地优先的 AI 复盘引擎。它帮你记录每一次决策的完整逻辑，追踪 D1/D3 的结果，把教训变成规则，把规则沉淀成系统。
+The workflow states are review states, never trading actions: a Run Envelope is `completed`, `pending_review`, or `blocked`; an Evidence Pack is `challenger`, `ready_for_review`, `pending_review`, or `blocked`; a replay report is `verified`, `pending_review`, or `blocked`. Only `action_label` describes a recorded observation such as `SILENT` or `ALERT`.
 
-它不是个股建议软件，不是自动交易系统，不是券商连接器，也不是财务建议系统。它是你的私人只读交易系统训练器。
+Run Envelope permissions are a **declarative, unverified policy record** (`enforcement: declarative`, `verified: false`), not a subprocess sandbox or proof that an external command obeyed the policy. The CLI's `--sandbox` flag only selects the disposable `tmp/sandbox` output namespace; it does not isolate the process. Run untrusted commands inside an OS/container sandbox. `evidence_pack.sha256` seals the exact pack manifest for local tamper detection; it is not an authenticated signature. Replay rejects a missing, malformed, mismatched, or structurally invalid seal/manifest as `pending_review`.
 
-## 30 秒上手
+Optional ecosystem integrations remain outside the trusted core. See [docs/integrations.md](docs/integrations.md), including the recommended companion [wbh604/UZI-Skill](https://github.com/wbh604/UZI-Skill), and [the TradingAgents adapter boundary](docs/tradingagents-adapter.md). External LLM/network credentials stay outside this repository, and imported reports remain review evidence rather than trading authority.
 
-任何 agent 里丢一句话，让它按本仓库的安全合同跑 toy 离线闭环。公开仓库只使用 toy offline data。
+### Isolated installation and upgrades
 
-| 你用的 agent | 直接丢这句 |
-| --- | --- |
-| Claude Code | `阅读 AGENTS.md 和 docs/harness-contract.md，运行 smcub loop --preset toy --agent-trigger "自进化"，只做只读复盘，不连接券商，不下单。` |
-| Codex / OpenAI CLI | `在这个仓库里按 README 跑 smartmoney-cub-harness toy loop：smcub loop --preset toy --agent-trigger "自进化"，然后阅读 loop_report.md 和 trace.jsonl。` |
-| Cursor | `请按 docs/agent-loop.md 使用本项目，跑 toy loop 并总结复盘产物；所有规则更新只能保持 challenger 状态。` |
-| Gemini CLI | `请阅读 docs/harness-contract.md，执行 toy offline loop，确认输出包含 READ_ONLY_NO_ORDER_NO_CANCEL_NO_TRADE。` |
-| OpenCode / OpenClaw | `帮我用这个仓库做一次只读复盘演示：运行 smcub doctor，再运行 smcub loop --preset toy --agent-trigger "自进化"。` |
-| CLI 直用 | `git clone https://github.com/myc0576/smartmoney-cub-harness.git && cd smartmoney-cub-harness && pip install -e ".[dev]" && smcub loop --preset toy --agent-trigger "自进化"` |
-
-### 隔离安装与版本确认
-
-不要把开发版本直接装进全局 Python。Windows 推荐使用项目内虚拟环境：
+Keep the CLI in an isolated environment and verify the executable you are using:
 
 ```powershell
 py -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -e ".[dev]"
 .\.venv\Scripts\smcub.exe --version
-.\.venv\Scripts\smcub.exe doctor
 ```
-
-macOS / Linux：
 
 ```bash
 python -m venv .venv
 ./.venv/bin/python -m pip install -e ".[dev]"
 ./.venv/bin/smcub --version
-./.venv/bin/smcub doctor
-```
-
-如果电脑里安装过多个 Python，直接输入 `smcub` 可能命中另一个环境中的旧版本。安装后请运行 `smcub --version` 和 `smcub doctor`；`doctor` 会以不暴露本地路径的方式提示启动器冲突。
-
-当前发行渠道是 GitHub Releases。普通 CLI 用户可用 pipx 从最新修复 tag 安装，让命令拥有独立环境：
-
-```bash
-pipx install "git+https://github.com/myc0576/smartmoney-cub-harness.git@v0.1.2"
-```
-
-未来正式发布到 PyPI 后，可改用更短的安装和升级命令：
-
-```bash
 pipx install smartmoney-cub-harness
 pipx upgrade smartmoney-cub-harness
 ```
 
-现有安装不会自动同步。Git editable、pip、pipx 和源码压缩包用户的升级方式，以及 SemVer、Git tag、GitHub Release、PyPI 发布顺序，见 [版本与升级政策](docs/versioning.md)。
+Existing installations do not update automatically. See [docs/versioning.md](docs/versioning.md) for Git, pip, pipx, tags, and GitHub Release update paths.
 
-装好后最常用的安全命令：
-
-```bash
-smcub doctor
-smcub privacy-audit
-smcub loop --preset toy --agent-trigger "自进化"
-smcub inspect-artifacts <run_dir>
-```
-
-本地私有 CSV 复盘可以使用自进化流程，但 champion 规则变更仍然必须人工确认：
+The existing toy Agent Loop remains supported:
 
 ```bash
-smcub self-evolve --input-csv path/to/private_cases.csv --max-iterations 20 --time-budget-min 10 --horizon d1
-smcub confirm-promotion state/self_evolve/<loop_id>/promotion_packet.json --decision promote --note "manual approval"
-```
-
-## 5 秒体验复盘闭环
-
-真正有价值的复盘，不是看一眼盈亏就完事，而是把每一次判断拆成：计划是什么、证据是什么、结果是什么、下次怎么改。
-
-一条命令跑完整个 toy 闭环：
-
-```bash
-git clone https://github.com/myc0576/smartmoney-cub-harness.git
-cd smartmoney-cub-harness
-pip install -e ".[dev]"
 smcub loop --preset toy --agent-trigger "自进化"
 ```
 
-运行后会在本地生成：
-
-- `loop_report.md`
-- `trace.jsonl`
-- `case_record.json`
-- `memory.md`
-- `evolution_ledger.jsonl`
-
-输出摘要会保持这个形状：
+Example loop output:
 
 ```json
 {
   "status": "ok",
   "loop_name": "observe_candidate_plan_position_outcome_review_rule_update",
   "preset": "toy",
-  "champion_mutated": false,
-  "network_required": false,
-  "telemetry": false,
-  "safety": "READ_ONLY_NO_ORDER_NO_CANCEL_NO_TRADE"
+  "safety": "READ_ONLY_NO_ORDER_NO_CANCEL_NO_TRADE",
+  "champion_mutated": false
 }
 ```
 
-## 核心理念：系统 > 感觉
+AI decision harness for subjective A-share traders.  
+Read-only. Human-in-the-loop. Built for review, discipline, and rule evolution.
 
-单次判断会忘，系统会进化。
+**聪明资金幼年体 / 游资幼年体：陪你复盘，不替你下单。**  
+**把“小资金做大的神话”，拆成每天可记录、可验证、可进化的交易系统。**
 
-`smartmoney-cub-harness` 把一次复盘拆成一条可审计链路：
+**Not a stock-picking bot. A semi-quant AI decision harness where human traders and agents evolve through evidence.**
 
-```text
-Plan -> Observe -> Record -> Outcome -> Evaluate -> Memory -> Rule Candidate
-```
+## Safety & Disclaimer
 
-这条链路对应的是：
+This project is for research, journaling, review, and educational workflow design only. It is not financial advice, not a stock recommendation service, not price prediction, and not a trading execution system. Any account, screenshot, or trading-record input is used only for local review and structured analysis.
 
-| 环节 | 作用 |
-| --- | --- |
-| Plan | 写清楚当时的计划、假设和风险条件 |
-| Observe | 记录只读观察，不把观察变成买卖指令 |
-| Record | 生成 manifest、decision、trace 等可审计产物 |
-| Outcome | 等 D1/D3 结果出现后再评价，不偷看未来 |
-| Evaluate | 检查决策质量、数据质量和安全合同 |
-| Memory | 把复盘变成本地 Markdown 记忆 |
-| Rule Candidate | 只提出 challenger 规则候选，不自动改 champion |
-
-每一次错误都应该被拆解，每一条规则都应该被验证或淘汰。这个项目做的不是预测，而是帮你把主观判断训练成可复盘的系统。
-
-## 给普通用户
-
-你不需要券商 API，不需要量化背景，也不需要把私有资料放进公开仓库。你可以在本地整理这些只读输入：
-
-- 交易计划文本。
-- 交易日志 CSV。
-- 同花顺或券商截图。
-- 只读导出文件。
-- 手写复盘笔记。
-- toy offline 示例，用来先学习流程。
-
-Harness 帮你结构化这些问题：
-
-- 当时的 thesis 是什么？
-- invalidation、time stop、give-up conditions 是否写清楚？
-- 数据源、available time、data quality 是否可靠？
-- D1/D3 之后结果如何？
-- 这次失败是执行问题、证据问题，还是规则问题？
-- 有没有值得进入 challenger 状态的规则候选？
-
-## 给 AI 助手：只读复盘协作
-
-AI 助手在这个仓库里只能扮演 reviewer、challenger、archivist、drift detector 或 systems assistant。它们帮助你复盘，不替你承担交易动作。
-
-| 角色 | 可以做什么 | 不能做什么 |
-| --- | --- | --- |
-| Reviewer | 总结计划、证据、延迟结果和复盘评分 | 把复盘结论改写成买卖指令 |
-| Challenger | 生成反方证据问题和缺失风险清单 | 只挑支持原判断的证据 |
-| Archivist | 把本地产物整理成可携带 Markdown 记忆 | 把真实账户、截图或私有路径提交到公开仓库 |
-| Drift Detector | 对比当前行为和历史规则 | 绕过指标与人工确认提升 champion |
-| Systems Assistant | 拆解目标、风险、心理和结果 | 覆盖人的最终判断或执行交易 |
-
-安全 agent workflow：
-
-1. 读 `AGENTS.md` 和 [docs/harness-contract.md](docs/harness-contract.md)。
-2. 运行 `smcub doctor`。
-3. 运行 `smcub loop --preset toy --agent-trigger "自进化"`。
-4. 打开 `loop_report.md` 和 `trace.jsonl`。
-5. 提出复盘、安全、redaction、schema 或 workflow 改进。
-6. 规则更新保持 challenger 状态。
-7. champion 变更只通过显式人工确认路径发生。
-
-详见 [docs/agent-loop.md](docs/agent-loop.md) 和 [docs/agent-integration.md](docs/agent-integration.md)。
-
-## 优秀开源项目集成矩阵
-
-这个 harness 会持续预留优秀开源项目的接入位。集成的目标不是制造更激进的交易信号，而是把外部工具的输出纳入只读复盘、证据整理和规则治理。
-
-| 项目 / 类别 | 当前状态 | 可以怎样接入 harness | 安全边界 |
-| --- | --- | --- | --- |
-| [wbh604/UZI-Skill](https://github.com/wbh604/UZI-Skill) | 推荐搭配 / 生态接入位 | 作为外部分析报告或 agent skill 灵感来源，输出只能作为本地复盘材料进入 reviewer / challenger 流程 | 不声明内置运行时集成；不把分析结论变成买卖指令 |
-| [TauricResearch/TradingAgents](https://github.com/TauricResearch/TradingAgents) | optional documented adapter / 用户自选外部引擎 | 用户本地运行 TradingAgents 生成多智能体分析/候选报告，或显式开启 optional local bridge 生成只读 review packet；该 packet 进入 reviewer / challenger / D1-D3 outcome review / rule candidate 流程 | 用户自行配置 LLM/API key；harness 不保存、不收集、不上传 key；不连接券商；不下单；不把 TradingAgents 输出直接当交易指令 |
-| 数据源适配项目 | 预留 | 只读导出、toy fixture、公开样例 schema | 不接 broker execution，不写账户，不下单 |
-| 报告生成项目 | 预留 | 把 `loop_report.md`、case record、ledger 转成更好的本地阅读材料 | 不上传私有复盘，不发布真实持仓 |
-| Agent skill 项目 | 预留 | 增强 reviewer、challenger、archivist、drift detector 的协作体验 | 不允许越权到交易执行 |
-| 评估 / 回测项目 | 预留 | 帮助评估规则候选和样本质量 | 不跳过 D1/D3 provenance 与 future-leakage 检查 |
-| 知识记忆项目 | 预留 | 管理本地 Markdown memory、case bank、evolution ledger | 不上传私有交易逻辑 |
-
-接入规则见 [docs/integrations.md](docs/integrations.md)。
-
-## 可选接入 TradingAgents
-
-TradingAgents 适合已经会配置 LLM provider、并希望把外部多智能体金融分析能力接入本地复盘系统的用户。默认 toy loop 不需要 TradingAgents，也不需要任何 LLM/API key；`smartmoney-cub-harness` 本身不托管、不读取明文、不提交、不上传 TradingAgents 的 key。
-
-推荐两种模式：
-
-1. `report-only mode`：用户独立运行 TradingAgents，把本地报告导入 harness，生成只读 review packet。
-2. `optional local bridge mode`：用户已经在本地安装并配置 TradingAgents 后，显式传入 `--allow-network` 和 `--ack-external-llm`，由 adapter 包装外部分析结果为 review packet。
-
-```bash
-# report-only：用户先在 TradingAgents 中生成报告，然后导入本 harness
-smcub tradingagents-ingest \
-  --report path/to/tradingagents_report.md \
-  --ticker 600519.SS \
-  --analysis-date 2026-07-06 \
-  --output artifacts/tradingagents_review_packet.json
-
-# optional local bridge：仅当用户本地已经安装并配置 TradingAgents 后使用
-smcub tradingagents-doctor
-smcub tradingagents-run \
-  --ticker 600519.SS \
-  --analysis-date 2026-07-06 \
-  --output artifacts/tradingagents_review_packet.json \
-  --allow-network \
-  --ack-external-llm
-```
-
-TradingAgents 的输出只会进入 reviewer / challenger / evidence / case-review 流程。它不能成为买入、卖出、下单、撤单、自动执行或账户操作的指令；任何 rule candidate 进入 champion 仍然必须由人显式确认。
-
-## 安全边界：你的系统，只属于你
-
-交易逻辑和复盘记忆是私有资产。`smartmoney-cub-harness` 的设计原则是：你的交易系统只在你本地进化。
-
-每个 manifest、decision、outcome、evaluation、registry、doctor output 和 loop output 都必须携带：
+Every manifest, decision, outcome, evaluation, registry, and doctor output carries:
 
 ```text
 READ_ONLY_NO_ORDER_NO_CANCEL_NO_TRADE
 ```
 
-项目默认：
+## The Story
 
-- Local-first。
-- Offline by default。
-- No telemetry。
-- No upload。
-- No trading execution。
-- No broker automation。
-- CLI 输出前先 redaction。
-- 公开仓库只使用 toy examples。
+很多人都听过 A 股江湖里“小资金做大”的神话。
 
-它明确不做：
+有人记住了龙头，有人记住了情绪，有人记住了分歧转一致，有人记住了“高手买入龙头，超级高手卖出龙头”。但真正难的不是背下这些语录，而是在自己的账户里，把每一次冲动、犹豫、误判、错过、格局和撤退，变成可以复盘的证据链。
 
-- 不下单。
-- 不撤单。
-- 不修改账户。
-- 不自动化券商。
-- 不连接真实交易执行。
-- 发布真实交易记录、真实 watchlist、账户数据、私有策略 prompt、私有路径、credentials 或 cookies。
+`smartmoney-cub-harness` 想做的不是一个告诉你明天买什么的机器人。它是一只还在长大的“聪明资金幼年体”：它只读你的账户导出、截图、日志或 toy data，只记录你的计划和证据，只在结果出来之后和你一起复盘。
 
-运行：
+It does not ask "what is tomorrow's winner?" It asks:
 
-```bash
-smcub privacy-audit
-smcub doctor
+- Why did you act at that time?
+- Where was the invalidation point?
+- Was this a repeatable pattern, or luck?
+- Did the cycle offer opportunity, or did emotion take over?
+- After D1/D3 review, should this rule be promoted, downgraded, or deleted?
+
+In the AI era, good review does not have to depend on randomly meeting a mentor. A large model can become a sparring partner, challenger, reviewer, archivist, and systems-engineering assistant. But your pattern still has to grow out of your own feedback loop.
+
+## What It Is
+
+- A subjective trading decision harness.
+- A read-only account/screenshot review companion.
+- A trading journal with provenance and invalidation discipline.
+- A D1/D3 outcome review engine.
+- A rule evolution loop.
+- An agent-ready review framework.
+- A personal pattern discovery system.
+- A semi-quantitative bridge between human discretion and machine-audited review.
+
+## What It Is Not
+
+- Not a quantitative alpha factory.
+- Not a single trading strategy.
+- Not a stock-picking bot.
+- Not a signal-selling system.
+- Not a broker or execution bot.
+- Not an automated trading system.
+- Not financial advice.
+- Not a promise that small capital will grow large.
+
+## Account & Screenshot Input
+
+`smartmoney-cub-harness` can work with different levels of input:
+
+- Read-only broker/account export.
+- Read-only QMT or adapter integration if configured locally.
+- Trading journal CSV.
+- Watchlist files.
+- TongHuaShun or broker screenshots of positions, orders, and daily review.
+- Manually written trading notes.
+
+All inputs are for review and journal generation only. The public core does not connect to live execution by default. It does not place orders, cancel orders, or modify accounts.
+
+Screenshots are often the safer path for ordinary users: lower setup cost, smaller permission surface, and less chance of confusing review with execution. Even without an API, you can provide position screenshots, broker fill screenshots, and trading-plan text; the harness can still act as an AI review partner that structures the plan, risk, invalidation, and later outcome.
+
+哪怕你没有 API，也可以把同花顺持仓截图、券商成交截图、交易计划文本丢给它，它依然可以作为 AI 复盘陪练，帮你整理当时的计划、风险、失效位和后续结果。
+
+## Core Loop
+
+```mermaid
+%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#f6f8fa", "primaryTextColor": "#24292f", "primaryBorderColor": "#8c959f", "lineColor": "#57606a", "secondaryColor": "#ddf4ff", "tertiaryColor": "#fff8c5"}}}%%
+flowchart TD
+  subgraph Human["Human Trader"]
+    A["Trading Thesis<br/>计划 / 预案"]
+    B["Observation<br/>盘中观察"]
+    C["Final Judgment<br/>人类最终判断"]
+  end
+
+  subgraph Inputs["Read-only Inputs"]
+    I1["Broker / QMT Export<br/>只读账户数据"]
+    I2["TongHuaShun Screenshots<br/>同花顺截图"]
+    I3["Trading Notes<br/>交易日志"]
+    I4["Watchlist / Market Data<br/>观察池 / 市场数据"]
+  end
+
+  subgraph Harness["Smartmoney Cub Harness"]
+    H1["Provenance Check<br/>来源校验"]
+    H2["Anti-Future-Leakage<br/>反未来函数"]
+    H3["Decision Schema<br/>决策结构化"]
+    H4["Risk Contract<br/>失效位 / 放弃条件"]
+    H5["D1/D3 Outcome Review<br/>结果复盘"]
+    H6["Rule Evolution<br/>规则进化"]
+    H7["Markdown Memory<br/>交易记忆"]
+  end
+
+  subgraph Agent["AI Agent Companion"]
+    G1["Reviewer<br/>复盘员"]
+    G2["Challenger<br/>反方质询"]
+    G3["Archivist<br/>档案管理员"]
+    G4["Drift Detector<br/>漂移检测"]
+  end
+
+  A --> B --> C
+  I1 --> H1
+  I2 --> H1
+  I3 --> H1
+  I4 --> H1
+  C --> H3
+  H1 --> H2 --> H3 --> H4 --> H5 --> H6 --> H7
+  H7 --> A
+  G1 --> H5
+  G2 --> H3
+  G3 --> H7
+  G4 --> H6
 ```
 
-## Privacy
+## Where the 易经 Thinking Lives
 
-This project does not collect, upload, sell, or learn your trading logic. By default it has no server, no telemetry, no remote database, and no real account connection.
+This project does not use 易经 as fortune telling, symbol prediction, or price forecasting. The useful engineering translation is a review language for cycle, timing, position, change, restraint, and opposing evidence.
 
-Your private trading logic should remain in local artifacts on your machine. It must not be copied into the public repository. Public examples must stay toy-only.
+| 易经思想 | Harness module | Engineering meaning |
+| --- | --- | --- |
+| Market Regime / Sentiment Cycle | `decision.json`, outcome tags, Markdown memory | Label whether the market felt like early probing, mainline growth, crowded acceleration, widening divergence, or retreat/waiting. |
+| Timing & Position | `decision_time`, `available_at`, D1/D3 horizon | Ask not only "can this pattern work?" but "where is it inside the current cycle?" |
+| Change vs Invariance | `manifest.py`, `evaluator.py`, `registry.py` | Themes, leaders, emotion, and preferences change; risk boundaries, review, invalidation, discipline, and sample validation stay. |
+| Advance / Retreat / Restraint | `WATCH`, `AVOID`, `EMPTY_POSITION`, risk contract | When the state is unsupported, the system should record restraint. Empty position is also a decision. |
+| Opposing Evidence | Agent challenger prompts and failure tags | Every bullish thesis should generate an opposing thesis so the trader does not collect only confirming evidence. |
 
-See [docs/privacy.md](docs/privacy.md) and [docs/public-vs-private-quantkb.md](docs/public-vs-private-quantkb.md).
+The retreat phase matters. In a cooldown or drawdown state, the goal is not offense; it is preserving the right to act next time.
 
-## CLI Commands
+## Where Systems Engineering Lives
+
+Qian Xuesen-style systems engineering appears here as modules and loops, not decorative philosophy.
+
+| Systems engineering idea | Harness module | Engineering meaning |
+| --- | --- | --- |
+| Goal Tree | Future goal records, review notes, rule registry | Separate annual goals, monthly goals, single-trade goals, and review goals; do not define the system by one win or loss. |
+| Decomposition & Integration | `manifest`, `decision`, `outcome`, `evaluation` | Break market state, theme, recognizability, position, risk, psychology, and outcome into inspectable fields, then integrate them into decision/evaluation artifacts. |
+| Feedback Loop | Plan -> Observe -> Decide -> Record -> Outcome -> Evaluate -> Evolve | Review happens after evidence arrives, not during emotional heat. |
+| Human-Machine Collaboration | `docs/agent-integration.md` | Human makes final judgment; AI challenges, structures, archives, reviews, and detects drift. |
+| Qualitative-to-Quantitative Review | D1/D3 outcomes and challenger -> champion registry | Subjective judgment becomes structured, then scored, then eligible for rule promotion only after evidence. |
+
+## Not Quant Trading. Not Pure Discretion. A Semi-Quant AI Decision Harness.
+
+Traditional quant systems usually define a strategy first, backtest historical data, seek repeatable signals, and may automate execution. `smartmoney-cub-harness` starts from subjective trading experience and makes that experience auditable.
+
+| Dimension | Traditional Quant System | smartmoney-cub-harness |
+| --- | --- | --- |
+| Starting point | Strategy definition and historical data | Human decision, thesis, context, and evidence chain |
+| Main question | Does this signal repeat? | Why did I act, and did the evidence later support it? |
+| Execution | May automate | Never executes; read-only review only |
+| Strategy shape | Relatively fixed | Evolves through D1/D3 review and rule governance |
+| AI role | Often signal generation or optimization | Challenger, reviewer, archivist, drift detector |
+| Output | Signal, portfolio, backtest metrics | Manifest, decision, outcome, evaluation, memory, rule candidate |
+| Human role | Often reduced | Preserved and made inspectable |
+
+It is not the strategy itself. It is the container where a strategy grows up. It does not replace the trader; it trains the trader. It does not remove human experience; it makes that experience recordable, reviewable, and iterable.
+
+## Human × Agent Co-Evolution
+
+AI is not an oracle. In this harness, an agent is a training partner that helps you ask the opposing question, review delayed outcomes, archive evidence, notice rule drift, and extract patterns from logs.
+
+The human remains responsible for final judgment.
+
+> The edge is not inside the model. The edge emerges from the feedback loop between the trader, the market, and the memory of past decisions.
+
+## Quick Start
 
 ```bash
-smcub loop --preset toy --agent-trigger "自进化"
-smcub privacy-audit
-smcub self-evolve --input-csv path/to/private_cases.csv --max-iterations 20 --time-budget-min 10 --horizon d1
-smcub confirm-promotion state/self_evolve/<loop_id>/promotion_packet.json --decision promote --note "manual approval"
-smcub inspect-artifacts <run_dir>
-smcub collect-case <run_dir>
-smcub append-ledger --event EVENT --payload-json FILE
-smcub save-memory --case-record FILE
-smcub tradingagents-doctor
-smcub tradingagents-ingest --report path/to/tradingagents_report.md --ticker 600519.SS --analysis-date 2026-07-06
-smcub tradingagents-run --ticker 600519.SS --analysis-date 2026-07-06 --allow-network --ack-external-llm
+git clone https://github.com/myc0576/smartmoney-cub-harness.git
+cd smartmoney-cub-harness
+python -m pip install -e .
 smcub doctor
-smcub validate-manifest examples/sample_run/run_manifest.json
+smcub capture-run --mode after-close --sandbox --decision-time "2026-06-01T15:30:00+08:00" --command "python examples/toy_strategy/leader_pullback_demo.py"
+smcub build-outcome tmp/sandbox/20260601/20260601_153000-after-close --horizon d1 --price-source examples/toy_strategy/sample_prices.json
+smcub evaluate-run tmp/sandbox/20260601/20260601_153000-after-close --horizon d1
+```
+
+The fixed decision time above creates the shown sandbox path in a clean checkout. Local absolute paths are redacted from CLI JSON output, so choose another decision time before repeating the exact sequence.
+
+## Demo Output
+
+Toy decision:
+
+```json
+{
+  "schema": "smartmoney_cub_decision.v1",
+  "action_label": "ALERT",
+  "symbol": "TOY.CUB",
+  "invalidation_price": 9.4,
+  "time_stop": "D1/D3 review",
+  "give_up_conditions": [
+    "observation thesis is no longer supported by recorded evidence",
+    "price below invalidation_price 9.4000"
+  ],
+  "data_source": "toy_strategy",
+  "available_at": "2026-06-01T15:30:00+08:00",
+  "data_quality_flag": "ok",
+  "safety": "READ_ONLY_NO_ORDER_NO_CANCEL_NO_TRADE"
+}
+```
+
+Toy evaluation:
+
+```json
+{
+  "grade": "useful_alert",
+  "failure_tags": [],
+  "scores": {
+    "valid_contract": 1,
+    "false_alert": 0,
+    "missed_opportunity": 0,
+    "risk_contract_violation": 0
+  },
+  "safety": "READ_ONLY_NO_ORDER_NO_CANCEL_NO_TRADE"
+}
 ```
 
 ## Development Checks
 
 ```bash
-pip install -e ".[dev]"
+python -m pip install -e ".[dev]"
 pytest -q
 python -m smartmoney_cub_harness.cli doctor
 python -m smartmoney_cub_harness.cli --help
 ```
 
-## Public Boundary
+## Contributing
 
-The public repo can include schemas, loop runtime, toy examples, redaction, case bank, local Markdown memory format, evolution ledger, challenger/champion governance, integration guidance, and agent runbooks.
-
-The public repo must not include real trades, real watchlists, account data, private QMT paths, private strategy prompts, key stock-picking logic, secret scoring weights, credentials, cookies, or local private workspace paths.
-
-`READ_ONLY_NO_ORDER_NO_CANCEL_NO_TRADE` remains the public boundary and runtime safety declaration.
+Contributions are welcome when they preserve the safety contract. Keep examples offline and toy-only. Do not add live trading execution, broker automation, order placement, order cancellation, account modification, private watchlists, credentials, cookies, local absolute paths, or personal trading records.
 
 ## License
 
 MIT. See [LICENSE](LICENSE).
+
+## Safety & Disclaimer
+
+This project is for research, journaling, review, and educational workflow design only. It is not financial advice, not a stock recommendation service, not price prediction, and not a trading execution system. Any account, screenshot, or trading-record input is used only for local review and structured analysis.

@@ -1,0 +1,16 @@
+{
+  "rule_id": "toy-evidence-discipline-v1",
+  "family": "toy-evidence-discipline",
+  "candidate_role": "challenger",
+  "hypothesis": "Require complete toy provenance before human review.",
+  "metrics": {
+    "sample_count": 1,
+    "false_alert_rate": 0.0,
+    "missed_opportunity_rate": 0.0,
+    "future_leakage_count": 0,
+    "risk_contract_violation_rate": 0.0
+  },
+  "champion_mutated": false,
+  "core_rules_mutated": false,
+  "safety": "READ_ONLY_NO_ORDER_NO_CANCEL_NO_TRADE"
+}
