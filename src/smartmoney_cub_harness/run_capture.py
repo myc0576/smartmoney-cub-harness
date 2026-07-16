@@ -55,7 +55,7 @@ def get_command_preset(name: str) -> list[dict[str, Any]]:
         return [
             {
                 "name": "toy_strategy",
-                "argv": [sys.executable, "examples/toy_strategy/leader_pullback_demo.py"],
+                "argv": [sys.executable, "-m", "smartmoney_cub_harness.toy_strategy"],
             }
         ]
     raise ValueError(f"unknown command preset: {name}")

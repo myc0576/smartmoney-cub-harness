@@ -30,3 +30,14 @@ def test_redacts_email_phone_and_windows_path():
     assert "13800138000" not in redacted
     assert "Trader" not in redacted
     assert redacted.count("[REDACTED]") == 3
+
+
+def test_redacts_common_posix_install_and_temporary_paths_without_hiding_urls():
+    text = "python=/opt/hostedtoolcache/Python/3.12/bin/python temp=/tmp/smcub/run.json https://example.test/docs"
+
+    redacted = redact(text)
+
+    assert "/opt/" not in redacted
+    assert "/tmp/" not in redacted
+    assert "https://example.test/docs" in redacted
+    assert redacted.count("[REDACTED]") == 2

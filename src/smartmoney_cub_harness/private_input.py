@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import Any
 
 from smartmoney_cub_harness.manifest import parse_timestamp
-from smartmoney_cub_harness.safety import redact
+from smartmoney_cub_harness.safety import REDACTED, redact
 from smartmoney_cub_harness.schemas import (
     DECISION_SCHEMA,
     OUTCOME_SCHEMA,
@@ -46,7 +46,7 @@ def fingerprint_file(path: str | Path) -> dict[str, Any]:
     stat = input_path.stat()
     return redact(
         {
-            "path": str(input_path),
+            "path": REDACTED,
             "name": input_path.name,
             "sha256": digest.hexdigest(),
             "bytes": stat.st_size,

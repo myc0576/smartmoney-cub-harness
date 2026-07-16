@@ -12,6 +12,7 @@ from smartmoney_cub_harness.case_bank import collect_offline_case
 from smartmoney_cub_harness.evidence_pack import build_evidence_pack, replay_evidence_pack
 from smartmoney_cub_harness.evaluator import evaluate_decision
 from smartmoney_cub_harness.evolution_ledger import append_ledger_event
+from smartmoney_cub_harness.launcher import launcher_diagnostics
 from smartmoney_cub_harness.loop import run_agent_loop
 from smartmoney_cub_harness.manifest import validate_run_manifest
 from smartmoney_cub_harness.memory import save_memory_record
@@ -93,6 +94,7 @@ def doctor() -> dict[str, Any]:
         "broker_api_required": False,
         "execution_integrations": "disabled",
         "default_data_mode": "offline_json_fixtures",
+        "launcher": launcher_diagnostics(),
         "safety": SAFETY_DECLARATION,
     }
 
@@ -102,6 +104,7 @@ def build_parser() -> argparse.ArgumentParser:
         prog="smcub",
         description="Read-only trading companion harness for decision logging, outcome review, and rule evolution.",
     )
+    parser.add_argument("--version", action="version", version=f"%(prog)s {__version__}")
     sub = parser.add_subparsers(dest="command", required=True)
 
     validate = sub.add_parser("validate-manifest", help="Validate a run manifest JSON file")

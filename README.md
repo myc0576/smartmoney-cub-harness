@@ -37,6 +37,26 @@ Run Envelope permissions are a **declarative, unverified policy record** (`enfor
 
 Optional ecosystem integrations remain outside the trusted core. See [docs/integrations.md](docs/integrations.md), including the recommended companion [wbh604/UZI-Skill](https://github.com/wbh604/UZI-Skill), and [the TradingAgents adapter boundary](docs/tradingagents-adapter.md). External LLM/network credentials stay outside this repository, and imported reports remain review evidence rather than trading authority.
 
+### Isolated installation and upgrades
+
+Keep the CLI in an isolated environment and verify the executable you are using:
+
+```powershell
+py -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -e ".[dev]"
+.\.venv\Scripts\smcub.exe --version
+```
+
+```bash
+python -m venv .venv
+./.venv/bin/python -m pip install -e ".[dev]"
+./.venv/bin/smcub --version
+pipx install smartmoney-cub-harness
+pipx upgrade smartmoney-cub-harness
+```
+
+Existing installations do not update automatically. See [docs/versioning.md](docs/versioning.md) for Git, pip, pipx, tags, and GitHub Release update paths.
+
 The existing toy Agent Loop remains supported:
 
 ```bash

@@ -60,6 +60,43 @@ Run Envelope 的权限范围是**声明式、未经验证的策略记录**（`en
 | OpenCode / OpenClaw | `帮我用这个仓库做一次只读复盘演示：运行 smcub doctor，再运行 smcub loop --preset toy --agent-trigger "自进化"。` |
 | CLI 直用 | `git clone https://github.com/myc0576/smartmoney-cub-harness.git && cd smartmoney-cub-harness && pip install -e ".[dev]" && smcub loop --preset toy --agent-trigger "自进化"` |
 
+### 隔离安装与版本确认
+
+不要把开发版本直接装进全局 Python。Windows 推荐使用项目内虚拟环境：
+
+```powershell
+py -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -e ".[dev]"
+.\.venv\Scripts\smcub.exe --version
+.\.venv\Scripts\smcub.exe doctor
+```
+
+macOS / Linux：
+
+```bash
+python -m venv .venv
+./.venv/bin/python -m pip install -e ".[dev]"
+./.venv/bin/smcub --version
+./.venv/bin/smcub doctor
+```
+
+如果电脑里安装过多个 Python，直接输入 `smcub` 可能命中另一个环境中的旧版本。安装后请运行 `smcub --version` 和 `smcub doctor`；`doctor` 会以不暴露本地路径的方式提示启动器冲突。
+
+当前发行渠道是 GitHub Releases。普通 CLI 用户可用 pipx 从最新修复 tag 安装，让命令拥有独立环境：
+
+```bash
+pipx install "git+https://github.com/myc0576/smartmoney-cub-harness.git@v0.1.2"
+```
+
+未来正式发布到 PyPI 后，可改用更短的安装和升级命令：
+
+```bash
+pipx install smartmoney-cub-harness
+pipx upgrade smartmoney-cub-harness
+```
+
+现有安装不会自动同步。Git editable、pip、pipx 和源码压缩包用户的升级方式，以及 SemVer、Git tag、GitHub Release、PyPI 发布顺序，见 [版本与升级政策](docs/versioning.md)。
+
 装好后最常用的安全命令：
 
 ```bash
