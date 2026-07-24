@@ -8,6 +8,12 @@
 [![Human-in-the-loop](https://img.shields.io/badge/human--in--the--loop-required-blueviolet)](docs/harness-contract.md)
 [![Agent-ready](https://img.shields.io/badge/agent--ready-offline%20artifacts-success)](docs/agent-integration.md)
 
+![Smartmoney Cub Harness Hero](assets/smartmoney-cub-harness-cover.png)
+
+## 系统流程图
+
+查看完整控制面流程见 [docs/architecture.md](docs/architecture.md)。
+
 `smartmoney-cub-harness` 是一个**本地优先、只读、不绑定任何 Agent 的交易复盘与证据治理控制平面**。外部调用方只提交离线运行，Harness 负责生成可移植、可审查的产物，不取得任何交易权限。
 
 外部 Agent 或 CLI 调用方 → Run Envelope → 冻结的 Benchmark/Evidence Pack → 确定性回放 → 人工显式晋级门禁。
