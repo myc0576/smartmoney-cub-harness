@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from smartmoney_cub_harness.evaluator import evaluate_decision
-from smartmoney_cub_harness.schemas import SAFETY_DECLARATION
+from smartmoney_cub.evaluator import evaluate_decision
+from smartmoney_cub.schemas import SAFETY_DECLARATION
 
 
 def test_evaluator_flags_missing_risk_controls_for_alert():
@@ -71,3 +71,4 @@ def test_evaluator_scores_useful_alert():
 
     assert result["grade"] == "useful_alert"
     assert result["scores"]["valid_contract"] == 1
+

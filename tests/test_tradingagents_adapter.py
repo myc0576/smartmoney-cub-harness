@@ -6,10 +6,10 @@ import subprocess
 import sys
 from pathlib import Path
 
-import smartmoney_cub_harness.tradingagents_adapter as adapter
-from smartmoney_cub_harness.cli import doctor
-from smartmoney_cub_harness.schemas import SAFETY_DECLARATION, TRADINGAGENTS_REVIEW_PACKET_SCHEMA
-from smartmoney_cub_harness.tradingagents_adapter import (
+import smartmoney_cub.tradingagents_adapter as adapter
+from smartmoney_cub.cli import doctor
+from smartmoney_cub.schemas import SAFETY_DECLARATION, TRADINGAGENTS_REVIEW_PACKET_SCHEMA
+from smartmoney_cub.tradingagents_adapter import (
     check_tradingagents_environment,
     ingest_tradingagents_report,
     run_tradingagents_local_bridge,
@@ -24,7 +24,7 @@ def run_cli(*args: str, extra_env: dict[str, str] | None = None) -> subprocess.C
     if extra_env:
         env.update(extra_env)
     return subprocess.run(
-        [sys.executable, "-m", "smartmoney_cub_harness.cli", *args],
+        [sys.executable, "-m", "smartmoney_cub.cli", *args],
         cwd=REPO_ROOT,
         env=env,
         text=True,

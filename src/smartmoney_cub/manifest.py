@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import datetime
 from typing import Any
 
-from smartmoney_cub_harness.schemas import (
+from smartmoney_cub.schemas import (
     REQUIRED_MANIFEST_FIELDS,
     REQUIRED_SOURCE_FIELDS,
     SAFETY_DECLARATION,
@@ -77,3 +77,4 @@ def validate_run_manifest(manifest: dict[str, Any]) -> dict[str, Any]:
         "source_count": len(sources),
         "safety": SAFETY_DECLARATION,
     }
+

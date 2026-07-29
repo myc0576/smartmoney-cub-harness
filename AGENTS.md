@@ -1,6 +1,6 @@
 # AGENTS.md
 
-This repository is the public, offline core of `smartmoney-cub-harness`.
+This repository is the public, offline core of `smartmoney-cub`.
 
 ## Contract
 
@@ -22,5 +22,6 @@ Read `docs/harness-contract.md` first. The project is a read-only decision loggi
 ```bash
 pip install -e ".[dev]"
 pytest -q
-python -m smartmoney_cub_harness.cli doctor
+python -m smartmoney_cub.cli doctor
 ```
+

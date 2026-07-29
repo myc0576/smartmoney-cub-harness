@@ -4,8 +4,8 @@ import json
 from pathlib import Path
 from typing import Any
 
-from smartmoney_cub_harness.safety import redact
-from smartmoney_cub_harness.schemas import MEMORY_SCHEMA, SAFETY_DECLARATION
+from smartmoney_cub.safety import redact
+from smartmoney_cub.schemas import MEMORY_SCHEMA, SAFETY_DECLARATION
 
 
 def _as_list(value: Any) -> list[Any]:
@@ -92,3 +92,4 @@ def save_memory_record(case_record: str | Path | dict[str, Any], output_path: st
         "safety": SAFETY_DECLARATION,
         "champion_mutated": False,
     }
+

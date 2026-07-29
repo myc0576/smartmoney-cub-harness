@@ -4,8 +4,8 @@ import json
 import sys
 from pathlib import Path
 
-from smartmoney_cub_harness.run_capture import capture_run, unique_run_dir
-from smartmoney_cub_harness.schemas import SAFETY_DECLARATION
+from smartmoney_cub.run_capture import capture_run, unique_run_dir
+from smartmoney_cub.schemas import SAFETY_DECLARATION
 
 
 def test_capture_run_writes_manifest_decision_and_artifacts(tmp_path: Path):
@@ -109,3 +109,4 @@ def test_unique_run_dir_reserves_directory_to_avoid_collisions(tmp_path: Path):
     assert first != second
     assert first.exists()
     assert second.exists()
+

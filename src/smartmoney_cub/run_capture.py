@@ -9,10 +9,10 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from smartmoney_cub_harness.decision import derive_decision
-from smartmoney_cub_harness.manifest import validate_run_manifest
-from smartmoney_cub_harness.safety import redact
-from smartmoney_cub_harness.schemas import MANIFEST_SCHEMA, SAFETY_DECLARATION
+from smartmoney_cub.decision import derive_decision
+from smartmoney_cub.manifest import validate_run_manifest
+from smartmoney_cub.safety import redact
+from smartmoney_cub.schemas import MANIFEST_SCHEMA, SAFETY_DECLARATION
 
 SELECTION_SYSTEM_VERSION = "toy_offline_v0.1"
 SELECTION_SYSTEM_REFS = ["examples/toy_strategy/README.md"]
@@ -191,3 +191,4 @@ def capture_run(
         "decision": redact(decision),
         "commands": [redact({k: v for k, v in item.items() if k not in {"stdout", "stderr"}}) for item in command_results],
     }
+

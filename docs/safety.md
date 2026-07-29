@@ -1,6 +1,6 @@
 # Safety
 
-`smartmoney-cub-harness` is a review and rule-evolution tool. It does not provide securities investment advice and does not connect to real trading execution.
+`smartmoney-cub` is a review and rule-evolution tool. It does not provide securities investment advice and does not connect to real trading execution.
 
 ## Hard Boundary
 
@@ -38,3 +38,4 @@ Do not commit:
 Examples must remain toy-only and offline.
 
 The TradingAgents adapter is optional and user-configured. External LLM/API credentials remain outside this repository and must never be committed or captured in artifacts.
+

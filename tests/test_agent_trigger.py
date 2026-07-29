@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from smartmoney_cub_harness.agent_trigger import normalize_agent_trigger_text, resolve_agent_trigger
-from smartmoney_cub_harness.schemas import SAFETY_DECLARATION
+from smartmoney_cub.agent_trigger import normalize_agent_trigger_text, resolve_agent_trigger
+from smartmoney_cub.schemas import SAFETY_DECLARATION
 
 
 def test_resolves_chinese_self_evolve_to_safe_full_loop():

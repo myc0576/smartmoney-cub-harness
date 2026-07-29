@@ -9,8 +9,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Mapping
 
-from smartmoney_cub_harness.safety import redact
-from smartmoney_cub_harness.schemas import SAFETY_DECLARATION, TRADINGAGENTS_REVIEW_PACKET_SCHEMA
+from smartmoney_cub.safety import redact
+from smartmoney_cub.schemas import SAFETY_DECLARATION, TRADINGAGENTS_REVIEW_PACKET_SCHEMA
 
 SOURCE = "tradingagents"
 ACTIONABILITY = "review_only"

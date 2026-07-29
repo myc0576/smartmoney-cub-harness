@@ -1,6 +1,6 @@
 # Integrations
 
-`smartmoney-cub-harness` can reference and learn from strong open-source projects, but every integration stays inside the read-only review contract.
+`smartmoney-cub` can reference and learn from strong open-source projects, but every integration stays inside the read-only review contract.
 
 The goal is not to create stronger execution signals. The goal is to turn external analysis, reports, skills, and data shapes into better local review artifacts.
 
@@ -100,3 +100,4 @@ Champion rule changes remain human-gated:
 ```bash
 smcub confirm-promotion state/self_evolve/<loop_id>/promotion_packet.json --decision promote --note "manual approval"
 ```
+

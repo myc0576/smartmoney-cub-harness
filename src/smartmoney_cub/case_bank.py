@@ -5,8 +5,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from smartmoney_cub_harness.safety import redact
-from smartmoney_cub_harness.schemas import CASE_SCHEMA, SAFETY_DECLARATION
+from smartmoney_cub.safety import redact
+from smartmoney_cub.schemas import CASE_SCHEMA, SAFETY_DECLARATION
 
 
 def _now_iso() -> str:
@@ -45,3 +45,4 @@ def collect_offline_case(run_dir: str | Path, output_path: str | Path | None = N
     target = Path(output_path) if output_path else run_path / "case_record.json"
     target.write_text(json.dumps(record, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     return {"status": record["status"], "case_id": case_id, "case_record_path": str(target), "safety": SAFETY_DECLARATION}
+

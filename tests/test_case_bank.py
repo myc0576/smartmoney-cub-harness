@@ -3,8 +3,8 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from smartmoney_cub_harness.case_bank import collect_offline_case
-from smartmoney_cub_harness.schemas import SAFETY_DECLARATION
+from smartmoney_cub.case_bank import collect_offline_case
+from smartmoney_cub.schemas import SAFETY_DECLARATION
 
 
 def test_collect_offline_case_writes_redacted_relative_case_record(tmp_path: Path):
@@ -46,3 +46,4 @@ def test_collect_offline_case_writes_redacted_relative_case_record(tmp_path: Pat
     assert record["champion_mutated"] is False
     assert "abc" not in json.dumps(record, ensure_ascii=False)
     assert "C:\\Users\\Trader" not in json.dumps(record, ensure_ascii=False)
+

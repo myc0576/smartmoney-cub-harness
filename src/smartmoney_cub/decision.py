@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 from typing import Any
 
-from smartmoney_cub_harness.schemas import DECISION_SCHEMA, SAFETY_DECLARATION
+from smartmoney_cub.schemas import DECISION_SCHEMA, SAFETY_DECLARATION
 
 
 def parse_json_stdout(result: dict[str, Any]) -> dict[str, Any] | None:
@@ -91,3 +91,4 @@ def derive_decision(mode: str, results: list[dict[str, Any]], decision_time: str
                 decision.update(candidate_decision_fields(candidate, result["name"], decision_time))
                 break
     return decision
+

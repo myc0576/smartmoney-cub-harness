@@ -6,7 +6,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from smartmoney_cub_harness.schemas import REGISTRY_SCHEMA, SAFETY_DECLARATION
+from smartmoney_cub.schemas import REGISTRY_SCHEMA, SAFETY_DECLARATION
 
 
 def _now_iso() -> str:
@@ -99,3 +99,4 @@ def register_candidate(
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(registry, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     return {"status": status, "reasons": reasons, "registry_path": str(path), "safety": SAFETY_DECLARATION}
+

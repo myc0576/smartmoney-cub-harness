@@ -4,7 +4,7 @@ Generated: 2026-06-25
 
 ## Scope
 
-Reviewed the public offline core of `smartmoney-cub-harness` for open-source safety, README launch quality, runnable examples, and GitHub publish readiness.
+Reviewed the public offline core of `smartmoney-cub` for open-source safety, README launch quality, runnable examples, and GitHub publish readiness.
 
 ## Test Results
 
@@ -12,8 +12,8 @@ Reviewed the public offline core of `smartmoney-cub-harness` for open-source saf
 python -m pip install -e .                       PASS
 python -m pip install -e ".[dev]"                PASS
 pytest -q                                       PASS: 22 passed
-python -m smartmoney_cub_harness.cli doctor     PASS
-python -m smartmoney_cub_harness.cli --help     PASS
+python -m smartmoney_cub.cli doctor     PASS
+python -m smartmoney_cub.cli --help     PASS
 README toy capture/build/evaluate workflow      PASS: useful_alert
 ```
 
@@ -75,7 +75,7 @@ Can push from this environment: YES.
 GitHub repository:
 
 ```text
-https://github.com/myc0576/smartmoney-cub-harness
+https://github.com/myc0576/smartmoney-cub
 ```
 
 Publish result:

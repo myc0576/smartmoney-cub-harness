@@ -9,9 +9,9 @@ from pathlib import Path
 
 import pytest
 
-from smartmoney_cub_harness.private_input import REQUIRED_PRIVATE_CASE_FIELDS
-from smartmoney_cub_harness.self_evolve import confirm_promotion, run_self_evolve
-from smartmoney_cub_harness.schemas import SAFETY_DECLARATION
+from smartmoney_cub.private_input import REQUIRED_PRIVATE_CASE_FIELDS
+from smartmoney_cub.self_evolve import confirm_promotion, run_self_evolve
+from smartmoney_cub.schemas import SAFETY_DECLARATION
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 
@@ -184,7 +184,7 @@ def test_self_evolve_cli_command_runs(tmp_path: Path):
         [
             sys.executable,
             "-m",
-            "smartmoney_cub_harness.cli",
+            "smartmoney_cub.cli",
             "self-evolve",
             "--input-csv",
             str(csv_path),
@@ -207,3 +207,4 @@ def test_self_evolve_cli_command_runs(tmp_path: Path):
     assert payload["status"] == "ok"
     assert payload["safety"] == SAFETY_DECLARATION
     assert payload["champion_mutated"] is False
+

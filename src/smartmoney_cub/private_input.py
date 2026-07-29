@@ -5,9 +5,9 @@ import hashlib
 from pathlib import Path
 from typing import Any
 
-from smartmoney_cub_harness.manifest import parse_timestamp
-from smartmoney_cub_harness.safety import redact
-from smartmoney_cub_harness.schemas import (
+from smartmoney_cub.manifest import parse_timestamp
+from smartmoney_cub.safety import redact
+from smartmoney_cub.schemas import (
     DECISION_SCHEMA,
     OUTCOME_SCHEMA,
     PRIVATE_CASE_CSV_SCHEMA,
@@ -228,3 +228,4 @@ def load_private_cases(input_csv: str | Path, *, horizon: str) -> dict[str, Any]
         "telemetry": False,
         "safety": SAFETY_DECLARATION,
     }
+

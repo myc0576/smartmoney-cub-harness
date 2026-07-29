@@ -38,7 +38,7 @@ Qian Xuesen-style systems engineering appears as decomposition, integration, fee
 
 ## Semi-Quant Posture
 
-`smartmoney-cub-harness` sits between pure discretionary trading and traditional quant systems.
+`smartmoney-cub` sits between pure discretionary trading and traditional quant systems.
 
 It does not begin with a fixed alpha model. It begins with the messy human decision: thesis, context, emotion, timing, invalidation, evidence, and later outcome.
 

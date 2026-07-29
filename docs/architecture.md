@@ -1,6 +1,6 @@
 # Architecture
 
-`smartmoney-cub-harness` is a semi-quant AI decision harness for subjective trading review. The public core stays offline and toy-first, but its boundaries are designed around read-only inputs, provenance, delayed outcomes, and rule evolution.
+`smartmoney-cub` is a semi-quant AI decision harness for subjective trading review. The public core stays offline and toy-first, but its boundaries are designed around read-only inputs, provenance, delayed outcomes, and rule evolution.
 
 It is not a broker connector or execution layer. Any future account adapter must remain read-only and local.
 
@@ -90,3 +90,4 @@ Screenshots are a deliberate safety-friendly path: they let a trader review acco
 - Broker automation.
 - Public examples with real holdings, real trades, real returns, or real stock recommendations.
 - Price prediction or signal selling.
+

@@ -3,8 +3,8 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from smartmoney_cub_harness.privacy_audit import inspect_run_artifacts, privacy_audit
-from smartmoney_cub_harness.schemas import SAFETY_DECLARATION
+from smartmoney_cub.privacy_audit import inspect_run_artifacts, privacy_audit
+from smartmoney_cub.schemas import SAFETY_DECLARATION
 
 
 def test_privacy_audit_declares_offline_no_telemetry_no_upload():
@@ -35,3 +35,4 @@ def test_inspect_artifacts_reports_missing_and_private_markers(tmp_path: Path):
     assert "run_manifest.json" in result["missing_required"]
     assert result["private_pattern_hits"]
     assert result["safety"] == SAFETY_DECLARATION
+

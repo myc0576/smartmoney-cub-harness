@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from smartmoney_cub_harness.schemas import REQUIRED_ALERT_DECISION_FIELDS, SAFETY_DECLARATION
+from smartmoney_cub.schemas import REQUIRED_ALERT_DECISION_FIELDS, SAFETY_DECLARATION
 
 
 def _return_pct(outcome: dict[str, Any]) -> float:
@@ -66,3 +66,4 @@ def evaluate_decision(decision: dict[str, Any], outcome: dict[str, Any]) -> dict
         }
 
     return {"grade": "useful_alert", "failure_tags": failure_tags, "scores": scores, "safety": SAFETY_DECLARATION}
+

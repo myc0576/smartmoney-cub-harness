@@ -7,17 +7,17 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from smartmoney_cub_harness.case_bank import collect_offline_case
-from smartmoney_cub_harness.evaluator import evaluate_decision
-from smartmoney_cub_harness.evolution_ledger import append_ledger_event
-from smartmoney_cub_harness.loop_state import initial_state, load_state, mark_stage, now_iso, write_state
-from smartmoney_cub_harness.manifest import validate_run_manifest
-from smartmoney_cub_harness.memory import save_memory_record
-from smartmoney_cub_harness.private_input import fingerprint_file, load_private_cases
-from smartmoney_cub_harness.registry import promotion_blockers, register_candidate
-from smartmoney_cub_harness.run_capture import safe_name
-from smartmoney_cub_harness.safety import redact
-from smartmoney_cub_harness.schemas import (
+from smartmoney_cub.case_bank import collect_offline_case
+from smartmoney_cub.evaluator import evaluate_decision
+from smartmoney_cub.evolution_ledger import append_ledger_event
+from smartmoney_cub.loop_state import initial_state, load_state, mark_stage, now_iso, write_state
+from smartmoney_cub.manifest import validate_run_manifest
+from smartmoney_cub.memory import save_memory_record
+from smartmoney_cub.private_input import fingerprint_file, load_private_cases
+from smartmoney_cub.registry import promotion_blockers, register_candidate
+from smartmoney_cub.run_capture import safe_name
+from smartmoney_cub.safety import redact
+from smartmoney_cub.schemas import (
     MANIFEST_SCHEMA,
     PROMOTION_PACKET_SCHEMA,
     SAFETY_DECLARATION,
@@ -807,3 +807,4 @@ def confirm_promotion(promotion_packet: str | Path, *, decision: str, note: str 
             "safety": SAFETY_DECLARATION,
         }
     )
+

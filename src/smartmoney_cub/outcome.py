@@ -5,8 +5,8 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any
 
-from smartmoney_cub_harness.safety import redact
-from smartmoney_cub_harness.schemas import OUTCOME_SCHEMA, SAFETY_DECLARATION, VALID_HORIZONS
+from smartmoney_cub.safety import redact
+from smartmoney_cub.schemas import OUTCOME_SCHEMA, SAFETY_DECLARATION, VALID_HORIZONS
 
 
 def _parse_decision_date(value: str) -> datetime:
@@ -156,3 +156,4 @@ def build_outcome(run_dir: str | Path, horizon: str, price_source: str | Path) -
     output_path = run_path / f"outcome_{horizon}.json"
     output_path.write_text(json.dumps(outcome, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     return output_path
+

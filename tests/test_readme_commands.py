@@ -6,7 +6,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-from smartmoney_cub_harness.schemas import SAFETY_DECLARATION
+from smartmoney_cub.schemas import SAFETY_DECLARATION
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 
@@ -15,7 +15,7 @@ def run_cli(*args: str) -> subprocess.CompletedProcess[str]:
     env = dict(os.environ)
     env["PYTHONPATH"] = str(REPO_ROOT / "src") + os.pathsep + env.get("PYTHONPATH", "")
     return subprocess.run(
-        [sys.executable, "-m", "smartmoney_cub_harness.cli", *args],
+        [sys.executable, "-m", "smartmoney_cub.cli", *args],
         cwd=REPO_ROOT,
         env=env,
         text=True,

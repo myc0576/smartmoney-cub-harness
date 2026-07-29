@@ -1,6 +1,6 @@
 # TradingAgents Optional Adapter
 
-This document describes the optional TradingAgents adapter boundary for `smartmoney-cub-harness`.
+This document describes the optional TradingAgents adapter boundary for `smartmoney-cub`.
 
 ```text
 READ_ONLY_NO_ORDER_NO_CANCEL_NO_TRADE
@@ -8,7 +8,7 @@ READ_ONLY_NO_ORDER_NO_CANCEL_NO_TRADE
 
 ## What This Is
 
-TradingAgents can be used as a user-selected external LLM multi-agent financial analysis engine. Its reports may be wrapped into local review packets so `smartmoney-cub-harness` can preserve provenance, risk notes, reviewer questions, challenger questions, and later D1/D3 review context.
+TradingAgents can be used as a user-selected external LLM multi-agent financial analysis engine. Its reports may be wrapped into local review packets so `smartmoney-cub` can preserve provenance, risk notes, reviewer questions, challenger questions, and later D1/D3 review context.
 
 The adapter is local-first and optional. It does not make TradingAgents a default runtime dependency.
 
@@ -132,3 +132,4 @@ challenger -> evaluated evidence -> explicit human confirmation -> champion
 ```
 
 No adapter path may bypass this gate.
+

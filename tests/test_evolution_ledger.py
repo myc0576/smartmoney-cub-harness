@@ -5,8 +5,8 @@ from pathlib import Path
 
 import pytest
 
-from smartmoney_cub_harness.evolution_ledger import append_ledger_event, read_ledger
-from smartmoney_cub_harness.schemas import SAFETY_DECLARATION
+from smartmoney_cub.evolution_ledger import append_ledger_event, read_ledger
+from smartmoney_cub.schemas import SAFETY_DECLARATION
 
 
 def test_append_ledger_event_writes_redacted_jsonl(tmp_path: Path):
@@ -42,3 +42,4 @@ def test_champion_mutation_requires_explicit_confirmation(tmp_path: Path):
 
     assert result["champion_mutated"] is True
     assert saved["explicit_confirmation"] is True
+

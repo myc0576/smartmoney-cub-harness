@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from smartmoney_cub_harness.manifest import validate_run_manifest
-from smartmoney_cub_harness.schemas import SAFETY_DECLARATION
+from smartmoney_cub.manifest import validate_run_manifest
+from smartmoney_cub.schemas import SAFETY_DECLARATION
 
 
 def valid_manifest() -> dict:
@@ -58,3 +58,4 @@ def test_manifest_requires_safety_declaration():
 
     assert result["ok"] is False
     assert "missing_or_invalid_safety_declaration" in result["errors"]
+

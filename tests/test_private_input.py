@@ -3,8 +3,8 @@ from __future__ import annotations
 import csv
 from pathlib import Path
 
-from smartmoney_cub_harness.private_input import REQUIRED_PRIVATE_CASE_FIELDS, fingerprint_file, load_private_cases
-from smartmoney_cub_harness.schemas import SAFETY_DECLARATION
+from smartmoney_cub.private_input import REQUIRED_PRIVATE_CASE_FIELDS, fingerprint_file, load_private_cases
+from smartmoney_cub.schemas import SAFETY_DECLARATION
 
 
 def write_csv(path: Path, rows: list[dict[str, object]], fieldnames: tuple[str, ...] = REQUIRED_PRIVATE_CASE_FIELDS) -> None:
@@ -100,3 +100,4 @@ def test_fingerprint_redacts_private_local_path(tmp_path: Path):
     assert result["safety"] == SAFETY_DECLARATION
     assert result["sha256"]
     assert str(csv_path) not in str(result)
+

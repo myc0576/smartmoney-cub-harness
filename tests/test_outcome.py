@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pytest
 
-from smartmoney_cub_harness.outcome import build_outcome
+from smartmoney_cub.outcome import build_outcome
 
 
 def _prices(path: Path) -> Path:
@@ -79,3 +79,4 @@ def test_build_outcome_rejects_ambiguous_artifact_codes(tmp_path: Path):
 
     with pytest.raises(ValueError, match="ambiguous"):
         build_outcome(run_dir, horizon="d1", price_source=_prices(tmp_path))
+

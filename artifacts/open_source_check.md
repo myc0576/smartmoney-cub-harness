@@ -1,4 +1,4 @@
-﻿# Open Source Check
+# Open Source Check
 
 Generated: 2026-06-24 22:45:46 +08:00
 
@@ -31,7 +31,7 @@ Generated: 2026-06-24 22:45:46 +08:00
 ```text
 {
   "status": "ok",
-  "package": "smartmoney-cub-harness",
+  "package": "smartmoney-cub",
   "version": "0.1.0",
   "python": "3.12.8",
   "platform": "Windows-11-10.0.26200-SP0",
@@ -83,3 +83,4 @@ private_trading_language_matches=17
 ```
 
 Conclusion: no open-source blockers found.
+

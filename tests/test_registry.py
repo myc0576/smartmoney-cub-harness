@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from smartmoney_cub_harness.registry import register_candidate
+from smartmoney_cub.registry import register_candidate
 
 
 def strong_candidate() -> dict:
@@ -62,3 +62,4 @@ def test_registry_keeps_weak_candidate_as_challenger(tmp_path: Path):
 
     assert result["status"] == "challenger"
     assert result["reasons"] == ["sample_count_below_20"]
+

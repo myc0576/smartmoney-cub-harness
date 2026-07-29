@@ -2,8 +2,8 @@
 
 Canonical cover assets:
 
-- `assets/smartmoney-cub-harness-cover.svg`
-- `assets/smartmoney-cub-harness-cover.png`
+- `assets/smartmoney-cub-cover.svg`
+- `assets/smartmoney-cub-cover.png`
 
 ## Requirements
 
@@ -34,3 +34,4 @@ Minimum sizes:
 ## Export
 
 Export PNG from SVG with CairoSVG or an equivalent local renderer. Check that Chinese text renders as real glyphs, not placeholder squares or dots.
+

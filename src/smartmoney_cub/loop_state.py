@@ -5,8 +5,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from smartmoney_cub_harness.safety import redact
-from smartmoney_cub_harness.schemas import SAFETY_DECLARATION, SELF_EVOLVE_STATE_SCHEMA
+from smartmoney_cub.safety import redact
+from smartmoney_cub.schemas import SAFETY_DECLARATION, SELF_EVOLVE_STATE_SCHEMA
 
 
 def now_iso() -> str:
@@ -99,3 +99,4 @@ def mark_stage(
         next_state["last_artifact_paths"] = last_paths
     append_progress(loop_dir, stage=stage, status=status, message=message)
     return write_state(loop_dir, next_state)
+

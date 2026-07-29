@@ -1,8 +1,8 @@
-# smartmoney-cub-harness
+# smartmoney-cub
 
 <div align="center">
 
-![smartmoney-cub-harness cover](assets/smartmoney-cub-harness-cover.png)
+![smartmoney-cub cover](assets/smartmoney-cub-cover.png)
 
 ## 游资复盘引擎 · 让每一次决策都变成系统的进化
 
@@ -31,7 +31,7 @@
 
 高手每一次决策都有计划、有证据、有复盘、有规则迭代。普通人最容易掉进的坑，是复盘时翻聊天记录、翻交易软件、翻截图，折腾半天还是说不清当时为什么买、错在什么地方、下一次该怎么改。
 
-`smartmoney-cub-harness` 是一个本地优先的 AI 复盘引擎。它帮你记录每一次决策的完整逻辑，追踪 D1/D3 的结果，把教训变成规则，把规则沉淀成系统。
+`smartmoney-cub` 是一个本地优先的 AI 复盘引擎。它帮你记录每一次决策的完整逻辑，追踪 D1/D3 的结果，把教训变成规则，把规则沉淀成系统。
 
 它不是个股建议软件，不是自动交易系统，不是券商连接器，也不是财务建议系统。它是你的私人只读交易系统训练器。
 
@@ -42,11 +42,11 @@
 | 你用的 agent | 直接丢这句 |
 | --- | --- |
 | Claude Code | `阅读 AGENTS.md 和 docs/harness-contract.md，运行 smcub loop --preset toy --agent-trigger "自进化"，只做只读复盘，不连接券商，不下单。` |
-| Codex / OpenAI CLI | `在这个仓库里按 README 跑 smartmoney-cub-harness toy loop：smcub loop --preset toy --agent-trigger "自进化"，然后阅读 loop_report.md 和 trace.jsonl。` |
+| Codex / OpenAI CLI | `在这个仓库里按 README 跑 smartmoney-cub toy loop：smcub loop --preset toy --agent-trigger "自进化"，然后阅读 loop_report.md 和 trace.jsonl。` |
 | Cursor | `请按 docs/agent-loop.md 使用本项目，跑 toy loop 并总结复盘产物；所有规则更新只能保持 challenger 状态。` |
 | Gemini CLI | `请阅读 docs/harness-contract.md，执行 toy offline loop，确认输出包含 READ_ONLY_NO_ORDER_NO_CANCEL_NO_TRADE。` |
 | OpenCode / OpenClaw | `帮我用这个仓库做一次只读复盘演示：运行 smcub doctor，再运行 smcub loop --preset toy --agent-trigger "自进化"。` |
-| CLI 直用 | `git clone https://github.com/myc0576/smartmoney-cub-harness.git && cd smartmoney-cub-harness && pip install -e ".[dev]" && smcub loop --preset toy --agent-trigger "自进化"` |
+| CLI 直用 | `git clone https://github.com/myc0576/smartmoney-cub.git && cd smartmoney-cub && pip install -e ".[dev]" && smcub loop --preset toy --agent-trigger "自进化"` |
 
 装好后最常用的安全命令：
 
@@ -71,8 +71,8 @@ smcub confirm-promotion state/self_evolve/<loop_id>/promotion_packet.json --deci
 一条命令跑完整个 toy 闭环：
 
 ```bash
-git clone https://github.com/myc0576/smartmoney-cub-harness.git
-cd smartmoney-cub-harness
+git clone https://github.com/myc0576/smartmoney-cub.git
+cd smartmoney-cub
 pip install -e ".[dev]"
 smcub loop --preset toy --agent-trigger "自进化"
 ```
@@ -103,7 +103,7 @@ smcub loop --preset toy --agent-trigger "自进化"
 
 单次判断会忘，系统会进化。
 
-`smartmoney-cub-harness` 把一次复盘拆成一条可审计链路：
+`smartmoney-cub` 把一次复盘拆成一条可审计链路：
 
 ```text
 Plan -> Observe -> Record -> Outcome -> Evaluate -> Memory -> Rule Candidate
@@ -185,7 +185,7 @@ AI 助手在这个仓库里只能扮演 reviewer、challenger、archivist、drif
 
 ## 可选接入 TradingAgents
 
-TradingAgents 适合已经会配置 LLM provider、并希望把外部多智能体金融分析能力接入本地复盘系统的用户。默认 toy loop 不需要 TradingAgents，也不需要任何 LLM/API key；`smartmoney-cub-harness` 本身不托管、不读取明文、不提交、不上传 TradingAgents 的 key。
+TradingAgents 适合已经会配置 LLM provider、并希望把外部多智能体金融分析能力接入本地复盘系统的用户。默认 toy loop 不需要 TradingAgents，也不需要任何 LLM/API key；`smartmoney-cub` 本身不托管、不读取明文、不提交、不上传 TradingAgents 的 key。
 
 推荐两种模式：
 
@@ -214,7 +214,7 @@ TradingAgents 的输出只会进入 reviewer / challenger / evidence / case-revi
 
 ## 安全边界：你的系统，只属于你
 
-交易逻辑和复盘记忆是私有资产。`smartmoney-cub-harness` 的设计原则是：你的交易系统只在你本地进化。
+交易逻辑和复盘记忆是私有资产。`smartmoney-cub` 的设计原则是：你的交易系统只在你本地进化。
 
 每个 manifest、decision、outcome、evaluation、registry、doctor output 和 loop output 都必须携带：
 
@@ -280,8 +280,8 @@ smcub validate-manifest examples/sample_run/run_manifest.json
 ```bash
 pip install -e ".[dev]"
 pytest -q
-python -m smartmoney_cub_harness.cli doctor
-python -m smartmoney_cub_harness.cli --help
+python -m smartmoney_cub.cli doctor
+python -m smartmoney_cub.cli --help
 ```
 
 ## Public Boundary

@@ -1,6 +1,6 @@
 # Harness Contract
 
-`smartmoney-cub-harness` is a read-only trading companion harness. It records decisions, validates provenance, reviews D1/D3 outcomes, and evolves rules through challenger -> champion governance.
+`smartmoney-cub` is a read-only trading companion harness. It records decisions, validates provenance, reviews D1/D3 outcomes, and evolves rules through challenger -> champion governance.
 
 It is not a stock picker, financial adviser, broker connector, or execution system.
 
@@ -44,3 +44,4 @@ READ_ONLY_NO_ORDER_NO_CANCEL_NO_TRADE
 | `risk_contract_violation_rate` | `= 0` |
 
 Passing thresholds may create a promotion recommendation. Champion mutation still requires explicit confirmation.
+

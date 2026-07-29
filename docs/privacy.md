@@ -1,6 +1,6 @@
 # Privacy
 
-`smartmoney-cub-harness` is local-first and offline by default.
+`smartmoney-cub` is local-first and offline by default.
 
 The project does not collect, upload, sell, or learn a user's trading logic. The public core has no server, no telemetry, no remote database, and no real account connection.
 
@@ -31,3 +31,4 @@ The TradingAgents adapter is optional and user-configured. External LLM/API cred
 ## What Public Examples May Contain
 
 Public examples must use toy offline data only. They may demonstrate schemas, case records, memory files, and ledger events, but not real trades, private watchlists, credentials, cookies, account identifiers, or local private paths.
+

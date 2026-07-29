@@ -2,8 +2,8 @@ from __future__ import annotations
 
 SAFETY_DECLARATION = "READ_ONLY_NO_ORDER_NO_CANCEL_NO_TRADE"
 
-PACKAGE_NAME = "smartmoney-cub-harness"
-PACKAGE_IMPORT_NAME = "smartmoney_cub_harness"
+PACKAGE_NAME = "smartmoney-cub"
+PACKAGE_IMPORT_NAME = "smartmoney_cub"
 
 MANIFEST_SCHEMA = "smartmoney_cub_run_manifest.v1"
 DECISION_SCHEMA = "smartmoney_cub_decision.v1"
@@ -33,3 +33,4 @@ REQUIRED_ALERT_DECISION_FIELDS = (
     "available_at",
     "data_quality_flag",
 )
+

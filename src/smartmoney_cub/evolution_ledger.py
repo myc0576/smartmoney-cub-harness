@@ -6,8 +6,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from smartmoney_cub_harness.safety import redact
-from smartmoney_cub_harness.schemas import LEDGER_SCHEMA, SAFETY_DECLARATION
+from smartmoney_cub.safety import redact
+from smartmoney_cub.schemas import LEDGER_SCHEMA, SAFETY_DECLARATION
 
 
 def _now_iso() -> str:
@@ -39,3 +39,4 @@ def read_ledger(path: str | Path) -> list[dict[str, Any]]:
     if not ledger_path.exists():
         return []
     return [json.loads(line) for line in ledger_path.read_text(encoding="utf-8").splitlines() if line.strip()]
+

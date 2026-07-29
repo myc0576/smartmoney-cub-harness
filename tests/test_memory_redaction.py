@@ -3,8 +3,8 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from smartmoney_cub_harness.memory import save_memory_record
-from smartmoney_cub_harness.schemas import SAFETY_DECLARATION
+from smartmoney_cub.memory import save_memory_record
+from smartmoney_cub.schemas import SAFETY_DECLARATION
 
 
 def test_save_memory_redacts_email_phone_token_cookie_account_and_paths(tmp_path: Path):
@@ -53,3 +53,4 @@ def test_save_memory_redacts_email_phone_token_cookie_account_and_paths(tmp_path
     assert "C:\\Users\\Trader" not in memory
     assert "/home/trader" not in memory
     assert "[REDACTED]" in memory
+

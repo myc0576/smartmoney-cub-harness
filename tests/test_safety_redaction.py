@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from smartmoney_cub_harness.safety import redact
+from smartmoney_cub.safety import redact
 
 
 def test_redacts_sensitive_keys():
@@ -30,3 +30,4 @@ def test_redacts_email_phone_and_windows_path():
     assert "13800138000" not in redacted
     assert "Trader" not in redacted
     assert redacted.count("[REDACTED]") == 3
+

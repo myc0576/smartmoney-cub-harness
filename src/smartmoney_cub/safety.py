@@ -4,7 +4,7 @@ import re
 from pathlib import Path
 from typing import Any
 
-from smartmoney_cub_harness.schemas import SAFETY_DECLARATION
+from smartmoney_cub.schemas import SAFETY_DECLARATION
 
 REDACTED = "[REDACTED]"
 
@@ -75,3 +75,4 @@ def safety_envelope(payload: dict[str, Any]) -> dict[str, Any]:
     wrapped = dict(payload)
     wrapped.setdefault("safety", SAFETY_DECLARATION)
     return redact(wrapped)
+

@@ -35,7 +35,7 @@ The README pair and `docs/philosophy.md` now map systems-engineering language to
 The new section `Not Quant Trading. Not Pure Discretion. A Semi-Quant AI Decision Harness.` distinguishes:
 
 - Traditional quant systems: strategy-first, backtest-first, signal-seeking, sometimes automated.
-- `smartmoney-cub-harness`: human-decision-first, evidence-chain-first, AI-challenged, D1/D3-reviewed, never executing trades.
+- `smartmoney-cub`: human-decision-first, evidence-chain-first, AI-challenged, D1/D3-reviewed, never executing trades.
 
 Core message: it is not the strategy itself; it is the container where a strategy grows up.
 
@@ -68,7 +68,7 @@ Compliance scan summary:
 ```text
 python -m pip install -e ".[dev]"              PASS
 pytest -q                                      PASS: 22 passed
-python -m smartmoney_cub_harness.cli doctor    PASS: status ok
-python -m smartmoney_cub_harness.cli --help    PASS
+python -m smartmoney_cub.cli doctor    PASS: status ok
+python -m smartmoney_cub.cli --help    PASS
 git status --short --branch                    PASS: expected docs/artifact changes only
 ```

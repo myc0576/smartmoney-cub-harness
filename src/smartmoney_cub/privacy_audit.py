@@ -4,8 +4,8 @@ import json
 from pathlib import Path
 from typing import Any
 
-from smartmoney_cub_harness.safety import redact
-from smartmoney_cub_harness.schemas import SAFETY_DECLARATION
+from smartmoney_cub.safety import redact
+from smartmoney_cub.schemas import SAFETY_DECLARATION
 
 FORBIDDEN_PUBLIC_DATA = [
     "real_trades",
@@ -103,3 +103,4 @@ def load_payload_json(path: str | Path) -> dict[str, Any]:
     if not isinstance(payload, dict):
         raise ValueError("payload JSON must be an object")
     return payload
+
