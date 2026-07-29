@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>SmartMoney-Cub — bilingual system flow 1920x1080</title>
+<style>
+  /* SmartMoney-Cub Editorial System — system flow
+     Canvas: 1920 x 1080 (16:9). READ_ONLY_NO_ORDER_NO_CANCEL_NO_TRADE */
+  :root {
+    --paper: #F5F0E8;
+    --paper-light: #FBF8F2;
+    --ink: #24211D;
+    --ink-muted: #625D56;
+    --terracotta: #C96F4A;
+    --terracotta-dark: #9F4F34;
+    --clay-light: #E9D8CC;
+    --stone: #B7AEA4;
+    --sage: #7D8A78;
+    --line: #D4CCC2;
+    --white: #FFFDFC;
+    --font-display: ui-serif, Georgia, "Noto Serif SC", "Songti SC", serif;
+    --font-body: Inter, ui-sans-serif, system-ui, -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+    --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; }
+  body { position: relative; background: var(--paper); color: var(--ink); font-family: var(--font-body); }
+  body::before {
+    content: "";
+    position: absolute; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.35'/%3E%3C/svg%3E");
+    opacity: 0.02;
+    pointer-events: none;
+  }
+
+  /* ---------- header ---------- */
+  .title { position: absolute; top: 26px; left: 0; width: 1920px; text-align: center; }
+  .title .en { font-family: var(--font-display); font-size: 40px; font-weight: 600; letter-spacing: -0.01em; }
+  .title .zh { display: block; margin-top: 6px; font-size: 23px; color: var(--ink-muted); }
+
+  .nextplan {
+    position: absolute; left: 70px; top: 88px;
+    width: 256px; height: 40px;
+    border: 1.5px dashed var(--sage);
+    border-radius: 999px;
+    background: var(--paper-light);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; color: var(--sage); font-weight: 600;
+  }
+
+  /* ---------- zone headers ---------- */
+  .zone-h { position: absolute; top: 148px; }
+  .zone-h .en { display: block; font-family: var(--font-display); font-size: 28px; font-weight: 600; }
+  .zone-h .zh { display: block; margin-top: 4px; font-size: 22px; color: var(--ink-muted); }
+  #zh1 { left: 70px; }
+  #zh2 { left: 400px; }
+  #zh4 { left: 1280px; }
+
+  /* ---------- generic node card ---------- */
+  .node {
+    position: absolute;
+    background: var(--white);
+    border: 1.5px solid var(--line);
+    border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(36,33,29,0.05);
+    padding: 14px 16px;
+  }
+  .node .en { display: block; font-size: 25px; font-weight: 650; line-height: 1.22; color: var(--ink); padding-right: 120px; }
+  .node .zh { display: block; margin-top: 5px; font-size: 21px; line-height: 1.25; color: var(--ink-muted); }
+  .node .num {
+    font-family: var(--font-mono); font-size: 18px;
+    color: var(--terracotta); letter-spacing: 0.06em;
+    display: block; margin-bottom: 4px;
+  }
+  .node .artifact {
+    position: absolute; right: 12px; top: 12px;
+    font-family: var(--font-mono); font-size: 15px;
+    color: var(--ink-muted);
+    border: 1px solid var(--line); border-radius: 6px;
+    background: var(--paper-light);
+    padding: 3px 8px;
+    white-space: nowrap;
+  }
+
+  /* zone 1 cards */
+  #n-request { left: 70px; top: 200px; width: 300px; height: 124px; }
+  #n-notes   { left: 70px; top: 344px; width: 300px; height: 124px; }
+  #n-market  { left: 70px; top: 488px; width: 300px; height: 124px; }
+
+  /* ---------- zone 2 external container ---------- */
+  .external {
+    position: absolute; left: 400px; top: 520px; width: 360px; height: 260px;
+    border: 1.5px dashed var(--stone);
+    border-radius: 12px;
+    background: transparent;
+    padding: 14px 16px;
+  }
+  .external .en { font-size: 22px; font-weight: 650; line-height: 1.2; }
+  .external .zh { margin-top: 4px; font-size: 21px; color: var(--ink-muted); }
+  .external .chips { margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap; }
+  .external .chip {
+    border: 1.5px solid var(--line); background: var(--paper-light);
+    border-radius: 999px; padding: 5px 12px;
+    font-size: 19px; font-weight: 600; color: var(--ink);
+    white-space: nowrap;
+  }
+  .external .chip small { font-size: 17px; font-weight: 400; color: var(--ink-muted); margin-left: 5px; }
+  .external .examples {
+    margin-top: 14px; font-family: var(--font-mono); font-size: 14px;
+    color: var(--stone); line-height: 1.4;
+  }
+  .external .tag {
+    margin-top: 10px; padding-top: 8px; border-top: 1px dashed var(--line);
+    text-align: center;
+  }
+  .external .tag .t-en { display: block; font-size: 19px; font-weight: 650; color: var(--sage); }
+  .external .tag .t-zh { display: block; margin-top: 2px; font-size: 18px; color: var(--ink-muted); }
+  .evidence-label {
+    position: absolute; left: 592px; top: 372px;
+    font-size: 19px; color: var(--sage);
+  }
+
+  /* ---------- zone 3 trusted core ---------- */
+  .core {
+    position: absolute; left: 780px; top: 196px; width: 460px; height: 520px;
+    background: var(--paper-light);
+    border: 2px solid var(--line);
+    border-radius: 14px;
+  }
+  .core .head { text-align: center; margin-top: 12px; }
+  .core .head .en { font-family: var(--font-display); font-size: 27px; font-weight: 650; }
+  .core .head .zh { display: block; margin-top: 2px; font-size: 21px; color: var(--ink-muted); }
+  .core .corner {
+    position: absolute; right: 14px; top: 14px;
+    font-family: var(--font-mono); font-size: 14px; letter-spacing: 0.08em;
+    color: var(--stone);
+  }
+  #n-capture { left: 810px; top: 272px; width: 400px; height: 84px; }
+  #n-guard   { left: 810px; top: 378px; width: 400px; height: 84px; }
+  #n-contract{ left: 810px; top: 484px; width: 400px; height: 84px; }
+  #n-freeze  { left: 810px; top: 590px; width: 400px; height: 84px; }
+  .core-node .en { font-size: 26px; }
+  .core-node .num { display: inline-block; margin-right: 8px; margin-bottom: 0; }
+  .core-node .en-wrap { display: flex; align-items: baseline; }
+
+  /* zone 4 cards */
+  #n-outcome { left: 1280px; top: 212px; width: 270px; height: 116px; }
+  #n-replay  { left: 1280px; top: 362px; width: 270px; height: 116px; }
+  #n-eval    { left: 1280px; top: 512px; width: 270px; height: 116px; }
+  #n-memory  { left: 1580px; top: 512px; width: 270px; height: 116px; }
+  #n-chall   { left: 1580px; top: 362px; width: 270px; height: 116px; }
+  #n-gate    { left: 1580px; top: 212px; width: 270px; height: 116px; }
+  #n-gate { border-color: var(--sage); background: var(--paper-light); }
+  #n-gate .num { color: var(--sage); }
+  #n-gate .en { color: var(--sage); font-size: 24px; }
+
+  svg.wires { position: absolute; left: 0; top: 0; overflow: visible; }
+
+  /* ---------- outputs ---------- */
+  .out-label {
+    position: absolute; left: 70px; top: 752px;
+    font-family: var(--font-mono); font-size: 17px; letter-spacing: 0.14em;
+    color: var(--stone);
+  }
+  .outbar { position: absolute; left: 70px; top: 786px; width: 1780px; display: flex; gap: 45px; }
+  .outchip {
+    width: 320px; height: 64px;
+    background: var(--white);
+    border: 1.5px solid var(--line);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center; gap: 12px;
+  }
+  .outchip .en { font-size: 23px; font-weight: 650; }
+  .outchip .zh { font-size: 21px; color: var(--ink-muted); }
+
+  /* ---------- safety boundary ---------- */
+  .safety {
+    position: absolute; left: 70px; right: 70px; top: 884px;
+    border-top: 1.5px solid var(--line);
+    text-align: center;
+  }
+  .safety .l1 { margin-top: 22px; font-size: 24px; color: var(--ink); }
+  .safety .l1 .lock { color: var(--sage); margin-right: 12px; font-size: 20px; }
+  .safety .l1 b { font-weight: 650; }
+  .safety .l2 { margin-top: 10px; font-size: 22px; color: var(--ink-muted); }
+  .safety .l3 {
+    margin-top: 14px; font-family: var(--font-mono);
+    font-size: 19px; letter-spacing: 0.04em; color: var(--stone);
+  }
+</style>
+</head>
+<body>
+
+  <div class="title">
+    <span class="en">SmartMoney-Cub · System Flow</span>
+    <span class="zh">系统流程 · 只读证据回路</span>
+  </div>
+
+  <div class="nextplan">Next Plan · 下一次计划</div>
+
+  <div class="zone-h" id="zh1"><span class="en">Read-only Inputs</span><span class="zh">只读输入</span></div>
+  <div class="zone-h" id="zh2"><span class="en">Optional Open-Source Layer</span><span class="zh">可选开源层</span></div>
+  <div class="zone-h" id="zh4"><span class="en">Delayed Review &amp; Evolution</span><span class="zh">延迟复盘与进化</span></div>
+
+  <!-- wires -->
+  <svg class="wires" width="1920" height="1080" viewBox="0 0 1920 1080" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="a-ink" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M 0 1 L 8 5 L 0 9 z" fill="#625D56"/>
+      </marker>
+      <marker id="a-terra" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M 0 1 L 8 5 L 0 9 z" fill="#C96F4A"/>
+      </marker>
+      <marker id="a-sage" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M 0 1 L 8 5 L 0 9 z" fill="#7D8A78"/>
+      </marker>
+    </defs>
+
+    <!-- zone1 collectors into bus -->
+    <path d="M 370 262 H 386" stroke="#625D56" stroke-width="1.8"/>
+    <path d="M 370 406 H 386" stroke="#625D56" stroke-width="1.8"/>
+    <path d="M 370 550 H 386" stroke="#625D56" stroke-width="1.8"/>
+    <path d="M 386 262 V 550" stroke="#625D56" stroke-width="1.8"/>
+    <path d="M 386 270 H 766 V 314 H 800" stroke="#625D56" stroke-width="1.8" marker-end="url(#a-ink)"/>
+
+    <!-- zone2 evidence-only feed (external, dashed, sage) -->
+    <path d="M 575 518 V 280" stroke="#7D8A78" stroke-width="2" stroke-dasharray="7 6" marker-end="url(#a-sage)"/>
+
+    <!-- core sequence 01-04 -->
+    <path d="M 1010 358 V 372" stroke="#C96F4A" stroke-width="2.4" marker-end="url(#a-terra)"/>
+    <path d="M 1010 464 V 478" stroke="#C96F4A" stroke-width="2.4" marker-end="url(#a-terra)"/>
+    <path d="M 1010 570 V 584" stroke="#C96F4A" stroke-width="2.4" marker-end="url(#a-terra)"/>
+
+    <!-- 04 -> 05 -->
+    <path d="M 1240 632 H 1258 V 270 H 1272" stroke="#C96F4A" stroke-width="2.4" marker-end="url(#a-terra)"/>
+
+    <!-- zone4 sequence 05-10 -->
+    <path d="M 1415 328 V 354" stroke="#C96F4A" stroke-width="2.2" marker-end="url(#a-terra)"/>
+    <path d="M 1415 478 V 504" stroke="#C96F4A" stroke-width="2.2" marker-end="url(#a-terra)"/>
+    <path d="M 1550 570 H 1572" stroke="#C96F4A" stroke-width="2.2" marker-end="url(#a-terra)"/>
+    <path d="M 1715 510 V 486" stroke="#C96F4A" stroke-width="2.2" marker-end="url(#a-terra)"/>
+    <path d="M 1715 360 V 336" stroke="#C96F4A" stroke-width="2.2" marker-end="url(#a-terra)"/>
+
+    <!-- human-gated feedback to next plan -->
+    <path d="M 1715 210 V 108 H 334" stroke="#7D8A78" stroke-width="2" stroke-dasharray="7 6" marker-end="url(#a-sage)"/>
+  </svg>
+
+  <!-- zone 1 -->
+  <div class="node" id="n-request">
+    <span class="en">Human or Agent Request</span>
+    <span class="zh">用户或 Agent 请求</span>
+  </div>
+  <div class="node" id="n-notes">
+    <span class="en">Plans · Notes · Exports · Screenshots</span>
+    <span class="zh">计划 · 日志 · 导出 · 截图</span>
+  </div>
+  <div class="node" id="n-market">
+    <span class="en">Optional Market Data</span>
+    <span class="zh">可选市场数据</span>
+  </div>
+
+  <!-- zone 2 -->
+  <div class="external">
+    <span class="en">User-installed Open-Source Tools</span>
+    <span class="zh">用户自主安装的开源工具</span>
+    <div class="chips">
+      <span class="chip">Analysis<small>分析</small></span>
+      <span class="chip">Data<small>数据</small></span>
+      <span class="chip">Models<small>模型</small></span>
+    </div>
+    <div class="examples">TradingAgents · UZI-Skill · optional adapters</div>
+    <div class="tag">
+      <span class="t-en">Optional · User-selected · External</span>
+      <span class="t-zh">可选 · 用户选择 · 外部运行</span>
+    </div>
+  </div>
+  <div class="evidence-label">Evidence only · 仅作为证据</div>
+
+  <!-- zone 3 -->
+  <div class="core">
+    <div class="corner">TRUSTED CORE · READ-ONLY</div>
+    <div class="head">
+      <span class="en">SmartMoney-Cub Control Plane</span>
+      <span class="zh">核心控制平面</span>
+    </div>
+  </div>
+  <div class="node core-node" id="n-capture">
+    <span class="artifact">Run Envelope</span>
+    <div class="en-wrap"><span class="num">01</span><span class="en">Capture &amp; Provenance</span></div>
+    <span class="zh">捕获与来源记录</span>
+  </div>
+  <div class="node core-node" id="n-guard">
+    <div class="en-wrap"><span class="num">02</span><span class="en">Leakage &amp; Safety Guard</span></div>
+    <span class="zh">反未来函数与安全检查</span>
+  </div>
+  <div class="node core-node" id="n-contract">
+    <div class="en-wrap"><span class="num">03</span><span class="en">Decision + Risk Contract</span></div>
+    <span class="zh">决策与风险契约</span>
+  </div>
+  <div class="node core-node" id="n-freeze">
+    <span class="artifact">Evidence Pack</span>
+    <div class="en-wrap"><span class="num">04</span><span class="en">Freeze Evidence</span></div>
+    <span class="zh">冻结证据</span>
+  </div>
+
+  <!-- zone 4 -->
+  <div class="node" id="n-outcome">
+    <span class="num">05</span>
+    <span class="en">D1 / D3 Outcome</span>
+    <span class="zh">D1 / D3 延迟结果</span>
+  </div>
+  <div class="node" id="n-replay">
+    <span class="num">06</span>
+    <span class="en">Deterministic Replay</span>
+    <span class="zh">确定性回放</span>
+  </div>
+  <div class="node" id="n-eval">
+    <span class="num">07</span>
+    <span class="en">Evaluation + Counter-Evidence</span>
+    <span class="zh">评估与反方证据</span>
+  </div>
+  <div class="node" id="n-memory">
+    <span class="num">08</span>
+    <span class="en">Memory + Case Bank</span>
+    <span class="zh">记忆与案例库</span>
+  </div>
+  <div class="node" id="n-chall">
+    <span class="num">09</span>
+    <span class="en">Challenger Rule</span>
+    <span class="zh">挑战者规则</span>
+  </div>
+  <div class="node" id="n-gate">
+    <span class="num">10</span>
+    <span class="en">Explicit Human Promotion Gate</span>
+    <span class="zh">人工显式晋级门禁</span>
+  </div>
+
+  <!-- outputs -->
+  <div class="out-label">OUTPUTS · 输出</div>
+  <div class="outbar">
+    <div class="outchip"><span class="en">Review Report</span><span class="zh">复盘报告</span></div>
+    <div class="outchip"><span class="en">Trace</span><span class="zh">执行轨迹</span></div>
+    <div class="outchip"><span class="en">Case Record</span><span class="zh">案例记录</span></div>
+    <div class="outchip"><span class="en">Markdown Memory</span><span class="zh">Markdown 记忆</span></div>
+    <div class="outchip"><span class="en">Rule Candidate</span><span class="zh">规则候选</span></div>
+  </div>
+
+  <!-- safety boundary -->
+  <div class="safety">
+    <div class="l1"><span class="lock">◆</span><b>SmartMoney-Cub reviews evidence. It never places, cancels, or executes trades.</b></div>
+    <div class="l2">SmartMoney-Cub 负责证据复盘，不下单、不撤单、不执行交易。</div>
+    <div class="l3">READ_ONLY_NO_ORDER_NO_CANCEL_NO_TRADE</div>
+  </div>
+
+</body>
+</html>

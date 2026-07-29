@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>SmartMoney-Cub — README hero 1600x800</title>
+<style>
+  /* SmartMoney-Cub Editorial System — hero cover
+     Canvas: 1600 x 800 (2:1). READ_ONLY_NO_ORDER_NO_CANCEL_NO_TRADE */
+  :root {
+    --paper: #F5F0E8;
+    --paper-light: #FBF8F2;
+    --ink: #24211D;
+    --ink-muted: #625D56;
+    --terracotta: #C96F4A;
+    --terracotta-dark: #9F4F34;
+    --clay-light: #E9D8CC;
+    --stone: #B7AEA4;
+    --sage: #7D8A78;
+    --line: #D4CCC2;
+    --white: #FFFDFC;
+    --font-display: ui-serif, Georgia, "Noto Serif SC", "Songti SC", serif;
+    --font-body: Inter, ui-sans-serif, system-ui, -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+    --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1600px; height: 800px; overflow: hidden; }
+  body {
+    position: relative;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-body);
+  }
+  body::before {
+    content: "";
+    position: absolute; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.35'/%3E%3C/svg%3E");
+    opacity: 0.025;
+    pointer-events: none;
+  }
+  .gridfield {
+    position: absolute;
+    left: 830px; top: 70px; width: 700px; height: 530px;
+    background-image:
+      linear-gradient(to right, rgba(183,174,164,0.16) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(183,174,164,0.16) 1px, transparent 1px);
+    background-size: 70px 70px;
+    border-radius: 12px;
+  }
+
+  /* ---------- Left column ---------- */
+  .left {
+    position: absolute;
+    left: 84px; top: 70px; width: 700px;
+  }
+  .kicker {
+    font-family: var(--font-mono);
+    font-size: 18px;
+    letter-spacing: 0.14em;
+    color: var(--terracotta-dark);
+    margin-bottom: 16px;
+  }
+  h1 {
+    font-family: var(--font-display);
+    font-size: 86px;
+    line-height: 1.0;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+  .pos-en {
+    margin-top: 22px;
+    font-size: 30px;
+    line-height: 1.28;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .pos-zh {
+    margin-top: 6px;
+    font-size: 28px;
+    line-height: 1.32;
+    color: var(--ink-muted);
+    font-weight: 400;
+  }
+  .core {
+    margin-top: 28px;
+    border-left: 3px solid var(--terracotta);
+    padding-left: 22px;
+  }
+  .core .row { display: flex; align-items: baseline; margin-top: 9px; }
+  .core .row:first-child { margin-top: 0; }
+  .core .en {
+    font-size: 23px; font-weight: 600; color: var(--ink); line-height: 1.28;
+    flex: 0 0 320px;
+  }
+  .core .zh {
+    font-size: 21px; color: var(--ink-muted); line-height: 1.3;
+  }
+  .chips { margin-top: 26px; display: flex; flex-wrap: wrap; gap: 10px; width: 660px; }
+  .chip {
+    display: inline-flex; align-items: baseline; gap: 8px;
+    border: 1.5px solid var(--line);
+    background: var(--paper-light);
+    border-radius: 999px;
+    padding: 7px 18px;
+  }
+  .chip .en { font-size: 20px; font-weight: 600; color: var(--ink); }
+  .chip .zh { font-size: 18px; color: var(--ink-muted); }
+
+  /* ---------- Right composition ---------- */
+  .stage { position: absolute; left: 830px; top: 70px; width: 700px; height: 530px; }
+  .card {
+    position: absolute;
+    width: 160px; height: 158px;
+    background: var(--white);
+    border: 1.5px solid var(--line);
+    border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(36,33,29,0.06);
+    padding: 14px 12px 12px 14px;
+  }
+  .card::after {
+    content: "";
+    position: absolute; top: -1.5px; right: -1.5px;
+    width: 24px; height: 24px;
+    background: var(--paper);
+    border-left: 1.5px solid var(--line);
+    border-bottom: 1.5px solid var(--line);
+    border-radius: 0 10px 0 8px;
+  }
+  .num {
+    font-family: var(--font-mono);
+    font-size: 19px;
+    color: var(--terracotta);
+    letter-spacing: 0.06em;
+  }
+  .card .en {
+    display: block; margin-top: 6px;
+    font-size: 25px; font-weight: 700; line-height: 1.12; color: var(--ink);
+  }
+  .card .zh {
+    display: block; margin-top: 4px;
+    font-size: 21px; color: var(--ink-muted);
+  }
+  .motif { position: absolute; left: 14px; bottom: 12px; right: 12px; height: 24px; }
+  .motif .bar { height: 3px; border-radius: 2px; background: var(--clay-light); margin-top: 6px; }
+  .motif .bar.short { width: 62%; }
+  .motif.hash { font-family: var(--font-mono); font-size: 15px; color: var(--stone); letter-spacing: 0.05em; }
+  .motif .tick {
+    font-family: var(--font-mono); font-size: 16px; color: var(--sage); font-weight: 700;
+  }
+
+  #c-input    { left: 30px;  top: 50px; }
+  #c-evidence { left: 264px; top: 110px; }
+  #c-review   { left: 498px; top: 50px; }
+  #c-evolve   { left: 498px; top: 320px; }
+
+  .gate {
+    position: absolute;
+    left: 200px; top: 340px;
+    width: 232px; height: 84px;
+    background: var(--paper-light);
+    border: 1.5px solid var(--sage);
+    border-radius: 10px;
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    gap: 3px;
+  }
+  .gate .en { font-size: 24px; font-weight: 700; color: var(--sage); letter-spacing: 0.04em; }
+  .gate .zh { font-size: 20px; color: var(--ink-muted); }
+  .gate .keyhole {
+    position: absolute; top: -13px; left: 50%; transform: translateX(-50%);
+    width: 24px; height: 24px; border-radius: 50%;
+    background: var(--sage);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .gate .keyhole::after {
+    content: ""; width: 8px; height: 8px; border-radius: 50%;
+    background: var(--paper-light);
+  }
+
+  svg.wires { position: absolute; inset: 0; overflow: visible; pointer-events: none; }
+
+  /* ---------- Safety footer (fixed band at bottom) ---------- */
+  .safety {
+    position: absolute;
+    left: 84px; right: 84px; bottom: 32px;
+    border-top: 1.5px solid var(--line);
+    padding-top: 16px;
+    display: flex; align-items: baseline; justify-content: space-between;
+  }
+  .safety .human { display: flex; align-items: baseline; gap: 14px; }
+  .safety .lock { color: var(--sage); font-size: 18px; position: relative; top: -1px; }
+  .safety .en { font-size: 21px; font-weight: 700; letter-spacing: 0.05em; color: var(--sage); }
+  .safety .zh { font-size: 19px; color: var(--ink-muted); }
+  .safety .mono {
+    font-family: var(--font-mono);
+    font-size: 17px; color: var(--stone); letter-spacing: 0.03em;
+  }
+</style>
+</head>
+<body>
+  <div class="gridfield"></div>
+
+  <div class="left">
+    <div class="kicker">OPEN SOURCE · LOCAL HARNESS</div>
+    <h1>SmartMoney-Cub</h1>
+    <div class="pos-en">Read-only trading review &amp; open-source integration harness</div>
+    <div class="pos-zh">只读交易复盘与开源能力接入框架</div>
+    <div class="core">
+      <div class="row"><span class="en">Turn decisions into evidence.</span><span class="zh">让决策沉淀为证据</span></div>
+      <div class="row"><span class="en">Plug in tools.</span><span class="zh">让开源能力按需接入</span></div>
+      <div class="row"><span class="en">Evolve with human oversight.</span><span class="zh">让规则在人类监督下进化</span></div>
+    </div>
+    <div class="chips">
+      <span class="chip"><span class="en">Local-first</span><span class="zh">本地优先</span></span>
+      <span class="chip"><span class="en">Read-only</span><span class="zh">只读运行</span></span>
+      <span class="chip"><span class="en">Optional integrations</span><span class="zh">可选接入</span></span>
+      <span class="chip"><span class="en">Evidence-governed</span><span class="zh">证据治理</span></span>
+    </div>
+  </div>
+
+  <div class="stage">
+    <svg class="wires" width="700" height="530" viewBox="0 0 700 530" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 1 L 8 5 L 0 9 z" fill="#C96F4A"/>
+        </marker>
+        <marker id="arrow-sage" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 1 L 8 5 L 0 9 z" fill="#7D8A78"/>
+        </marker>
+      </defs>
+      <!-- main terracotta path: INPUT -> EVIDENCE -> REVIEW -> EVOLVE -->
+      <path d="M 190 130 C 226 130, 230 170, 264 182" stroke="#C96F4A" stroke-width="2.5" marker-end="url(#arrow)"/>
+      <path d="M 424 182 C 454 170, 458 130, 498 130" stroke="#C96F4A" stroke-width="2.5" marker-end="url(#arrow)"/>
+      <path d="M 578 210 L 578 318" stroke="#C96F4A" stroke-width="2.5" marker-end="url(#arrow)"/>
+      <!-- feedback EVOLVE -> HUMAN GATE -> INPUT -->
+      <path d="M 498 400 H 432" stroke="#7D8A78" stroke-width="2" stroke-dasharray="7 6" marker-end="url(#arrow-sage)"/>
+      <path d="M 200 400 C 100 400, 60 320, 90 210" stroke="#7D8A78" stroke-width="2" stroke-dasharray="7 6" marker-end="url(#arrow-sage)"/>
+    </svg>
+
+    <div class="card" id="c-input">
+      <span class="num">01</span>
+      <span class="en">Input</span>
+      <span class="zh">输入</span>
+      <div class="motif"><div class="bar"></div><div class="bar short"></div></div>
+    </div>
+    <div class="card" id="c-evidence">
+      <span class="num">02</span>
+      <span class="en">Evidence</span>
+      <span class="zh">证据</span>
+      <div class="motif hash">#a41f…9c</div>
+    </div>
+    <div class="card" id="c-review">
+      <span class="num">03</span>
+      <span class="en">Review</span>
+      <span class="zh">复盘</span>
+      <div class="motif"><span class="tick">✓ verified</span></div>
+    </div>
+    <div class="card" id="c-evolve">
+      <span class="num">04</span>
+      <span class="en">Evolve</span>
+      <span class="zh">进化</span>
+      <div class="motif"><div class="bar short"></div><div class="bar"></div></div>
+    </div>
+
+    <div class="gate">
+      <div class="keyhole"></div>
+      <span class="en">HUMAN GATE</span>
+      <span class="zh">人工门禁</span>
+    </div>
+  </div>
+
+  <div class="safety">
+    <div class="human">
+      <span class="lock">◆</span>
+      <span class="en">NO ORDER · NO CANCEL · NO TRADE</span>
+      <span class="zh">不下单 · 不撤单 · 不自动交易</span>
+    </div>
+    <span class="mono">READ_ONLY_NO_ORDER_NO_CANCEL_NO_TRADE</span>
+  </div>
+</body>
+</html>

@@ -1,0 +1,79 @@
+/* SmartMoney-Cub Editorial System — design tokens
+ * Warm, restrained, evidence-driven editorial language for a
+ * read-only trading review & open-source integration harness.
+ * READ_ONLY_NO_ORDER_NO_CANCEL_NO_TRADE
+ */
+
+:root {
+  /* ---------- Raw palette ---------- */
+  --paper: #F5F0E8;          /* primary warm paper background */
+  --paper-light: #FBF8F2;    /* raised card surface */
+  --ink: #24211D;            /* body ink, warm near-black (never pure black) */
+  --ink-muted: #625D56;      /* secondary text */
+  --terracotta: #C96F4A;     /* single accent: key nodes, numbering, emphasis */
+  --terracotta-dark: #9F4F34;/* accent hover / dark accent text */
+  --clay-light: #E9D8CC;     /* soft accent wash, highlighted containers */
+  --stone: #B7AEA4;          /* tertiary text, hairline icons */
+  --sage: #7D8A78;           /* safety / verification / human-gate semantics */
+  --line: #D4CCC2;           /* hairline borders and connectors */
+  --white: #FFFDFC;          /* brightest card face */
+
+  /* ---------- Semantic surfaces ---------- */
+  --surface-page: var(--paper);
+  --surface-card: var(--paper-light);
+  --surface-card-bright: var(--white);
+  --surface-accent-wash: var(--clay-light);
+  --border-subtle: var(--line);
+  --border-strong: var(--stone);
+
+  /* ---------- Semantic text ---------- */
+  --text-primary: var(--ink);
+  --text-secondary: var(--ink-muted);
+  --text-tertiary: var(--stone);
+  --text-accent: var(--terracotta-dark);
+  --text-safety: var(--sage);
+
+  /* ---------- Type families (no bundled font files) ---------- */
+  --font-display:
+    ui-serif,
+    Georgia,
+    "Noto Serif SC",
+    "Songti SC",
+    serif;
+  --font-body:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    "PingFang SC",
+    "Microsoft YaHei",
+    sans-serif;
+  --font-mono:
+    "SFMono-Regular",
+    Consolas,
+    "Liberation Mono",
+    monospace;
+
+  /* ---------- Type scale (hero 1600x800 / flow 1920x1080 canvases) ---------- */
+  --h1-hero: 92px;        /* hero product name, 82-104 range */
+  --h2-hero: 34px;        /* hero positioning line, 30-38 range */
+  --h3-flow-zone: 30px;   /* flow zone titles */
+  --node-en: 27px;        /* flow node English title, 26-30 range */
+  --node-zh: 22px;        /* flow node Chinese subtitle, 21-24 range */
+  --label: 24px;          /* tags, captions (never below 22px in flows) */
+  --contract-mono: 19px;  /* machine safety contract, 18-21 range */
+
+  /* ---------- Spacing scale ---------- */
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 40px;
+  --space-5: 64px;
+  --space-6: 96px;
+
+  /* ---------- Shape ---------- */
+  --radius-card: 10px;    /* slight rounding only */
+  --radius-chip: 999px;
+  --hairline: 1.5px solid var(--line);
+  --shadow-whisper: 0 1px 3px rgba(36, 33, 29, 0.06); /* near-none */
+}

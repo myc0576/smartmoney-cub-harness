@@ -52,6 +52,60 @@ Machine-readable contracts:
 
 Workflow statuses are not trading action labels.
 
+## Bilingual System Pipeline
+
+The README references a bilingual static diagram (`assets/smartmoney-cub-system-flow-bilingual.png`). The maintainable Mermaid source below mirrors the same control-plane pipeline in GitHub's native diagram syntax.
+
+```mermaid
+flowchart LR
+  subgraph Z1["Read-only Inputs / 只读输入"]
+    R["Human or Agent Request<br/>用户或 Agent 请求"]
+    N["Plans · Notes · Exports · Screenshots<br/>计划 · 日志 · 导出 · 截图"]
+    M["Optional Market Data<br/>可选市场数据"]
+  end
+
+  subgraph Z2["Optional Open-Source Layer<br/>可选开源层（外部运行）"]
+    O["User-installed Open-Source Tools<br/>Analysis · Data · Models<br/>TradingAgents · UZI-Skill · optional adapters"]
+  end
+
+  subgraph Z3["SmartMoney-Cub Control Plane<br/>核心控制平面"]
+    N01["01 Capture & Provenance<br/>捕获与来源记录<br/>Run Envelope"]
+    N02["02 Leakage & Safety Guard<br/>反未来函数与安全检查"]
+    N03["03 Decision + Risk Contract<br/>决策与风险契约"]
+    N04["04 Freeze Evidence<br/>冻结证据<br/>Evidence Pack"]
+  end
+
+  subgraph Z4["Delayed Review & Evolution / 延迟复盘与进化"]
+    N05["05 D1 / D3 Outcome<br/>D1 / D3 延迟结果"]
+    N06["06 Deterministic Replay<br/>确定性回放"]
+    N07["07 Evaluation + Counter-Evidence<br/>评估与反方证据"]
+    N08["08 Memory + Case Bank<br/>记忆与案例库"]
+    N09["09 Challenger Rule<br/>挑战者规则"]
+    N10["10 Explicit Human Promotion Gate<br/>人工显式晋级门禁"]
+  end
+
+  subgraph OUT["Outputs / 输出"]
+    Y1["Review Report<br/>复盘报告"]
+    Y2["Trace<br/>执行轨迹"]
+    Y3["Case Record<br/>案例记录"]
+    Y4["Markdown Memory<br/>Markdown 记忆"]
+    Y5["Rule Candidate<br/>规则候选"]
+  end
+
+  Z1 --> N01
+  Z2 -.->|"Evidence only / 仅作为证据"| N01
+  N01 --> N02 --> N03 --> N04 --> N05 --> N06 --> N07
+  N07 --> N08 --> N09 --> N10
+  N10 -->|"confirmed only"| N05
+  N05 --> Y1
+  N06 --> Y2
+  N07 --> Y3
+  N08 --> Y4
+  N09 --> Y5
+```
+
+Feedback from node 10 back to "Next Plan / 下一次计划" passes only through an explicit human confirmation (`smcub confirm-promotion`). Optional open-source tools sit outside the trusted core and contribute review evidence — never order intent.
+
 ## Module map
 
 - `run_capture.py`: runs offline commands and writes portable run artifacts.
