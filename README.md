@@ -1,5 +1,15 @@
 # smartmoney-cub-harness
 
+<div align="center">
+
+![smartmoney-cub-harness cover](assets/smartmoney-cub-harness-cover.png)
+
+## Read-only Trading Review and Open-Source Plugin Harness
+
+**Turn every trading decision into reviewable evidence, reusable memory, and testable rules.**
+
+[English](README.md) · [简体中文](README.zh-CN.md)
+
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Tests](https://img.shields.io/badge/tests-pytest-informational)](tests/)
@@ -8,11 +18,43 @@
 [![Human-in-the-loop](https://img.shields.io/badge/human--in--the--loop-required-blueviolet)](docs/harness-contract.md)
 [![Agent-ready](https://img.shields.io/badge/agent--ready-offline%20artifacts-success)](docs/agent-integration.md)
 
+`READ_ONLY_NO_ORDER_NO_CANCEL_NO_TRADE`
+
+</div>
+
 `smartmoney-cub-harness` is a **local-first, read-only, agent-agnostic control plane for trading review and evidence governance**. It turns an external caller's offline run into portable, reviewable artifacts without taking trading authority.
 
 External Agent or CLI caller → Run Envelope → frozen Benchmark/Evidence Pack → deterministic replay → explicit human promotion gate.
 
 It has **no embedded LLM**, **no broker connection**, and **no automatic trading**. It does not place, cancel, or execute trades; select stocks; mutate accounts; run a background autonomous trading Agent; or automatically mutate core rules.
+
+## How SmartMoney-Cub Works
+
+A ten-second view of the product flow. The detailed [Core Loop](#core-loop) diagram below explains the internal roles and modules.
+
+```mermaid
+flowchart LR
+    A["User or Agent Request<br/>用户或 Agent 请求"]
+    B["Optional Data / Analysis Plugins<br/>可选数据与分析插件"]
+    C["Read-only Analysis<br/>只读分析"]
+    D["Run Envelope + Provenance<br/>运行信封与来源记录"]
+    E["Decision / Evidence Pack<br/>决策与证据包"]
+    F["D1 / D3 Delayed Outcome<br/>延迟结果"]
+    G["Evaluation + Counter Evidence<br/>评估与反方证据"]
+    H["Memory + Challenger Rule<br/>记忆与规则候选"]
+    I["Explicit Human Promotion Gate<br/>人工显式晋级"]
+
+    A --> B
+    A --> C
+    B --> C
+    C --> D
+    D --> E
+    E --> F
+    F --> G
+    G --> H
+    H --> I
+    I -. "No automatic trading<br/>不自动交易" .-> A
+```
 
 ## Toy/offline control-plane workflow
 
@@ -36,6 +78,29 @@ The workflow states are review states, never trading actions: a Run Envelope is 
 Run Envelope permissions are a **declarative, unverified policy record** (`enforcement: declarative`, `verified: false`), not a subprocess sandbox or proof that an external command obeyed the policy. The CLI's `--sandbox` flag only selects the disposable `tmp/sandbox` output namespace; it does not isolate the process. Run untrusted commands inside an OS/container sandbox. `evidence_pack.sha256` seals the exact pack manifest for local tamper detection; it is not an authenticated signature. Replay rejects a missing, malformed, mismatched, or structurally invalid seal/manifest as `pending_review`.
 
 Optional ecosystem integrations remain outside the trusted core. See [docs/integrations.md](docs/integrations.md), including the recommended companion [wbh604/UZI-Skill](https://github.com/wbh604/UZI-Skill), and [the TradingAgents adapter boundary](docs/tradingagents-adapter.md). External LLM/network credentials stay outside this repository, and imported reports remain review evidence rather than trading authority.
+
+## Open-Source Integration Matrix
+
+The harness reserves read-only slots for strong open-source projects. Statuses below reflect the code and tests actually present in this repository, not plans. All external projects are optional, installed by the user, and maintained upstream.
+
+| Project | Capability | Current Status | Installation | Harness Role |
+| --- | --- | --- | --- | --- |
+| [wbh604/UZI-Skill](https://github.com/wbh604/UZI-Skill) | Agent-facing market analysis skill | `recommended-companion` | Optional, user-installed in your own agent environment | External analysis whose output becomes local review evidence |
+| [TauricResearch/TradingAgents](https://github.com/TauricResearch/TradingAgents) | LLM multi-agent financial analysis | `documented-adapter` / `optional-bridge` | Optional, user-installed with user-owned LLM keys | Reports imported or bridged into read-only review packets |
+| [AKShare](https://github.com/akfamily/akshare) | Market data source | `reserved-slot` | Optional, not required by the toy loop | Future read-only data adapter; no runtime integration yet |
+| [Microsoft Qlib](https://github.com/microsoft/qlib) | Quant research / evaluation platform | `reserved-slot` | Optional, user-installed | Future evaluation aid for challenger rules; no runtime integration yet |
+| [Amazon Chronos](https://github.com/amazon-science/chronos-forecasting) | Time-series foundation model | `reserved-slot` | Optional, user-installed | Future forecast-as-evidence input; no runtime integration yet |
+| [Google TimesFM](https://github.com/google-research/timesfm) | Time-series foundation model | `reserved-slot` | Optional, user-installed | Future forecast-as-evidence input; no runtime integration yet |
+| [Nixtla NeuralForecast](https://github.com/Nixtla/neuralforecast) | Neural forecasting library | `reserved-slot` | Optional, user-installed | Future forecast-as-evidence input; no runtime integration yet |
+| [FinRobot](https://github.com/AI4Finance-Foundation/FinRobot) | Financial analysis agent platform | `reserved-slot` | Optional, user-installed | Future external report source for review packets |
+| Data-source adapters | Read-only exports and toy fixtures | `reserved-slot` | N/A | Normalize read-only inputs into manifests |
+| Evaluation / backtest tools | Rule candidate evaluation | `reserved-slot` | Optional, user-installed | Evaluate challenger candidates without future leakage |
+| Report generators | Local reading of review artifacts | `reserved-slot` | Optional, user-installed | Render loop reports, case records, and ledgers |
+| Knowledge-memory tools | Markdown memory and case banks | `reserved-slot` | Optional, user-installed | Organize local memory and evolution ledgers |
+
+No project is `runtime-integrated` today. A row may only claim that status once this repository contains its runtime code, tests, and safety documentation.
+
+See [docs/integrations.md](docs/integrations.md) for the complete integration contract, status definitions, installation boundaries, and safety requirements.
 
 ### Isolated installation and upgrades
 
