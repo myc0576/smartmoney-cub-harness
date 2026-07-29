@@ -8,6 +8,8 @@
 
 *"散户靠感觉，高手靠系统。把你的感觉，变成可复盘、可验证、可进化的规则。"*
 
+[English](README.md) · [简体中文](README.zh-CN.md)
+
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Tests](https://img.shields.io/badge/tests-pytest-informational)](tests/)
@@ -46,6 +48,34 @@ smcub replay-evidence-pack tmp/toy-evidence-pack
 ```
 
 Run Envelope 的权限范围是**声明式、未经验证的策略记录**（`enforcement: declarative`、`verified: false`），不是子进程沙箱。CLI 的 `--sandbox` 只选择一次性的 `tmp/sandbox` 输出目录，并不隔离进程；不可信命令必须放在操作系统或容器沙箱中运行。`evidence_pack.sha256` 用于本地篡改检测，不是经过身份认证的数字签名；任何不一致只会进入 `pending_review` 或 `blocked`，绝不会自动晋级。
+
+## SmartMoney-Cub 如何工作
+
+十秒钟看懂产品流程。下方"核心理念"和详细模块文档负责解释内部角色与实现。
+
+```mermaid
+flowchart LR
+    A["User or Agent Request<br/>用户或 Agent 请求"]
+    B["Optional Data / Analysis Plugins<br/>可选数据与分析插件"]
+    C["Read-only Analysis<br/>只读分析"]
+    D["Run Envelope + Provenance<br/>运行信封与来源记录"]
+    E["Decision / Evidence Pack<br/>决策与证据包"]
+    F["D1 / D3 Delayed Outcome<br/>延迟结果"]
+    G["Evaluation + Counter Evidence<br/>评估与反方证据"]
+    H["Memory + Challenger Rule<br/>记忆与规则候选"]
+    I["Explicit Human Promotion Gate<br/>人工显式晋级"]
+
+    A --> B
+    A --> C
+    B --> C
+    C --> D
+    D --> E
+    E --> F
+    F --> G
+    G --> H
+    H --> I
+    I -. "No automatic trading<br/>不自动交易" .-> A
+```
 
 ## 30 秒上手
 
@@ -220,17 +250,25 @@ AI 助手在这个仓库里只能扮演 reviewer、challenger、archivist、drif
 
 这个 harness 会持续预留优秀开源项目的接入位。集成的目标不是制造更激进的交易信号，而是把外部工具的输出纳入只读复盘、证据整理和规则治理。
 
+下表状态只反映本仓库当前真实存在的代码与测试，不反映规划。所有外部项目均为可选、由用户自行安装、由上游维护。
+
 | 项目 / 类别 | 当前状态 | 可以怎样接入 harness | 安全边界 |
 | --- | --- | --- | --- |
-| [wbh604/UZI-Skill](https://github.com/wbh604/UZI-Skill) | 推荐搭配 / 生态接入位 | 作为外部分析报告或 agent skill 灵感来源，输出只能作为本地复盘材料进入 reviewer / challenger 流程 | 不声明内置运行时集成；不把分析结论变成买卖指令 |
-| [TauricResearch/TradingAgents](https://github.com/TauricResearch/TradingAgents) | optional documented adapter / 用户自选外部引擎 | 用户本地运行 TradingAgents 生成多智能体分析/候选报告，或显式开启 optional local bridge 生成只读 review packet；该 packet 进入 reviewer / challenger / D1-D3 outcome review / rule candidate 流程 | 用户自行配置 LLM/API key；harness 不保存、不收集、不上传 key；不连接券商；不下单；不把 TradingAgents 输出直接当交易指令 |
-| 数据源适配项目 | 预留 | 只读导出、toy fixture、公开样例 schema | 不接 broker execution，不写账户，不下单 |
-| 报告生成项目 | 预留 | 把 `loop_report.md`、case record、ledger 转成更好的本地阅读材料 | 不上传私有复盘，不发布真实持仓 |
-| Agent skill 项目 | 预留 | 增强 reviewer、challenger、archivist、drift detector 的协作体验 | 不允许越权到交易执行 |
-| 评估 / 回测项目 | 预留 | 帮助评估规则候选和样本质量 | 不跳过 D1/D3 provenance 与 future-leakage 检查 |
-| 知识记忆项目 | 预留 | 管理本地 Markdown memory、case bank、evolution ledger | 不上传私有交易逻辑 |
+| [wbh604/UZI-Skill](https://github.com/wbh604/UZI-Skill) | `recommended-companion`（推荐搭配，非内置依赖） | 作为外部分析报告或 agent skill 灵感来源，输出只能作为本地复盘材料进入 reviewer / challenger 流程 | 不声明内置运行时集成；不把分析结论变成买卖指令 |
+| [TauricResearch/TradingAgents](https://github.com/TauricResearch/TradingAgents) | `documented-adapter` / `optional-bridge`（用户自选外部引擎） | 用户本地运行 TradingAgents 生成多智能体分析/候选报告，或显式开启 optional local bridge 生成只读 review packet；该 packet 进入 reviewer / challenger / D1-D3 outcome review / rule candidate 流程 | 用户自行配置 LLM/API key；harness 不保存、不收集、不上传 key；不连接券商；不下单；不把 TradingAgents 输出直接当交易指令 |
+| [AKShare](https://github.com/akfamily/akshare) | `reserved-slot`（预留，尚无运行时集成） | 未来作为只读行情数据适配来源；toy loop 不需要它 | 只读输入，不接 broker execution，不写账户 |
+| [Microsoft Qlib](https://github.com/microsoft/qlib) | `reserved-slot`（预留，尚无运行时集成） | 未来帮助评估 challenger 规则候选与样本质量 | 不跳过 D1/D3 provenance 与 future-leakage 检查 |
+| [Amazon Chronos](https://github.com/amazon-science/chronos-forecasting) / [Google TimesFM](https://github.com/google-research/timesfm) / [Nixtla NeuralForecast](https://github.com/Nixtla/neuralforecast) | `reserved-slot`（预留，尚无运行时集成） | 未来把预测输出作为只读证据进入复盘流程 | 预测只是证据，不是买卖指令；模型与权重由用户自行安装 |
+| [FinRobot](https://github.com/AI4Finance-Foundation/FinRobot) | `reserved-slot`（预留，尚无运行时集成） | 未来作为外部分析报告来源导入 review packet | 输出只做复盘证据，不做交易指令 |
+| 数据源适配项目 | `reserved-slot` | 只读导出、toy fixture、公开样例 schema | 不接 broker execution，不写账户，不下单 |
+| 报告生成项目 | `reserved-slot` | 把 `loop_report.md`、case record、ledger 转成更好的本地阅读材料 | 不上传私有复盘，不发布真实持仓 |
+| Agent skill 项目 | `reserved-slot` | 增强 reviewer、challenger、archivist、drift detector 的协作体验 | 不允许越权到交易执行 |
+| 评估 / 回测项目 | `reserved-slot` | 帮助评估规则候选和样本质量 | 不跳过 D1/D3 provenance 与 future-leakage 检查 |
+| 知识记忆项目 | `reserved-slot` | 管理本地 Markdown memory、case bank、evolution ledger | 不上传私有交易逻辑 |
 
-接入规则见 [docs/integrations.md](docs/integrations.md)。
+目前没有任何项目处于 `runtime-integrated` 状态；只有当本仓库包含对应运行时代码、测试和安全文档后，才允许标注该状态。
+
+完整的集成合同、状态词定义、安装边界和安全要求见 [docs/integrations.md](docs/integrations.md)。README 中的精简矩阵必须与该文档保持同步。
 
 ## 可选接入 TradingAgents
 
