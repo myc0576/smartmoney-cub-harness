@@ -1,0 +1,27 @@
+{
+  "schema": "smartmoney_cub_plugin_manifest.v1",
+  "id": "chronos2",
+  "display_name": "Chronos-2",
+  "description": "Amazon Science pretrained time-series foundation model for zero-shot probabilistic forecasting. Produces multi-step quantile forecasts (q10..q90) over transformed series such as log returns or volatility. It is a general-purpose time-series model, not trained specifically for any single market.",
+  "upstream_repo": "https://github.com/amazon-science/chronos-forecasting",
+  "upstream_license": "Apache-2.0",
+  "capabilities": ["zero_shot_forecast", "quantile_forecast"],
+  "supported_targets": ["stock", "index", "sector"],
+  "supported_horizons": ["intraday", "d1", "d3", "d5", "d10", "d20"],
+  "install_type": "pip",
+  "install_spec": "chronos-forecasting",
+  "python_requirement": ">=3.9",
+  "requires_network": true,
+  "requires_model_download": true,
+  "requires_credentials": false,
+  "required_environment_variables": [],
+  "resource_profile": {
+    "cpu_supported": true,
+    "gpu_optional": true,
+    "estimated_disk": "~2GB including model weights"
+  },
+  "runtime_status": "optional",
+  "integration_level": "runtime_integrated",
+  "actionability": "review_only",
+  "safety": "READ_ONLY_NO_ORDER_NO_CANCEL_NO_TRADE"
+}

@@ -1,0 +1,32 @@
+{
+  "schema": "smartmoney_cub_plugin_manifest.v1",
+  "id": "qlib",
+  "display_name": "Microsoft Qlib",
+  "description": "AI-oriented quantitative investment platform. This adapter reads user-prepared Qlib data directories, existing trained models, and Recorder outputs to produce cross-sectional scores, rankings, and IC/RankIC readouts. Scores are uncalibrated model outputs, never deterministic price targets.",
+  "upstream_repo": "https://github.com/microsoft/qlib",
+  "upstream_license": "MIT",
+  "capabilities": [
+    "quant_prediction",
+    "cross_section_ranking",
+    "backtest_readout",
+    "data_health_check"
+  ],
+  "supported_targets": ["stock", "index"],
+  "supported_horizons": ["d1", "d3", "d5", "d10", "d20"],
+  "install_type": "pip",
+  "install_spec": "pyqlib",
+  "python_requirement": ">=3.8,<3.13",
+  "requires_network": false,
+  "requires_model_download": false,
+  "requires_credentials": false,
+  "required_environment_variables": [],
+  "resource_profile": {
+    "cpu_supported": true,
+    "gpu_optional": true,
+    "estimated_disk": ">=2GB for market data, model artifacts extra"
+  },
+  "runtime_status": "optional",
+  "integration_level": "runtime_integrated",
+  "actionability": "review_only",
+  "safety": "READ_ONLY_NO_ORDER_NO_CANCEL_NO_TRADE"
+}

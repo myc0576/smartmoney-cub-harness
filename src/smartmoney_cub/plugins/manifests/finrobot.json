@@ -1,0 +1,27 @@
+{
+  "schema": "smartmoney_cub_plugin_manifest.v1",
+  "id": "finrobot",
+  "display_name": "FinRobot",
+  "description": "AI4Finance Foundation open-source AI agent platform for financial analysis. Catalog entry only: an adapter is planned, but no runtime integration exists yet.",
+  "upstream_repo": "https://github.com/AI4Finance-Foundation/FinRobot",
+  "upstream_license": "Apache-2.0",
+  "capabilities": ["multi_agent_analysis", "llm_report"],
+  "supported_targets": ["stock", "index"],
+  "supported_horizons": ["d1", "d3", "d5", "d10", "d20"],
+  "install_type": "git",
+  "install_spec": "git+https://github.com/AI4Finance-Foundation/FinRobot.git",
+  "python_requirement": ">=3.10",
+  "requires_network": true,
+  "requires_model_download": false,
+  "requires_credentials": true,
+  "required_environment_variables": ["OPENAI_API_KEY"],
+  "resource_profile": {
+    "cpu_supported": true,
+    "gpu_optional": false,
+    "estimated_disk": "~1GB"
+  },
+  "runtime_status": "optional",
+  "integration_level": "adapter_planned",
+  "actionability": "review_only",
+  "safety": "READ_ONLY_NO_ORDER_NO_CANCEL_NO_TRADE"
+}

@@ -1,0 +1,37 @@
+{
+  "schema": "smartmoney_cub_plugin_manifest.v1",
+  "id": "tradingagents",
+  "display_name": "TradingAgents",
+  "description": "Multi-agent LLM trading research framework from Tauric Research. Produces qualitative multi-analyst debate reports. Output is an LLM interpretation, not a calibrated statistical forecast, and is imported as review-only evidence.",
+  "upstream_repo": "https://github.com/TauricResearch/TradingAgents",
+  "upstream_license": "Apache-2.0",
+  "capabilities": ["multi_agent_analysis", "llm_report"],
+  "supported_targets": ["stock", "index"],
+  "supported_horizons": ["d1", "d3", "d5", "d10", "d20"],
+  "install_type": "git",
+  "install_spec": "git+https://github.com/TauricResearch/TradingAgents.git",
+  "python_requirement": ">=3.10",
+  "requires_network": true,
+  "requires_model_download": false,
+  "requires_credentials": true,
+  "required_environment_variables": [
+    "OPENAI_API_KEY",
+    "GOOGLE_API_KEY",
+    "ANTHROPIC_API_KEY",
+    "DEEPSEEK_API_KEY",
+    "DASHSCOPE_API_KEY",
+    "ZHIPUAI_API_KEY",
+    "MINIMAX_API_KEY",
+    "OPENROUTER_API_KEY",
+    "FINNHUB_API_KEY"
+  ],
+  "resource_profile": {
+    "cpu_supported": true,
+    "gpu_optional": false,
+    "estimated_disk": "~1GB"
+  },
+  "runtime_status": "optional",
+  "integration_level": "runtime_integrated",
+  "actionability": "review_only",
+  "safety": "READ_ONLY_NO_ORDER_NO_CANCEL_NO_TRADE"
+}

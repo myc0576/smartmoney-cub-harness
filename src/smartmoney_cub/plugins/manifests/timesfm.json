@@ -1,0 +1,27 @@
+{
+  "schema": "smartmoney_cub_plugin_manifest.v1",
+  "id": "timesfm",
+  "display_name": "TimesFM",
+  "description": "Google Research pretrained time-series foundation model. Catalog entry only: SmartMoney-Cub documents capability, license, and resource requirements, but no runtime adapter is implemented yet.",
+  "upstream_repo": "https://github.com/google-research/timesfm",
+  "upstream_license": "Apache-2.0",
+  "capabilities": ["zero_shot_forecast", "quantile_forecast"],
+  "supported_targets": ["stock", "index", "sector"],
+  "supported_horizons": ["d1", "d3", "d5", "d10", "d20"],
+  "install_type": "pip",
+  "install_spec": "timesfm",
+  "python_requirement": ">=3.10",
+  "requires_network": true,
+  "requires_model_download": true,
+  "requires_credentials": false,
+  "required_environment_variables": [],
+  "resource_profile": {
+    "cpu_supported": true,
+    "gpu_optional": true,
+    "estimated_disk": ">=1GB including model weights"
+  },
+  "runtime_status": "optional",
+  "integration_level": "catalog_available",
+  "actionability": "review_only",
+  "safety": "READ_ONLY_NO_ORDER_NO_CANCEL_NO_TRADE"
+}

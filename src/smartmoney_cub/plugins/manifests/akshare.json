@@ -1,0 +1,27 @@
+{
+  "schema": "smartmoney_cub_plugin_manifest.v1",
+  "id": "akshare",
+  "display_name": "AKShare",
+  "description": "Open-source financial data interface for China A-share stocks, indexes, and industry/concept sectors. Acts as a data provider that produces unified OHLCV market data packets for other plugins. It is not a forecasting model.",
+  "upstream_repo": "https://github.com/akfamily/akshare",
+  "upstream_license": "MIT",
+  "capabilities": ["market_data", "ohlcv_packet", "data_health_check"],
+  "supported_targets": ["stock", "index", "sector"],
+  "supported_horizons": ["intraday", "d1", "d3", "d5", "d10", "d20"],
+  "install_type": "pip",
+  "install_spec": "akshare",
+  "python_requirement": ">=3.9",
+  "requires_network": true,
+  "requires_model_download": false,
+  "requires_credentials": false,
+  "required_environment_variables": [],
+  "resource_profile": {
+    "cpu_supported": true,
+    "gpu_optional": false,
+    "estimated_disk": "~200MB"
+  },
+  "runtime_status": "optional",
+  "integration_level": "runtime_integrated",
+  "actionability": "review_only",
+  "safety": "READ_ONLY_NO_ORDER_NO_CANCEL_NO_TRADE"
+}
