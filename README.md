@@ -183,6 +183,35 @@ AI 助手在这个仓库里只能扮演 reviewer、challenger、archivist、drif
 
 接入规则见 [docs/integrations.md](docs/integrations.md)。
 
+## 插件系统：按需接入重量级开源项目
+
+核心保持零重依赖（不捆绑 PyTorch / LangGraph / Qlib / AKShare）。重量级开源项目通过插件系统按需安装到 `~/.smartmoney-cub/plugins/<id>/.venv` 独立虚拟环境，以子进程 + JSON stdin/stdout 协议运行，与核心完全隔离。
+
+| 插件 | 能力 | 输出类型 | 集成级别 | 许可证 |
+| --- | --- | --- | --- | --- |
+| `akshare` | A股/指数/板块 OHLCV 统一行情包 | `market_data` | runtime_integrated | MIT |
+| `tradingagents` | 多智能体 LLM 研究叙事 | `llm_interpretation` | runtime_integrated | Apache-2.0 |
+| `qlib` | 预训练工作流的横截面打分 | `uncalibrated_score` | runtime_integrated | MIT |
+| `chronos2` | 变换序列上的零样本分位数预测 | `numeric_model_forecast` | runtime_integrated | Apache-2.0 |
+| `timesfm` | 时序基础模型 | — | catalog_available | Apache-2.0 |
+| `neuralforecast` | 经典+神经网络预测库 | — | catalog_available | Apache-2.0 |
+| `finrobot` | 多智能体金融分析平台 | — | adapter_planned | Apache-2.0 |
+
+```bash
+# 发现与安装（显式同意门控）
+smcub plugin list
+smcub plugin install akshare --yes --allow-network --ack-third-party
+smcub plugin install chronos2 --yes --allow-network --ack-third-party --ack-model-download
+smcub plugin doctor
+
+# 多插件复盘分析：各插件结果独立保留，不合成、不平均
+smcub analyze --target 600519.SS --target-type stock --horizon d5   --data-provider akshare --plugins tradingagents,chronos2   --allow-network --ack-third-party
+```
+
+聚合报告只做证据整理：逐插件保留原始 evidence packet，标注一致/冲突/缺失信息，**永远不会**输出未经校准的"上涨概率"。LLM 叙事、模型打分、数值预测是三种不同证据，不会混成一个数字。卸载插件不会删除用户生成的分析结果。
+
+免责声明：插件运行第三方代码，安装前请自行审阅上游项目；Chronos/TimesFM 等通用时序模型并非专为金融市场训练，输出仅为弱证据；一切输出都是只读复盘材料，不构成投资建议。详见 [docs/plugins.md](docs/plugins.md)、[docs/plugin-security.md](docs/plugin-security.md) 与 [THIRD_PARTY_PLUGINS.md](THIRD_PARTY_PLUGINS.md)。
+
 ## 可选接入 TradingAgents
 
 TradingAgents 适合已经会配置 LLM provider、并希望把外部多智能体金融分析能力接入本地复盘系统的用户。默认 toy loop 不需要 TradingAgents，也不需要任何 LLM/API key；`smartmoney-cub` 本身不托管、不读取明文、不提交、不上传 TradingAgents 的 key。
@@ -271,6 +300,13 @@ smcub save-memory --case-record FILE
 smcub tradingagents-doctor
 smcub tradingagents-ingest --report path/to/tradingagents_report.md --ticker 600519.SS --analysis-date 2026-07-06
 smcub tradingagents-run --ticker 600519.SS --analysis-date 2026-07-06 --allow-network --ack-external-llm
+smcub plugin list
+smcub plugin info tradingagents
+smcub plugin install akshare --yes --allow-network --ack-third-party
+smcub plugin doctor
+smcub plugin configure qlib --key data_dir --value /path/to/qlib_data
+smcub plugin uninstall chronos2 --yes
+smcub analyze --target 600519.SS --target-type stock --horizon d5 --data-provider akshare --plugins tradingagents,chronos2 --allow-network --ack-third-party
 smcub doctor
 smcub validate-manifest examples/sample_run/run_manifest.json
 ```
