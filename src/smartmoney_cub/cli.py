@@ -15,6 +15,11 @@ from smartmoney_cub.loop import run_agent_loop
 from smartmoney_cub.manifest import validate_run_manifest
 from smartmoney_cub.memory import save_memory_record
 from smartmoney_cub.outcome import build_outcome
+from smartmoney_cub.plugins.cli_ext import (
+    add_plugin_arguments,
+    handle_analyze_command,
+    handle_plugin_command,
+)
 from smartmoney_cub.privacy_audit import inspect_run_artifacts, load_payload_json, privacy_audit
 from smartmoney_cub.registry import register_candidate
 from smartmoney_cub.run_capture import capture_run, get_command_preset, parse_command
@@ -188,6 +193,8 @@ def build_parser() -> argparse.ArgumentParser:
     save_memory = sub.add_parser("save-memory", help="Write local Markdown memory from a case record")
     save_memory.add_argument("--case-record", required=True)
     save_memory.add_argument("--output")
+
+    add_plugin_arguments(sub)
     return parser
 
 
@@ -329,6 +336,12 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "save-memory":
         _print_json(save_memory_record(args.case_record, output_path=args.output))
         return 0
+
+    if args.command == "plugin":
+        return handle_plugin_command(args)
+
+    if args.command == "analyze":
+        return handle_analyze_command(args)
 
     parser.error(f"unknown command: {args.command}")
     return 2
