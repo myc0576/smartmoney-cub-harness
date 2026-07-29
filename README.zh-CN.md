@@ -23,7 +23,15 @@
 
 `READ_ONLY_NO_ORDER_NO_CANCEL_NO_TRADE`
 
+[English](README.md)
+
 </div>
+
+![SmartMoney-Cub 中英双语系统流程](assets/smartmoney-cub-system-flow-bilingual.png)
+
+只读输入 → 核心控制平面（捕获 → 反未来函数 → 决策与风险契约 → 冻结证据）→ 延迟复盘（D1/D3 结果 → 确定性回放 → 评估与反方证据 → 记忆与案例库 → 挑战者规则 → 人工显式晋级门禁）→ 下一次计划。可选开源工具始终在可信核心外部，仅作为复盘证据加入。
+
+对应文本与可维护 Mermaid 流程见 [docs/architecture.md](docs/architecture.md)。
 
 ---
 

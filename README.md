@@ -8,11 +8,23 @@
 [![Human-in-the-loop](https://img.shields.io/badge/human--in--the--loop-required-blueviolet)](docs/harness-contract.md)
 [![Agent-ready](https://img.shields.io/badge/agent--ready-offline%20artifacts-success)](docs/agent-integration.md)
 
+![SmartMoney-Cub bilingual cover](assets/smartmoney-cub-harness-cover.png)
+
 `smartmoney-cub-harness` is a **local-first, read-only, agent-agnostic control plane for trading review and evidence governance**. It turns an external caller's offline run into portable, reviewable artifacts without taking trading authority.
 
 External Agent or CLI caller → Run Envelope → frozen Benchmark/Evidence Pack → deterministic replay → explicit human promotion gate.
 
 It has **no embedded LLM**, **no broker connection**, and **no automatic trading**. It does not place, cancel, or execute trades; select stocks; mutate accounts; run a background autonomous trading Agent; or automatically mutate core rules.
+
+[简体中文](README.zh-CN.md)
+
+## Bilingual System Flow
+
+![SmartMoney-Cub bilingual system flow](assets/smartmoney-cub-system-flow-bilingual.png)
+
+Read-only inputs feed the SmartMoney-Cub control plane. Optional, user-selected open-source tools are kept outside the trusted core and enter only as review evidence. The control plane freezes manifests and evidence packs, and delayed D1/D3 outcomes flow through deterministic replay, evaluation, memory, challenger rules, and an explicit human promotion gate before any rule candidate can return to the next plan.
+
+See [docs/architecture.md](docs/architecture.md) for the text and Mermaid representation of the same flow.
 
 ## Toy/offline control-plane workflow
 
@@ -152,52 +164,7 @@ Screenshots are often the safer path for ordinary users: lower setup cost, small
 
 ## Core Loop
 
-```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#f6f8fa", "primaryTextColor": "#24292f", "primaryBorderColor": "#8c959f", "lineColor": "#57606a", "secondaryColor": "#ddf4ff", "tertiaryColor": "#fff8c5"}}}%%
-flowchart TD
-  subgraph Human["Human Trader"]
-    A["Trading Thesis<br/>计划 / 预案"]
-    B["Observation<br/>盘中观察"]
-    C["Final Judgment<br/>人类最终判断"]
-  end
-
-  subgraph Inputs["Read-only Inputs"]
-    I1["Broker / QMT Export<br/>只读账户数据"]
-    I2["TongHuaShun Screenshots<br/>同花顺截图"]
-    I3["Trading Notes<br/>交易日志"]
-    I4["Watchlist / Market Data<br/>观察池 / 市场数据"]
-  end
-
-  subgraph Harness["Smartmoney Cub Harness"]
-    H1["Provenance Check<br/>来源校验"]
-    H2["Anti-Future-Leakage<br/>反未来函数"]
-    H3["Decision Schema<br/>决策结构化"]
-    H4["Risk Contract<br/>失效位 / 放弃条件"]
-    H5["D1/D3 Outcome Review<br/>结果复盘"]
-    H6["Rule Evolution<br/>规则进化"]
-    H7["Markdown Memory<br/>交易记忆"]
-  end
-
-  subgraph Agent["AI Agent Companion"]
-    G1["Reviewer<br/>复盘员"]
-    G2["Challenger<br/>反方质询"]
-    G3["Archivist<br/>档案管理员"]
-    G4["Drift Detector<br/>漂移检测"]
-  end
-
-  A --> B --> C
-  I1 --> H1
-  I2 --> H1
-  I3 --> H1
-  I4 --> H1
-  C --> H3
-  H1 --> H2 --> H3 --> H4 --> H5 --> H6 --> H7
-  H7 --> A
-  G1 --> H5
-  G2 --> H3
-  G3 --> H7
-  G4 --> H6
-```
+The bilingual system flow above summarizes the control-plane pipeline. The maintainable text and Mermaid source for this loop live in [Architecture](docs/architecture.md).
 
 ## Where the 易经 Thinking Lives
 

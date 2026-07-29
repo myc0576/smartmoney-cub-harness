@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>SmartMoney-Cub cover — 3 rough directions</title>
+<style>
+  body { font-family: Kalam, "Comic Sans MS", cursive; background: #fafafa; color: #222; margin: 24px; }
+  h1 { font-size: 22px; } h2 { font-size: 18px; margin: 8px 0; }
+  .row { display: flex; gap: 20px; flex-wrap: wrap; }
+  .frame { width: 480px; height: 240px; border: 2px solid #333; background: #fff; position: relative; padding: 10px; box-sizing: border-box; }
+  .note { font-size: 13px; color: #555; width: 480px; }
+  .box { border: 1.5px dashed #777; padding: 4px 6px; font-size: 12px; position: absolute; }
+  .accent { border-color: #C96F4A; color: #C96F4A; }
+  .sage { border-color: #7D8A78; color: #7D8A78; }
+</style>
+</head>
+<body>
+<h1>SmartMoney-Cub README cover — 三个粗方向（thinking aid, not mockup）</h1>
+
+<h2>A · Editorial Control Plane（左文右图，纸张卡片 + 细线管线）</h2>
+<div class="row">
+  <div class="frame">
+    <div class="box" style="left:12px;top:14px;width:200px;height:40px;">SmartMoney-Cub (serif 大标题)</div>
+    <div class="box" style="left:12px;top:64px;width:210px;height:30px;">EN/中文 双语定位两行</div>
+    <div class="box" style="left:12px;top:104px;width:200px;height:44px;">三行核心句 (证据/接入/进化)</div>
+    <div class="box" style="left:12px;top:158px;width:210px;height:26px;">4 个双语小标签 chips</div>
+    <div class="box sage" style="left:12px;top:196px;width:220px;height:24px;">安全声明 + mono 契约（小）</div>
+    <div class="box accent" style="left:250px;top:30px;width:48px;height:60px;">INPUT 卡</div>
+    <div class="box accent" style="left:308px;top:60px;width:48px;height:60px;">EVIDENCE 卡(折角)</div>
+    <div class="box accent" style="left:366px;top:30px;width:48px;height:60px;">REVIEW 卡</div>
+    <div class="box accent" style="left:420px;top:60px;width:48px;height:60px;">EVOLVE 卡</div>
+    <div class="box sage" style="left:330px;top:150px;width:90px;height:26px;">HUMAN GATE 菱形</div>
+    <div class="box" style="left:250px;top:196px;width:210px;height:20px;">反馈细线经人工门禁回 INPUT</div>
+  </div>
+  <div class="note">最接近 Claude-inspired 编辑风。左侧信息层级完整（名称→定位→核心句→标签→安全），右侧一条陶土色路径串四张纸卡，HUMAN GATE 用灰绿。窄屏缩放时左文右图仍分区清晰。</div>
+</div>
+
+<h2>B · Evidence Loop（居中环形闭环，图形更抽象）</h2>
+<div class="row">
+  <div class="frame">
+    <div class="box" style="left:150px;top:10px;width:180px;height:30px;">SmartMoney-Cub 居中标题</div>
+    <div class="box accent" style="left:200px;top:60px;width:80px;height:80px;border-radius:50%;">环形: 输入→证据→复盘→进化</div>
+    <div class="box sage" style="left:290px;top:90px;width:70px;height:22px;">HUMAN GATE 在环上</div>
+    <div class="box" style="left:60px;top:90px;width:90px;height:40px;">左右两侧散落双语短句</div>
+    <div class="box" style="left:150px;top:196px;width:180px;height:24px;">底部安全声明</div>
+  </div>
+  <div class="note">闭环隐喻最强，但 2:1 横幅里环形挤压文字空间；GitHub 缩略时环上小字先失读；四标签和三行核心句没有自然落位，信息层级弱于 A。</div>
+</div>
+
+<h2>C · Open-Source Modular System（模块插槽，强调外部接入）</h2>
+<div class="row">
+  <div class="frame">
+    <div class="box" style="left:12px;top:14px;width:180px;height:34px;">SmartMoney-Cub + 定位</div>
+    <div class="box" style="left:210px;top:14px;width:120px;height:60px;">核心容器（Trusted Core）</div>
+    <div class="box accent" style="left:350px;top:10px;width:60px;height:24px;">插件卡 Analysis</div>
+    <div class="box accent" style="left:350px;top:44px;width:60px;height:24px;">插件卡 Data</div>
+    <div class="box accent" style="left:350px;top:78px;width:60px;height:24px;">插件卡 Models</div>
+    <div class="box" style="left:210px;top:100px;width:200px;height:20px;">optional·external 虚线边界</div>
+    <div class="box sage" style="left:12px;top:196px;width:220px;height:24px;">安全声明</div>
+  </div>
+  <div class="note">最能表达"开源能力按需接入"，但容易被误读成插件市场广告；核心复盘闭环（D1/D3、人工门禁）退居次要，与项目定位（复盘优先、集成可选）主次颠倒。更适合 system-flow 图里的区域 2，而不是 hero 的主构图。</div>
+</div>
+
+<h2 style="color:#C96F4A;">结论：选 A（Editorial Control Plane），在其右侧构图中吸收 B 的闭环反馈线，在 system-flow 的区域 2 中吸收 C 的模块插槽语言。</h2>
+</body>
+</html>

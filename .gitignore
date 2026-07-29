@@ -30,3 +30,6 @@ artifacts/*
 !artifacts/pre_publish_review.md
 !artifacts/story_polish_review.md
 !artifacts/smartmoney-cub-harness-cover.svg
+
+# OpenDesign editor-side render scratch (kept ignored)
+tmp-render/
