@@ -32,13 +32,13 @@
   <path d="M112 142H578M112 178H482M112 214H528" stroke="#E0D3C3" stroke-width="2" stroke-linecap="round"/>
 
   <g class="font" transform="translate(74 120)">
-    <text x="0" y="52" fill="#2E251D" font-size="64" font-weight="800">smartmoney-cub</text>
-    <text x="0" y="124" fill="#2E251D" font-size="64" font-weight="800">harness</text>
-    <text x="0" y="180" fill="#59483A" font-size="28" font-weight="650">Local-first AI review loop</text>
-    <text x="0" y="216" fill="#59483A" font-size="28" font-weight="650">for subjective traders</text>
-    <text x="0" y="262" fill="#6D5A49" font-size="26" font-weight="650">聪明资金幼年体：陪你复盘，不替你下单</text>
+    <text x="0" y="8" fill="#7B6754" font-size="20" font-weight="800" letter-spacing="3">OPEN SOURCE · LOCAL-FIRST · READ-ONLY</text>
+    <text x="0" y="84" fill="#2E251D" font-size="64" font-weight="800">SmartMoney-Cub</text>
+    <text x="0" y="142" fill="#59483A" font-size="28" font-weight="650">AI-assisted trading review</text>
+    <text x="0" y="178" fill="#59483A" font-size="28" font-weight="650">and evidence system</text>
+    <text x="0" y="226" fill="#6D5A49" font-size="26" font-weight="650">本地优先的 AI 交易复盘与证据系统</text>
 
-    <g transform="translate(0 322)">
+    <g transform="translate(0 292)">
       <rect x="0" y="0" width="146" height="44" rx="8" fill="#2F281F"/>
       <text x="73" y="29" text-anchor="middle" fill="#FFF8EF" font-size="19" font-weight="800">READ-ONLY</text>
 
