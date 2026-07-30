@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>SmartMoney-Cub Evidence and Review Flow</title>
+<style>
+:root{--bg:#F7F1EA;--panel:#FEFCF8;--panel-border:#CCBBA7;--ink:#2E251D;--ink-soft:#59483A;--line:#8B755E;--line-soft:#C9B8A4;--accent:#2F281F;--accent-ink:#FFF8EF;--ext:#F9F0E6;--ext-ink:#5B493A;--font:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans SC","Microsoft YaHei","PingFang SC",Arial,sans-serif}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:var(--font)}
+body{display:flex;justify-content:center;padding:20px}
+.stage{width:1180px;max-width:100%}
+header{text-align:center;margin-bottom:10px}
+header .kicker{color:var(--ink-soft);font-weight:800;letter-spacing:3px;font-size:13px}
+header h1{margin:4px 0 2px;font-size:24px;font-weight:800;color:var(--ink)}
+header .sub{color:var(--ink-soft);font-size:13px}
+header .sub-zh{color:var(--ink-soft);font-size:12px;margin-top:2px}
+.canvas{background:var(--panel);border:1.5px solid var(--panel-border);border-radius:18px;padding:22px 20px 26px;box-shadow:0 16px 28px rgba(111,93,73,0.10)}
+svg.flow{width:100%;height:auto;display:block}
+.node rect{fill:var(--panel);stroke:var(--panel-border);stroke-width:1.5}
+.node.accent rect{fill:var(--accent);stroke:var(--accent)}
+.node.accent text{fill:var(--accent-ink)}
+.node .en{font-family:var(--font);font-weight:800;font-size:15px;fill:var(--ink)}
+.node .zh{font-family:var(--font);font-size:12px;fill:var(--ink-soft);font-weight:650}
+.node .label{font-family:var(--font);font-size:10px;fill:var(--ink-soft);font-weight:800;letter-spacing:1.5px}
+.arrow{stroke:var(--line);stroke-width:3;fill:none;stroke-linecap:round}
+.arrow.soft{stroke:var(--line-soft);stroke-dasharray:6 6}
+.legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:14px;padding:8px 12px;background:var(--ext);border:1.5px dashed var(--line-soft);border-radius:10px;color:var(--ext-ink);font-size:12px}
+.legend strong{color:var(--ink)}
+.safety{margin-top:12px;padding:8px 12px;background:var(--accent);color:var(--accent-ink);border-radius:10px;font-size:12px;font-weight:800;text-align:center;letter-spacing:0.6px}
+</style>
+</head>
+<body>
+<div class="stage">
+<header>
+<div class="kicker">SMARTMONEY-CUB &middot; EVIDENCE &amp; REVIEW CORE</div>
+<h1>From Decision to Rule &mdash; Bilingual Flow</h1>
+<div class="sub">Six read-only stages. External analysis is evidence only. Champion mutation requires an explicit human gate.</div>
+<div class="sub-zh">六个只读阶段。外部分析只作为证据进入。Champion 变更必须经人工显式确认。</div>
+</header>
+<div class="canvas">
+<svg class="flow" viewBox="0 0 1140 540" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#8B755E"/></marker>
+<marker id="arrowSoft" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#C9B8A4"/></marker>
+</defs>
+<!-- Row 1: Inputs -> Capture -> Validate -> Outcome Review -->
+<g class="node" transform="translate(30 90)">
+<rect x="0" y="0" width="260" height="110" rx="12"/>
+<text class="label" x="14" y="22">INPUTS</text>
+<text class="en" x="14" y="52">Toy JSON / Notes / CSV</text>
+<text class="zh" x="14" y="74">Toy 离线 / 笔记 / CSV</text>
+<text class="zh" x="14" y="94">截图 -&gt; 外部多模态 agent</text>
+</g>
+<g transform="translate(310 30)">
+<rect x="0" y="0" width="230" height="58" rx="10" fill="#F9F0E6" stroke="#C9B8A4" stroke-dasharray="4 4"/>
+<text class="label" x="12" y="20">OPTIONAL EXTERNAL</text>
+<text class="en" x="12" y="40">Multimodal Agent</text>
+<text class="zh" x="12" y="54">evidence only</text>
+</g>
+<path class="arrow soft" d="M290 145H310" marker-end="url(#arrowSoft)"/>
+
+<g class="node" transform="translate(330 90)">
+<rect x="0" y="0" width="260" height="110" rx="12"/>
+<text class="label" x="14" y="22">1 &middot; CAPTURE</text>
+<text class="en" x="14" y="52">Capture Decisions &amp; Evidence</text>
+<text class="zh" x="14" y="74">记录决策与证据</text>
+</g>
+<path class="arrow" d="M590 145H630" marker-end="url(#arrow)"/>
+
+<g class="node" transform="translate(630 90)">
+<rect x="0" y="0" width="260" height="110" rx="12"/>
+<text class="label" x="14" y="22">2 &middot; VALIDATE</text>
+<text class="en" x="14" y="52">Validate Provenance &amp; Safety</text>
+<text class="zh" x="14" y="74">校验溯源与安全</text>
+</g>
+<path class="arrow" d="M890 145H930" marker-end="url(#arrow)"/>
+
+<g class="node" transform="translate(630 250)">
+<rect x="0" y="0" width="260" height="110" rx="12"/>
+<text class="label" x="14" y="22">3 &middot; OUTCOME REVIEW</text>
+<text class="en" x="14" y="52">D1 / D3 Outcome Review</text>
+<text class="zh" x="14" y="74">D1 / D3 延迟结果验证</text>
+</g>
+<path class="arrow" d="M760 200L760 246" marker-end="url(#arrow)"/>
+
+<g class="node accent" transform="translate(930 250)">
+<rect x="0" y="0" width="180" height="110" rx="12"/>
+<text class="label" x="14" y="22" fill="#FFF8EF">5 &middot; HUMAN APPROVAL</text>
+<text class="en" x="14" y="52">Explicit Approval</text>
+<text class="zh" x="14" y="74" fill="#FFF8EF">人工显式批准</text>
+<text class="zh" x="14" y="94" fill="#FFF8EF">champion mutate gate</text>
+</g>
+<path class="arrow" d="M890 305H926" marker-end="url(#arrow)"/>
+
+<g class="node" transform="translate(330 250)">
+<rect x="0" y="0" width="260" height="110" rx="12"/>
+<text class="label" x="14" y="22">4 &middot; MEMORY &amp; RULE</text>
+<text class="en" x="14" y="52">Memory &amp; Challenger Rule</text>
+<text class="zh" x="14" y="74">记忆与规则候选</text>
+</g>
+<path class="arrow" d="M590 305H630" marker-end="url(#arrow)"/>
+
+<g transform="translate(30 410)">
+<rect x="0" y="0" width="560" height="60" rx="10" fill="#F9F0E6" stroke="#C9B8A4" stroke-dasharray="4 4"/>
+<text class="label" x="12" y="20">OUTPUT</text>
+<text class="en" x="12" y="42">Review Report &middot; Case Memory &middot; Rule Candidate</text>
+<text class="zh" x="12" y="56">复盘报告 / 案例记忆 / 规则候选</text>
+</g>
+<path class="arrow soft" d="M460 360L460 406" marker-end="url(#arrowSoft)"/>
+<path class="arrow soft" d="M1020 305L460 406" marker-end="url(#arrowSoft)"/>
+</svg>
+<div class="legend">
+<span><strong>Solid arrow:</strong> core read-only flow / 主链路</span>
+<span><strong>Dashed arrow:</strong> external evidence only / 外部证据</span>
+<span><strong>Dark node:</strong> mandatory human gate / 人工门禁</span>
+</div>
+<div class="safety">READ_ONLY_NO_ORDER_NO_CANCEL_NO_TRADE</div>
+</div>
+</div>
+</body>
+</html>

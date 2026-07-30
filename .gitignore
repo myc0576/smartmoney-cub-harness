@@ -29,4 +29,7 @@ artifacts/*
 !artifacts/pre_publish_review.md
 !artifacts/story_polish_review.md
 !artifacts/smartmoney-cub-cover.svg
+!artifacts/smartmoney-cub-cover-draft.svg
+
+opendesign/**/*.png
 
