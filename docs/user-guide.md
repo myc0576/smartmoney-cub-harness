@@ -1,6 +1,6 @@
 # User Guide
 
-This harness helps a subjective trader review decisions after evidence arrives. It does not tell you what to trade and does not touch execution.
+SmartMoney-Cub helps a subjective trader review decisions after evidence arrives. It does not tell you what to trade and does not touch execution.
 
 ## 5-Second Start
 

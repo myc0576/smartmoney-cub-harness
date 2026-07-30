@@ -1,6 +1,8 @@
-# Harness Contract
+# Core Safety Contract
 
-`smartmoney-cub` is a read-only trading companion harness. It records decisions, validates provenance, reviews D1/D3 outcomes, and evolves rules through challenger -> champion governance.
+> File name `harness-contract.md` is kept for link compatibility. This document is the safety contract of the SmartMoney-Cub Evidence & Review Core.
+
+SmartMoney-Cub is a local-first, read-only AI trading review system. Its Evidence & Review Core records decisions, validates provenance, reviews D1/D3 outcomes, and evolves rules through challenger -> champion governance.
 
 It is not a stock picker, financial adviser, broker connector, or execution system.
 

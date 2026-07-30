@@ -1,6 +1,6 @@
 # Integrations
 
-`smartmoney-cub` can reference and learn from strong open-source projects, but every integration stays inside the read-only review contract.
+SmartMoney-Cub can reference and learn from strong open-source projects, but every integration stays inside the read-only review contract.
 
 The goal is not to create stronger execution signals. The goal is to turn external analysis, reports, skills, and data shapes into better local review artifacts.
 
@@ -24,23 +24,23 @@ Every integration must preserve these rules:
 
 | Status | Meaning |
 | --- | --- |
-| `recommended-companion` | Useful alongside the harness, but not imported or executed by the harness runtime. |
+| `recommended-companion` | Useful alongside SmartMoney-Cub, but not imported or executed by the core runtime. |
 | `reserved-slot` | A category intentionally left open for future open-source integrations. |
 | `documented-adapter` | A documented local pattern exists, but it remains read-only and optional. |
 | `optional-bridge` | A local bridge exists, but users must explicitly install and configure the upstream tool before use. |
-| `runtime-integrated` | Code, tests, and docs prove the integration is part of the harness runtime. |
+| `runtime-integrated` | Code, tests, and docs prove the integration is part of the core runtime. |
 
 Do not label a project `runtime-integrated` until the repository contains the code path, tests, and safety documentation that prove it.
 
 ## Current Matrix
 
-| Project / Category | Status | Harness Role | Required Boundary |
+| Project / Category | Status | Role in SmartMoney-Cub | Required Boundary |
 | --- | --- | --- | --- |
 | [wbh604/UZI-Skill](https://github.com/wbh604/UZI-Skill) | `recommended-companion` | External analysis skill and narrative inspiration; outputs may be saved locally and reviewed by reviewer / challenger agents. | Do not call it an embedded dependency. Do not convert its analysis into buy/sell instructions. |
-| [TauricResearch/TradingAgents](https://github.com/TauricResearch/TradingAgents) | `documented-adapter` / `optional-bridge` | User-selected external LLM multi-agent analysis engine. Users may run TradingAgents locally to produce candidate reports, debate summaries, risk notes, watchlist rationale, or decision evidence, then import the output as a review packet. | Users configure their own LLM/API keys outside this repository. The harness must not store, collect, upload, or print key values; must not connect to brokers; and must not convert TradingAgents output into order intent, broker action, or execution plans. |
+| [TauricResearch/TradingAgents](https://github.com/TauricResearch/TradingAgents) | `documented-adapter` / `optional-bridge` | User-selected external LLM multi-agent analysis engine. Users may run TradingAgents locally to produce candidate reports, debate summaries, risk notes, watchlist rationale, or decision evidence, then import the output as a review packet. | Users configure their own LLM/API keys outside this repository. SmartMoney-Cub must not store, collect, upload, or print key values; must not connect to brokers; and must not convert TradingAgents output into order intent, broker action, or execution plans. |
 | Data-source adapters | `reserved-slot` | Normalize read-only exports, toy fixtures, or public examples into manifests. | No broker execution, no account mutation, no credential capture. |
 | Report generators | `reserved-slot` | Render loop reports, case records, and ledgers for local reading. | No upload of private review artifacts. |
-| Agent skills | `reserved-slot` | Improve reviewer, challenger, archivist, and drift-detector workflows. | No role may bypass the harness contract or promote champion rules automatically. |
+| Agent skills | `reserved-slot` | Improve reviewer, challenger, archivist, and drift-detector workflows. | No role may bypass the core safety contract or promote champion rules automatically. |
 | Evaluation / backtest tools | `reserved-slot` | Help evaluate challenger candidates and sample quality. | No future leakage and no execution recommendation surface. |
 | Knowledge-memory tools | `reserved-slot` | Organize Markdown memory, case banks, and evolution ledgers. | No cloud sync requirement and no private trading logic publication. |
 
@@ -48,7 +48,7 @@ Do not label a project `runtime-integrated` until the repository contains the co
 
 UZI-Skill is a strong example of agent-facing financial analysis packaging and a useful companion project for users who already run it in their own agent environment.
 
-In this harness, UZI-Skill should be described carefully:
+In SmartMoney-Cub, UZI-Skill should be described carefully:
 
 - Good: "recommended companion", "ecosystem slot", "external analysis that can be reviewed locally".
 - Good: "its output can become read-only evidence inside a review packet".
@@ -83,7 +83,7 @@ Before adding any new project to the README matrix:
 
 1. Identify the integration status.
 2. State the read-only input or artifact it contributes.
-3. State what the harness must never do with it.
+3. State what SmartMoney-Cub must never do with it.
 4. Confirm public examples remain toy-only.
 5. Confirm the safety declaration appears in any new manifest, decision, outcome, evaluation, registry, doctor, or loop output touched by the integration.
 6. Add tests when the integration becomes runtime behavior.
@@ -93,7 +93,7 @@ Before adding any new project to the README matrix:
 
 ## Human Gate
 
-Integrations may improve review quality, evidence organization, and challenger suggestions. They must not turn the harness into an execution system.
+Integrations may improve review quality, evidence organization, and challenger suggestions. They must not turn SmartMoney-Cub into an execution system.
 
 Champion rule changes remain human-gated:
 

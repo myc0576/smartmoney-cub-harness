@@ -1,6 +1,6 @@
 # Architecture
 
-`smartmoney-cub` is a semi-quant AI decision harness for subjective trading review. The public core stays offline and toy-first, but its boundaries are designed around read-only inputs, provenance, delayed outcomes, and rule evolution.
+SmartMoney-Cub is a local-first, read-only AI trading review system. Its Evidence & Review Core stays offline and toy-first, with boundaries designed around read-only inputs, provenance, delayed outcomes, and rule evolution.
 
 It is not a broker connector or execution layer. Any future account adapter must remain read-only and local.
 
@@ -14,7 +14,7 @@ flowchart TD
     I4["Notes & Watchlists<br/>user-provided"]
   end
 
-  subgraph Core["Harness Core"]
+  subgraph Core["Evidence & Review Core"]
     C1["capture-run"]
     C2["run_manifest.json"]
     C3["decision.json"]
@@ -68,9 +68,9 @@ The architecture allows several input classes, always under review-only semantic
 | Trading notes | User-provided locally | Do not commit private notes |
 | Watchlist files | User-provided locally | Do not commit private watchlists |
 | Broker/QMT export | Local read-only extension | Never execute orders or modify accounts |
-| TongHuaShun/broker screenshots | User-provided locally | Use for local review and structure extraction only |
+| TongHuaShun/broker screenshots | User-provided locally | Converted to structured evidence by external multimodal agents (e.g. Codex or user tools); the core consumes structured evidence only |
 
-Screenshots are a deliberate safety-friendly path: they let a trader review account context without giving the harness execution permissions.
+Screenshots are a deliberate safety-friendly path: they let a trader review account context without giving SmartMoney-Cub execution permissions. Image understanding itself is an external capability — the Evidence & Review Core has no built-in OCR or image parsing and only consumes structured evidence.
 
 ## Decision Artifact Flow
 

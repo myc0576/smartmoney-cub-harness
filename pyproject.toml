@@ -5,28 +5,24 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "smartmoney-cub"
 version = "0.1.0"
-description = "A read-only trading companion harness for decision logging, outcome review, and rule evolution."
+description = "SmartMoney-Cub: a local-first, read-only AI trading review system for decision logging, evidence capture, outcome review, and human-approved rule evolution."
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
 authors = [{ name = "smartmoney-cub contributors" }]
 keywords = [
-  "agent-harness",
-  "agent-loop",
-  "self-evolving-agent",
-  "human-in-the-loop",
+  "trading-review",
   "decision-review",
   "trading-journal",
   "subjective-trading",
   "semi-quant",
   "rule-evolution",
-  "mcp",
-  "skills",
-  "context-engineering",
-  "workflow-engineering",
+  "human-in-the-loop",
+  "local-first",
   "read-only",
   "decision-log",
-  "backtesting",
+  "evidence",
+  "agent-loop",
 ]
 classifiers = [
   "Development Status :: 3 - Alpha",
@@ -39,6 +35,12 @@ classifiers = [
   "Topic :: Office/Business :: Financial",
 ]
 dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/myc0576/SmartMoney-Cub"
+Repository = "https://github.com/myc0576/SmartMoney-Cub"
+Issues = "https://github.com/myc0576/SmartMoney-Cub/issues"
+Changelog = "https://github.com/myc0576/SmartMoney-Cub/blob/main/CHANGELOG.md"
 
 [project.optional-dependencies]
 dev = ["pytest>=8"]

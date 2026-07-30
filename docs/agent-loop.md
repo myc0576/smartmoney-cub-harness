@@ -1,6 +1,6 @@
 # Agent Loop
 
-Coding agents should treat this repository as a read-only review harness.
+Coding agents should treat this repository as SmartMoney-Cub's read-only Evidence & Review Core.
 
 ## Trigger Words
 

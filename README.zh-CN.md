@@ -1,12 +1,13 @@
-# smartmoney-cub
+# SmartMoney-Cub
 
 <div align="center">
 
-![smartmoney-cub cover](assets/smartmoney-cub-cover.png)
+![SmartMoney-Cub 封面](assets/smartmoney-cub-cover.png)
 
-## 游资复盘引擎 · 让每一次决策都变成系统的进化
+**OPEN SOURCE · LOCAL-FIRST · READ-ONLY**
 
-*"散户靠感觉，高手靠系统。把你的感觉，变成可复盘、可验证、可进化的规则。"*
+AI-assisted trading review and evidence system
+本地优先的 AI 交易复盘与证据系统
 
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
@@ -14,12 +15,8 @@
 [![Read-only](https://img.shields.io/badge/mode-read--only-brightgreen)](docs/safety.md)
 [![Local-first](https://img.shields.io/badge/local--first-no%20telemetry-success)](docs/privacy.md)
 [![Agent-ready](https://img.shields.io/badge/agent--ready-loop%20artifacts-blueviolet)](docs/agent-loop.md)
-[![UZI-Skill](https://img.shields.io/badge/ecosystem-UZI--Skill-orange)](docs/integrations.md)
-[![TradingAgents-ready](https://img.shields.io/badge/TradingAgents--ready-optional--adapter-informational)](docs/tradingagents-adapter.md)
 
-只读 AI 复盘与规则进化 harness · 决策记录 · D1/D3 结果验证 · 本地 Markdown 记忆 · challenger -> champion 治理
-
-[30 秒上手](#30-秒上手) · [5 秒体验闭环](#5-秒体验复盘闭环) · [核心理念](#核心理念系统--感觉) · [AI 助手接入](#给-ai-助手只读复盘协作) · [开源生态矩阵](#优秀开源项目集成矩阵) · [安全边界](#安全边界你的系统只属于你) · [CLI](#cli-commands)
+[English](README.md)
 
 `READ_ONLY_NO_ORDER_NO_CANCEL_NO_TRADE`
 
@@ -27,28 +24,51 @@
 
 ---
 
-游资和散户最大的区别是什么？不是信息差，不是资金量，而是系统。
+SmartMoney-Cub 是一个本地优先、只读的 AI 交易复盘系统，把交易计划、证据和延迟结果沉淀为可审计案例、长期记忆与需人工批准的规则候选。
 
-高手每一次决策都有计划、有证据、有复盘、有规则迭代。普通人最容易掉进的坑，是复盘时翻聊天记录、翻交易软件、翻截图，折腾半天还是说不清当时为什么买、错在什么地方、下一次该怎么改。
+它的引擎——**证据与复盘核心（Evidence & Review Core）**——记录你当时的计划、手上的证据、D1/D3 的实际结果，以及哪条规则候选值得进入 challenger 试炼。任何规则在你显式批准之前都不会成为 champion。
 
-`smartmoney-cub` 是一个本地优先的 AI 复盘引擎。它帮你记录每一次决策的完整逻辑，追踪 D1/D3 的结果，把教训变成规则，把规则沉淀成系统。
+它**不是**选股机器人、预测系统、自动交易系统，也不是完整量化平台。
 
-它不是个股建议软件，不是自动交易系统，不是券商连接器，也不是财务建议系统。它是你的私人只读交易系统训练器。
+## 为什么需要 SmartMoney-Cub
 
-## 30 秒上手
+高手每一次决策都有计划、有证据、有延迟验证、有规则迭代。普通人复盘时翻聊天记录、翻交易软件、翻截图，折腾半天还是说不清当时为什么买、错在什么地方、下一次该怎么改。
 
-任何 agent 里丢一句话，让它按本仓库的安全合同跑 toy 离线闭环。公开仓库只使用 toy offline data。
+SmartMoney-Cub 把复盘结构化为这些问题：
 
-| 你用的 agent | 直接丢这句 |
+- 决策当时的 thesis 是什么？
+- invalidation、time stop、give-up conditions 是否写清楚？
+- 数据源、available time、data quality 是否可靠？
+- D1/D3 之后结果如何？
+- 这次失败是执行问题、证据问题，还是规则问题？
+- 有没有值得进入 challenger 状态的规则候选？
+
+单次判断会忘，系统会进化。
+
+## 当前已实现的能力
+
+| 能力 | 状态 |
 | --- | --- |
-| Claude Code | `阅读 AGENTS.md 和 docs/harness-contract.md，运行 smcub loop --preset toy --agent-trigger "自进化"，只做只读复盘，不连接券商，不下单。` |
-| Codex / OpenAI CLI | `在这个仓库里按 README 跑 smartmoney-cub toy loop：smcub loop --preset toy --agent-trigger "自进化"，然后阅读 loop_report.md 和 trace.jsonl。` |
-| Cursor | `请按 docs/agent-loop.md 使用本项目，跑 toy loop 并总结复盘产物；所有规则更新只能保持 challenger 状态。` |
-| Gemini CLI | `请阅读 docs/harness-contract.md，执行 toy offline loop，确认输出包含 READ_ONLY_NO_ORDER_NO_CANCEL_NO_TRADE。` |
-| OpenCode / OpenClaw | `帮我用这个仓库做一次只读复盘演示：运行 smcub doctor，再运行 smcub loop --preset toy --agent-trigger "自进化"。` |
-| CLI 直用 | `git clone https://github.com/myc0576/smartmoney-cub.git && cd smartmoney-cub && pip install -e ".[dev]" && smcub loop --preset toy --agent-trigger "自进化"` |
+| 离线 toy 复盘闭环（`smcub loop --preset toy`） | 已实现 |
+| 带溯源与安全校验的决策记录 | 已实现 |
+| D1/D3 延迟结果验证（不偷看未来） | 已实现 |
+| 本地 Markdown 案例记忆与进化台账 | 已实现 |
+| challenger → champion 规则治理，champion 变更必须人工确认 | 已实现 |
+| CLI 输出前 redaction | 已实现 |
+| 本地私有 CSV 自进化循环（`smcub self-evolve`） | 已实现 |
+| TradingAgents 报告导入（可选，用户自行配置） | documented adapter / optional bridge |
+| 截图 / 图像理解 | 外部能力——见[安全与局限](#安全与局限) |
 
-装好后最常用的安全命令：
+## 60 秒上手
+
+```bash
+git clone https://github.com/myc0576/SmartMoney-Cub.git
+cd SmartMoney-Cub
+pip install -e ".[dev]"
+smcub loop --preset toy --agent-trigger "自进化"
+```
+
+装好后最常用的只读命令：
 
 ```bash
 smcub doctor
@@ -57,35 +77,50 @@ smcub loop --preset toy --agent-trigger "自进化"
 smcub inspect-artifacts <run_dir>
 ```
 
-本地私有 CSV 复盘可以使用自进化流程，但 champion 规则变更仍然必须人工确认：
+用 coding agent？丢一句话即可：
 
-```bash
-smcub self-evolve --input-csv path/to/private_cases.csv --max-iterations 20 --time-budget-min 10 --horizon d1
-smcub confirm-promotion state/self_evolve/<loop_id>/promotion_packet.json --decision promote --note "manual approval"
+> 阅读 `AGENTS.md` 和 `docs/harness-contract.md`，运行 `smcub loop --preset toy --agent-trigger "自进化"`，只做只读复盘，不连接券商，不下单。
+
+公开仓库只使用 toy 离线数据。
+
+## 工作原理
+
+```text
+Inputs 输入
+  ↓
+Capture Decisions & Evidence 记录决策与证据
+  ↓
+Validate Provenance & Safety 校验溯源与安全
+  ↓
+D1 / D3 Outcome Review 延迟结果验证
+  ↓
+Memory & Challenger Rule 记忆与规则候选
+  ↓
+Explicit Human Approval 人工显式批准
 ```
 
-## 5 秒体验复盘闭环
+| 环节 | 发生什么 |
+| --- | --- |
+| 记录 | 计划、观察和证据被记录为可审计产物 |
+| 校验 | 检查溯源、available time、数据质量与安全契约；任何 `available_at > decision_time` 的数据源直接校验失败 |
+| 结果验证 | 等 D1/D3 结果出现后再评价，不偷看未来 |
+| 记忆与规则 | 复盘沉淀为本地 Markdown 记忆，教训生成 challenger 规则候选 |
+| 人工批准 | champion 变更只能通过 `smcub confirm-promotion`——永不自动 |
 
-真正有价值的复盘，不是看一眼盈亏就完事，而是把每一次判断拆成：计划是什么、证据是什么、结果是什么、下次怎么改。
+可选的外部分析（如 TradingAgents 报告、多模态 agent 的输出）只能以**证据（evidence only）**身份进入这条链路。
 
-一条命令跑完整个 toy 闭环：
+## 输出产物
 
-```bash
-git clone https://github.com/myc0576/smartmoney-cub.git
-cd smartmoney-cub
-pip install -e ".[dev]"
-smcub loop --preset toy --agent-trigger "自进化"
-```
+每次 loop 运行都会在本地生成：
 
-运行后会在本地生成：
+- `loop_report.md` — 复盘报告
+- `case_record.json` — 可审计案例
+- `memory.md` — 可携带的 Markdown 案例记忆
+- `evolution_ledger.jsonl` — 规则进化台账
+- `trace.jsonl` — 逐步执行轨迹
 
-- `loop_report.md`
-- `trace.jsonl`
-- `case_record.json`
-- `memory.md`
-- `evolution_ledger.jsonl`
-
-输出摘要会保持这个形状：
+<details>
+<summary>loop 输出摘要 JSON 示例</summary>
 
 ```json
 {
@@ -99,165 +134,10 @@ smcub loop --preset toy --agent-trigger "自进化"
 }
 ```
 
-## 核心理念：系统 > 感觉
+</details>
 
-单次判断会忘，系统会进化。
-
-`smartmoney-cub` 把一次复盘拆成一条可审计链路：
-
-```text
-Plan -> Observe -> Record -> Outcome -> Evaluate -> Memory -> Rule Candidate
-```
-
-这条链路对应的是：
-
-| 环节 | 作用 |
-| --- | --- |
-| Plan | 写清楚当时的计划、假设和风险条件 |
-| Observe | 记录只读观察，不把观察变成买卖指令 |
-| Record | 生成 manifest、decision、trace 等可审计产物 |
-| Outcome | 等 D1/D3 结果出现后再评价，不偷看未来 |
-| Evaluate | 检查决策质量、数据质量和安全合同 |
-| Memory | 把复盘变成本地 Markdown 记忆 |
-| Rule Candidate | 只提出 challenger 规则候选，不自动改 champion |
-
-每一次错误都应该被拆解，每一条规则都应该被验证或淘汰。这个项目做的不是预测，而是帮你把主观判断训练成可复盘的系统。
-
-## 给普通用户
-
-你不需要券商 API，不需要量化背景，也不需要把私有资料放进公开仓库。你可以在本地整理这些只读输入：
-
-- 交易计划文本。
-- 交易日志 CSV。
-- 同花顺或券商截图。
-- 只读导出文件。
-- 手写复盘笔记。
-- toy offline 示例，用来先学习流程。
-
-Harness 帮你结构化这些问题：
-
-- 当时的 thesis 是什么？
-- invalidation、time stop、give-up conditions 是否写清楚？
-- 数据源、available time、data quality 是否可靠？
-- D1/D3 之后结果如何？
-- 这次失败是执行问题、证据问题，还是规则问题？
-- 有没有值得进入 challenger 状态的规则候选？
-
-## 给 AI 助手：只读复盘协作
-
-AI 助手在这个仓库里只能扮演 reviewer、challenger、archivist、drift detector 或 systems assistant。它们帮助你复盘，不替你承担交易动作。
-
-| 角色 | 可以做什么 | 不能做什么 |
-| --- | --- | --- |
-| Reviewer | 总结计划、证据、延迟结果和复盘评分 | 把复盘结论改写成买卖指令 |
-| Challenger | 生成反方证据问题和缺失风险清单 | 只挑支持原判断的证据 |
-| Archivist | 把本地产物整理成可携带 Markdown 记忆 | 把真实账户、截图或私有路径提交到公开仓库 |
-| Drift Detector | 对比当前行为和历史规则 | 绕过指标与人工确认提升 champion |
-| Systems Assistant | 拆解目标、风险、心理和结果 | 覆盖人的最终判断或执行交易 |
-
-安全 agent workflow：
-
-1. 读 `AGENTS.md` 和 [docs/harness-contract.md](docs/harness-contract.md)。
-2. 运行 `smcub doctor`。
-3. 运行 `smcub loop --preset toy --agent-trigger "自进化"`。
-4. 打开 `loop_report.md` 和 `trace.jsonl`。
-5. 提出复盘、安全、redaction、schema 或 workflow 改进。
-6. 规则更新保持 challenger 状态。
-7. champion 变更只通过显式人工确认路径发生。
-
-详见 [docs/agent-loop.md](docs/agent-loop.md) 和 [docs/agent-integration.md](docs/agent-integration.md)。
-
-## 优秀开源项目集成矩阵
-
-这个 harness 会持续预留优秀开源项目的接入位。集成的目标不是制造更激进的交易信号，而是把外部工具的输出纳入只读复盘、证据整理和规则治理。
-
-| 项目 / 类别 | 当前状态 | 可以怎样接入 harness | 安全边界 |
-| --- | --- | --- | --- |
-| [wbh604/UZI-Skill](https://github.com/wbh604/UZI-Skill) | 推荐搭配 / 生态接入位 | 作为外部分析报告或 agent skill 灵感来源，输出只能作为本地复盘材料进入 reviewer / challenger 流程 | 不声明内置运行时集成；不把分析结论变成买卖指令 |
-| [TauricResearch/TradingAgents](https://github.com/TauricResearch/TradingAgents) | optional documented adapter / 用户自选外部引擎 | 用户本地运行 TradingAgents 生成多智能体分析/候选报告，或显式开启 optional local bridge 生成只读 review packet；该 packet 进入 reviewer / challenger / D1-D3 outcome review / rule candidate 流程 | 用户自行配置 LLM/API key；harness 不保存、不收集、不上传 key；不连接券商；不下单；不把 TradingAgents 输出直接当交易指令 |
-| 数据源适配项目 | 预留 | 只读导出、toy fixture、公开样例 schema | 不接 broker execution，不写账户，不下单 |
-| 报告生成项目 | 预留 | 把 `loop_report.md`、case record、ledger 转成更好的本地阅读材料 | 不上传私有复盘，不发布真实持仓 |
-| Agent skill 项目 | 预留 | 增强 reviewer、challenger、archivist、drift detector 的协作体验 | 不允许越权到交易执行 |
-| 评估 / 回测项目 | 预留 | 帮助评估规则候选和样本质量 | 不跳过 D1/D3 provenance 与 future-leakage 检查 |
-| 知识记忆项目 | 预留 | 管理本地 Markdown memory、case bank、evolution ledger | 不上传私有交易逻辑 |
-
-接入规则见 [docs/integrations.md](docs/integrations.md)。
-
-## 可选接入 TradingAgents
-
-TradingAgents 适合已经会配置 LLM provider、并希望把外部多智能体金融分析能力接入本地复盘系统的用户。默认 toy loop 不需要 TradingAgents，也不需要任何 LLM/API key；`smartmoney-cub` 本身不托管、不读取明文、不提交、不上传 TradingAgents 的 key。
-
-推荐两种模式：
-
-1. `report-only mode`：用户独立运行 TradingAgents，把本地报告导入 harness，生成只读 review packet。
-2. `optional local bridge mode`：用户已经在本地安装并配置 TradingAgents 后，显式传入 `--allow-network` 和 `--ack-external-llm`，由 adapter 包装外部分析结果为 review packet。
-
-```bash
-# report-only：用户先在 TradingAgents 中生成报告，然后导入本 harness
-smcub tradingagents-ingest \
-  --report path/to/tradingagents_report.md \
-  --ticker 600519.SS \
-  --analysis-date 2026-07-06 \
-  --output artifacts/tradingagents_review_packet.json
-
-# optional local bridge：仅当用户本地已经安装并配置 TradingAgents 后使用
-smcub tradingagents-doctor
-smcub tradingagents-run \
-  --ticker 600519.SS \
-  --analysis-date 2026-07-06 \
-  --output artifacts/tradingagents_review_packet.json \
-  --allow-network \
-  --ack-external-llm
-```
-
-TradingAgents 的输出只会进入 reviewer / challenger / evidence / case-review 流程。它不能成为买入、卖出、下单、撤单、自动执行或账户操作的指令；任何 rule candidate 进入 champion 仍然必须由人显式确认。
-
-## 安全边界：你的系统，只属于你
-
-交易逻辑和复盘记忆是私有资产。`smartmoney-cub` 的设计原则是：你的交易系统只在你本地进化。
-
-每个 manifest、decision、outcome、evaluation、registry、doctor output 和 loop output 都必须携带：
-
-```text
-READ_ONLY_NO_ORDER_NO_CANCEL_NO_TRADE
-```
-
-项目默认：
-
-- Local-first。
-- Offline by default。
-- No telemetry。
-- No upload。
-- No trading execution。
-- No broker automation。
-- CLI 输出前先 redaction。
-- 公开仓库只使用 toy examples。
-
-它明确不做：
-
-- 不下单。
-- 不撤单。
-- 不修改账户。
-- 不自动化券商。
-- 不连接真实交易执行。
-- 发布真实交易记录、真实 watchlist、账户数据、私有策略 prompt、私有路径、credentials 或 cookies。
-
-运行：
-
-```bash
-smcub privacy-audit
-smcub doctor
-```
-
-## Privacy
-
-This project does not collect, upload, sell, or learn your trading logic. By default it has no server, no telemetry, no remote database, and no real account connection.
-
-Your private trading logic should remain in local artifacts on your machine. It must not be copied into the public repository. Public examples must stay toy-only.
-
-See [docs/privacy.md](docs/privacy.md) and [docs/public-vs-private-quantkb.md](docs/public-vs-private-quantkb.md).
-
-## CLI Commands
+<details>
+<summary>全部 CLI 命令</summary>
 
 ```bash
 smcub loop --preset toy --agent-trigger "自进化"
@@ -275,23 +155,88 @@ smcub doctor
 smcub validate-manifest examples/sample_run/run_manifest.json
 ```
 
-## Development Checks
+</details>
+
+## 可选集成
+
+集成的目标是给复盘链路提供更好的证据，绝不会把 SmartMoney-Cub 变成执行系统。
+
+| 项目 / 类别 | 状态 | 边界 |
+| --- | --- | --- |
+| [TauricResearch/TradingAgents](https://github.com/TauricResearch/TradingAgents) | documented adapter / optional bridge | 用户自行配置 LLM/API key；key 不保存、不收集、不上传；输出只能以证据身份进入复盘，永不作为下单意图 |
+| [wbh604/UZI-Skill](https://github.com/wbh604/UZI-Skill) | 推荐搭配（外部能力） | 其输出作为本地复盘材料进入 reviewer / challenger 流程 |
+| 多模态 agent（如 Codex、多模态 LLM） | 外部能力 | 截图可由外部多模态 agent 处理并转换为结构化证据；SmartMoney-Cub 只消费结构化证据 |
+| 数据源适配 / 报告生成 / 评估工具 | 预留接入位 | 只读导出与 toy fixture；不接券商执行，不写账户 |
+
+TradingAgents 用法（两种模式都需要你自己在本地安装配置）：
+
+```bash
+# report-only：先在 TradingAgents 生成报告，再导入
+smcub tradingagents-ingest --report path/to/report.md --ticker 600519.SS --analysis-date 2026-07-06
+
+# optional local bridge：需要显式传入选择加入的 flag
+smcub tradingagents-run --ticker 600519.SS --analysis-date 2026-07-06 --allow-network --ack-external-llm
+```
+
+详见 [docs/integrations.md](docs/integrations.md) 和 [docs/tradingagents-adapter.md](docs/tradingagents-adapter.md)。
+
+## 安全与局限
+
+每个 manifest、decision、outcome、evaluation、registry、doctor 和 loop 输出都携带：
+
+```text
+READ_ONLY_NO_ORDER_NO_CANCEL_NO_TRADE
+```
+
+设计原则：
+
+- **Local-first** — 无服务器、无遥测、无上传；你的交易系统只在你本地进化
+- **Read-only** — 不下单、不撤单、不修改账户、不自动化券商
+- **Human-in-the-loop** — champion 规则永不自动变更
+
+如实说明当前局限：
+
+- 不内置 OCR 或图像解析。截图可由外部多模态 agent（如 Codex 或用户自选工具）处理并转换为结构化证据；SmartMoney-Cub 只消费结构化证据。
+- 不提供任何券商连接——这是设计边界，不是缺失功能。
+- 没有预测或选股能力。
+- `evidence_pack.sha256` 是本地篡改检测，不是认证签名。
+- `--sandbox` 只是选择输出目录（`tmp/sandbox`），不是操作系统级沙箱。
+- 公开示例只使用 toy 离线数据。
+
+详见 [docs/safety.md](docs/safety.md) 和 [docs/privacy.md](docs/privacy.md)。
+
+## 文档
+
+- [docs/harness-contract.md](docs/harness-contract.md) — 核心安全契约（技术文件名保留以兼容）
+- [docs/architecture.md](docs/architecture.md) — 证据与复盘核心架构
+- [docs/user-guide.md](docs/user-guide.md) — 用户指南
+- [docs/agent-loop.md](docs/agent-loop.md) / [docs/agent-integration.md](docs/agent-integration.md) — coding agent 协作
+- [docs/decision-schema.md](docs/decision-schema.md) — 决策记录 schema
+- [docs/evolution-loop.md](docs/evolution-loop.md) / [docs/memory-loop.md](docs/memory-loop.md) — 规则与记忆闭环
+- [docs/integrations.md](docs/integrations.md) — 集成策略
+- [docs/public-vs-private-quantkb.md](docs/public-vs-private-quantkb.md) — 公开/私有边界
+
+## Roadmap
+
+- 更丰富的结构化证据导入格式（承接外部多模态 agent 的输出）
+- 更好的本地复盘报告渲染
+- challenger 规则试炼的更多评估指标
+- 更多 documented adapter（只读、仅证据）
+
+Roadmap 永远不会包含下单执行、券商自动化或 champion 自动变更。
+
+## 参与贡献
+
+1. 阅读 [AGENTS.md](AGENTS.md) 和 [docs/harness-contract.md](docs/harness-contract.md)。
+2. 在所有输出面保留安全声明。
+3. 所有示例和测试只用 toy 离线数据。
 
 ```bash
 pip install -e ".[dev]"
 pytest -q
 python -m smartmoney_cub.cli doctor
-python -m smartmoney_cub.cli --help
 ```
-
-## Public Boundary
-
-The public repo can include schemas, loop runtime, toy examples, redaction, case bank, local Markdown memory format, evolution ledger, challenger/champion governance, integration guidance, and agent runbooks.
-
-The public repo must not include real trades, real watchlists, account data, private QMT paths, private strategy prompts, key stock-picking logic, secret scoring weights, credentials, cookies, or local private workspace paths.
-
-`READ_ONLY_NO_ORDER_NO_CANCEL_NO_TRADE` remains the public boundary and runtime safety declaration.
 
 ## License
 
-MIT. See [LICENSE](LICENSE).
+MIT，见 [LICENSE](LICENSE)。

@@ -37,11 +37,11 @@ Agents may help structure these local inputs:
 
 These inputs are for local review and structured analysis only. They must not be used to place orders, cancel orders, modify accounts, or generate public examples with real holdings or real trading records.
 
-Optional TradingAgents reports may enter this flow as user-configured external LLM analysis artifacts. TradingAgents credentials stay outside this repository and must never be committed, printed as plaintext, or captured in harness artifacts.
+Optional TradingAgents reports may enter this flow as user-configured external LLM analysis artifacts. TradingAgents credentials stay outside this repository and must never be committed, printed as plaintext, or captured in SmartMoney-Cub artifacts.
 
 ## Agent Rules
 
-- Never ask the harness to place or cancel orders.
+- Never ask SmartMoney-Cub to place or cancel orders.
 - Never infer missing invalidation fields.
 - Never soften future-leakage failures.
 - Never put private user data into public examples.

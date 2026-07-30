@@ -6,7 +6,7 @@ The project is built around review, restraint, evidence, and human-machine co-ev
 
 The useful part of 易经 here is not divination. It is a vocabulary for cycle, timing, position, change, restraint, and opposing evidence.
 
-| 易经思想 | Harness 模块 | 工程化含义 |
+| 易经思想 | Evidence & Review Core 模块 | 工程化含义 |
 | ---- | ---------- | ----- |
 | Market Regime / Sentiment Cycle | Decision labels, outcome tags, Markdown memory | Capture whether the market context was early probing, mainline growth, crowded acceleration, widening divergence, or retreat/waiting. |
 | Timing & Position | `decision_time`, `available_at`, D1/D3 horizon | The same pattern can carry different risk depending on where it sits in the emotional cycle. |
@@ -28,7 +28,7 @@ These labels never imply prediction. They help the trader ask: what did I believ
 
 Qian Xuesen-style systems engineering appears as decomposition, integration, feedback, and human-machine collaboration.
 
-| 系统工程思想 | Harness 模块 | 工程化含义 |
+| 系统工程思想 | Evidence & Review Core 模块 | 工程化含义 |
 | ------ | ---------- | ----- |
 | Goal Tree | Review notes, future goal records, rule registry | Separate annual, monthly, single-trade, and review goals so one outcome does not define the system. |
 | Decomposition & Integration | `manifest`, `decision`, `outcome`, `evaluation` | Break market state, theme, recognizability, position, risk, psychology, and outcome into fields, then integrate them into review artifacts. |
@@ -38,7 +38,7 @@ Qian Xuesen-style systems engineering appears as decomposition, integration, fee
 
 ## Semi-Quant Posture
 
-`smartmoney-cub` sits between pure discretionary trading and traditional quant systems.
+SmartMoney-Cub sits between pure discretionary trading and traditional quant systems.
 
 It does not begin with a fixed alpha model. It begins with the messy human decision: thesis, context, emotion, timing, invalidation, evidence, and later outcome.
 

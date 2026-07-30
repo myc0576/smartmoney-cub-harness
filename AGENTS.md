@@ -1,10 +1,10 @@
 # AGENTS.md
 
-This repository is the public, offline core of `smartmoney-cub`.
+This repository is the public, offline core of **SmartMoney-Cub** — the Evidence & Review Core.
 
 ## Contract
 
-Read `docs/harness-contract.md` first. The project is a read-only decision logging and review harness. It is not a stock picker, broker connector, or financial advice system.
+Read `docs/harness-contract.md` first (the technical file name is kept for compatibility). SmartMoney-Cub is a local-first, read-only AI trading review system for decision logging, evidence capture, and outcome review. It is not a stock picker, broker connector, or financial advice system.
 
 ## Safety Rules
 

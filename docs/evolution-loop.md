@@ -1,6 +1,6 @@
 # Evolution Loop
 
-The harness treats rules as reviewable artifacts rather than instant truth.
+SmartMoney-Cub treats rules as reviewable artifacts rather than instant truth.
 
 ```mermaid
 flowchart LR

@@ -4,7 +4,7 @@ This file mirrors `AGENTS.md` for agent compatibility. The canonical contract is
 
 ## Project Shape
 
-`smartmoney-cub` is a small, offline Python package:
+SmartMoney-Cub (Python package `smartmoney_cub`) is a small, offline package implementing the Evidence & Review Core:
 
 - `src/smartmoney_cub/manifest.py` validates provenance and anti-future-leakage rules.
 - `src/smartmoney_cub/run_capture.py` captures stdout, stderr, metadata, manifests, and decisions from offline commands.

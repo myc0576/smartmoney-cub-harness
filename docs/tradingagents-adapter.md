@@ -1,6 +1,6 @@
 # TradingAgents Optional Adapter
 
-This document describes the optional TradingAgents adapter boundary for `smartmoney-cub`.
+This document describes the optional TradingAgents adapter boundary for SmartMoney-Cub.
 
 ```text
 READ_ONLY_NO_ORDER_NO_CANCEL_NO_TRADE
@@ -8,7 +8,7 @@ READ_ONLY_NO_ORDER_NO_CANCEL_NO_TRADE
 
 ## What This Is
 
-TradingAgents can be used as a user-selected external LLM multi-agent financial analysis engine. Its reports may be wrapped into local review packets so `smartmoney-cub` can preserve provenance, risk notes, reviewer questions, challenger questions, and later D1/D3 review context.
+TradingAgents can be used as a user-selected external LLM multi-agent financial analysis engine. Its reports may be wrapped into local review packets so SmartMoney-Cub can preserve provenance, risk notes, reviewer questions, challenger questions, and later D1/D3 review context.
 
 The adapter is local-first and optional. It does not make TradingAgents a default runtime dependency.
 
@@ -20,7 +20,7 @@ TradingAgents output remains evidence for review. It is not a trading instructio
 
 ## Safety Contract
 
-- The harness remains `READ_ONLY_NO_ORDER_NO_CANCEL_NO_TRADE`.
+- SmartMoney-Cub remains `READ_ONLY_NO_ORDER_NO_CANCEL_NO_TRADE`.
 - Default toy loops do not need TradingAgents.
 - Default toy loops do not need any LLM/API key.
 - Public examples stay toy-only.
@@ -32,9 +32,9 @@ TradingAgents output remains evidence for review. It is not a trading instructio
 
 ## Setup Model
 
-TradingAgents must be installed and configured by the user in the user's own local environment. The harness does not ship, store, proxy, or collect TradingAgents credentials.
+TradingAgents must be installed and configured by the user in the user's own local environment. SmartMoney-Cub does not ship, store, proxy, or collect TradingAgents credentials.
 
-LLM/API keys stay outside this repository. Configure them according to TradingAgents' own documentation and your local security policy. The harness doctor surfaces only booleans/provider presence, never key values.
+LLM/API keys stay outside this repository. Configure them according to TradingAgents' own documentation and your local security policy. The SmartMoney-Cub doctor surfaces only booleans/provider presence, never key values.
 
 ## Two Modes
 
@@ -50,7 +50,7 @@ smcub tradingagents-ingest \
   --output artifacts/tradingagents_review_packet.json
 ```
 
-This mode is offline from the harness perspective. It reads a local report and writes a redacted review packet.
+This mode is offline from SmartMoney-Cub's perspective. It reads a local report and writes a redacted review packet.
 
 ### Optional Local Bridge Mode
 
@@ -72,7 +72,7 @@ smcub tradingagents-run \
 
 1. The user runs TradingAgents locally or exports a TradingAgents report.
 2. The user imports the report with `smcub tradingagents-ingest`, or explicitly runs `smcub tradingagents-run`.
-3. The harness writes a local `smartmoney_cub_tradingagents_review_packet.v1` packet.
+3. SmartMoney-Cub writes a local `smartmoney_cub_tradingagents_review_packet.v1` packet.
 4. A reviewer agent inspects evidence, risk notes, missing provenance, and D1/D3 follow-up questions.
 5. A challenger agent proposes counter-theses or rule-candidate questions.
 6. A human decides whether any future rule candidate deserves promotion review.
@@ -108,7 +108,7 @@ The packet may include a redacted `report_excerpt`, report filename, hash, provi
 ## Failure Modes
 
 - TradingAgents not installed: `tradingagents-run` returns `status=disabled` with `error.code=tradingagents_not_installed`.
-- API key missing: TradingAgents may fail in the user's local environment; the harness returns a redacted structured error.
+- API key missing: TradingAgents may fail in the user's local environment; SmartMoney-Cub returns a redacted structured error.
 - Network not explicitly allowed: `tradingagents-run` returns `error.code=network_not_allowed`.
 - External LLM not acknowledged: `tradingagents-run` returns `error.code=external_llm_not_acknowledged`.
 - Report missing: `tradingagents-ingest` returns `error.code=report_missing`.
@@ -117,7 +117,7 @@ None of these failures should create a traceback for normal CLI users.
 
 ## Privacy And Redaction
 
-The adapter uses the harness redaction layer before printing or writing packet JSON. Report excerpts are redacted for common credential-like values, cookies, account-like fields, emails, phone numbers, and local absolute paths.
+The adapter uses the core redaction layer before printing or writing packet JSON. Report excerpts are redacted for common credential-like values, cookies, account-like fields, emails, phone numbers, and local absolute paths.
 
 Do not put `.env`, private prompts, real reports, real positions, real fills, cookies, account identifiers, or API key material into git.
 

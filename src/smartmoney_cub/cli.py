@@ -76,6 +76,8 @@ def evaluate_run(run_dir: str | Path, horizon: str = "d1") -> dict[str, Any]:
 def doctor() -> dict[str, Any]:
     return {
         "status": "ok",
+        "product": "SmartMoney-Cub",
+        "component": "Evidence & Review Core",
         "package": "smartmoney-cub",
         "version": __version__,
         "python": sys.version.split()[0],
@@ -97,7 +99,7 @@ def doctor() -> dict[str, Any]:
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="smcub",
-        description="Read-only trading companion harness for decision logging, outcome review, and rule evolution.",
+        description="SmartMoney-Cub Evidence & Review Core: local-first, read-only trading review for decision logging, outcome review, and rule evolution.",
     )
     sub = parser.add_subparsers(dest="command", required=True)
 
