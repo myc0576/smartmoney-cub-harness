@@ -1,0 +1,35 @@
+# SmartMoney-Cub repository attributes.
+# All text files use LF in the index; CRLF is allowed on checkout for
+# native Windows tooling that requires it. Binary artifacts are
+# marked explicitly to avoid diff/merge churn.
+
+* text=auto eol=lf
+
+# Documentation
+*.md text eol=lf
+*.rst text eol=lf
+
+# Source
+*.py text eol=lf
+*.toml text eol=lf
+*.cfg text eol=lf
+*.ini text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf
+*.json text eol=lf
+
+# Agent / contract / runbook
+AGENTS.md text eol=lf
+CLAUDE.md text eol=lf
+AGENT_RUNBOOK.md text eol=lf
+
+# Design assets
+*.svg text eol=lf
+*.html text eol=lf
+
+# Binaries (do not normalize line endings)
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
