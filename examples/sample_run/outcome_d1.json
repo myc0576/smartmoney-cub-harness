@@ -1,0 +1,15 @@
+{
+  "schema": "smartmoney_cub_outcome.v1",
+  "symbol": "TOY.CUB",
+  "horizon": "d1",
+  "decision_time": "2026-06-01T15:30:00+08:00",
+  "entry_date": "20260601",
+  "entry_close": 10.0,
+  "exit_date": "20260602",
+  "exit_close": 10.5,
+  "d1_return_pct": 5.0,
+  "max_adverse_excursion_pct": -2.0,
+  "met_user_pattern": true,
+  "price_source_type": "json_fixture",
+  "safety": "READ_ONLY_NO_ORDER_NO_CANCEL_NO_TRADE"
+}

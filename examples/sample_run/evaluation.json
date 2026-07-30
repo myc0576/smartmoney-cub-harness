@@ -1,0 +1,11 @@
+{
+  "grade": "useful_alert",
+  "failure_tags": [],
+  "scores": {
+    "valid_contract": 1,
+    "false_alert": 0,
+    "missed_opportunity": 0,
+    "risk_contract_violation": 0
+  },
+  "safety": "READ_ONLY_NO_ORDER_NO_CANCEL_NO_TRADE"
+}

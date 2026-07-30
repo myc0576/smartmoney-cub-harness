@@ -1,0 +1,177 @@
+from __future__ import annotations
+
+import json
+import os
+import re
+import shutil
+import subprocess
+import sys
+from pathlib import Path
+
+from smartmoney_cub.schemas import SAFETY_DECLARATION
+
+REPO_ROOT = Path(__file__).resolve().parents[1]
+SRC_PATH = str(REPO_ROOT / "src")
+REQUIRED_STEPS = [
+    "resolve_agent_trigger",
+    "doctor",
+    "observe",
+    "candidate",
+    "plan",
+    "position_check",
+    "outcome",
+    "evaluate",
+    "review",
+    "collect_case",
+    "save_memory",
+    "append_evolution_ledger",
+    "propose_challenger_rule",
+    "generate_report",
+]
+REQUIRED_ARTIFACT_KEYS = [
+    "loop_report",
+    "trace",
+    "case_record",
+    "memory_record",
+    "ledger",
+    "decision_path",
+    "outcome_path",
+    "evaluation_path",
+    "proposed_challenger_rule_path",
+    "rule_registry_path",
+]
+FORBIDDEN_PHRASES = [
+    "buy now",
+    "sell now",
+    "guaranteed",
+    "stock recommendation",
+    "should buy",
+    "sure win",
+]
+ABSOLUTE_PATH_RE = re.compile(r"(?i)([A-Z]:\\|/Users/|/home/)")
+
+
+def run_cli(*args: str) -> subprocess.CompletedProcess[str]:
+    env = dict(os.environ)
+    env["PYTHONPATH"] = SRC_PATH + os.pathsep + env.get("PYTHONPATH", "")
+    return subprocess.run(
+        [sys.executable, "-m", "smartmoney_cub.cli", *args],
+        cwd=REPO_ROOT,
+        env=env,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+
+
+def load_summary(result: subprocess.CompletedProcess[str]) -> dict:
+    assert result.returncode == 0, result.stderr
+    return json.loads(result.stdout)
+
+
+def read_loop_outputs(summary: dict) -> tuple[str, str, list[dict]]:
+    report_text = (REPO_ROOT / summary["loop_report"]).read_text(encoding="utf-8")
+    trace_text = (REPO_ROOT / summary["trace"]).read_text(encoding="utf-8")
+    trace = [json.loads(line) for line in trace_text.splitlines() if line.strip()]
+    return report_text, trace_text, trace
+
+
+def assert_no_local_path_leakage(*texts: str) -> None:
+    for text in texts:
+        assert not ABSOLUTE_PATH_RE.search(text)
+
+
+def assert_forbidden_phrases_absent(*texts: str) -> None:
+    lowered = "\n".join(texts).lower()
+    for phrase in FORBIDDEN_PHRASES:
+        assert phrase not in lowered
+
+
+def test_loop_preset_toy_exits_successfully_and_prints_safe_summary():
+    result = run_cli("loop", "--preset", "toy", "--json")
+
+    summary = load_summary(result)
+
+    assert summary["status"] == "ok"
+    assert summary["loop_name"] == "observe_candidate_plan_position_outcome_review_rule_update"
+    assert summary["preset"] == "toy"
+    assert summary["safety"] == SAFETY_DECLARATION
+    assert summary["champion_mutated"] is False
+    assert summary["network_required"] is False
+    assert summary["telemetry"] is False
+    assert summary["grade"] == "useful_alert"
+    assert SAFETY_DECLARATION in result.stdout
+    assert '"champion_mutated": false' in result.stdout
+
+
+def test_loop_accepts_chinese_and_english_agent_triggers():
+    chinese = load_summary(run_cli("loop", "--preset", "toy", "--agent-trigger", "自进化"))
+    english = load_summary(run_cli("loop", "--preset", "toy", "--agent-trigger", "loop"))
+
+    assert chinese["status"] == "ok"
+    assert english["status"] == "ok"
+    assert chinese["agent_intent"] == "full_loop"
+    assert english["agent_intent"] == "full_loop"
+
+
+def test_loop_generates_report_trace_and_required_artifacts():
+    summary = load_summary(run_cli("loop", "--preset", "toy", "--agent-trigger", "loop", "--horizon", "d1"))
+
+    for key in REQUIRED_ARTIFACT_KEYS:
+        assert (REPO_ROOT / summary[key]).exists(), key
+
+    report_text, trace_text, trace = read_loop_outputs(summary)
+    doctor_output = next(line["output"] for line in trace if line["step"] == "doctor")
+    case_record = json.loads((REPO_ROOT / summary["case_record"]).read_text(encoding="utf-8"))
+    memory_text = (REPO_ROOT / summary["memory_record"]).read_text(encoding="utf-8")
+    ledger_lines = (REPO_ROOT / summary["ledger"]).read_text(encoding="utf-8").splitlines()
+
+    assert [line["step"] for line in trace] == REQUIRED_STEPS
+    assert all(line["safety"] == SAFETY_DECLARATION for line in trace)
+    assert all(line["champion_mutated"] is False for line in trace)
+    assert all(line["no_future_leakage"] is True for line in trace)
+    assert doctor_output["network_required"] is False
+    assert doctor_output["telemetry"] is False
+    assert doctor_output["upload"] is False
+    assert doctor_output["credentials_required"] is False
+    assert doctor_output["github_auth_required"] is False
+    assert doctor_output["external_api_required"] is False
+    assert doctor_output["broker_api_required"] is False
+    assert case_record["safety"] == SAFETY_DECLARATION
+    assert "Smartmoney Cub Local Memory" in memory_text
+    assert ledger_lines and json.loads(ledger_lines[0])["champion_mutated"] is False
+    assert "Smartmoney Cub Agent Loop Report" in report_text
+    assert "champion_mutated: false" in report_text
+    result_text = json.dumps(summary, ensure_ascii=False)
+    assert_no_local_path_leakage(result_text, report_text, trace_text, memory_text)
+    assert_forbidden_phrases_absent(result_text, report_text, trace_text, memory_text)
+
+
+def test_challenger_rule_proposal_does_not_mutate_champion_registry():
+    summary = load_summary(run_cli("loop", "--preset", "toy", "--agent-trigger", "规则进化"))
+    registry = json.loads((REPO_ROOT / summary["rule_registry_path"]).read_text(encoding="utf-8"))
+    proposal = json.loads((REPO_ROOT / summary["proposed_challenger_rule_path"]).read_text(encoding="utf-8"))
+
+    assert registry["champions"] == {}
+    assert proposal["candidate_role"] == "challenger"
+    assert proposal["champion_mutated"] is False
+    assert proposal["requires_human_confirmation"] is True
+
+
+def test_readme_demo_command_shape_works_when_console_script_is_available():
+    smcub = shutil.which("smcub")
+    if smcub is None:
+        result = run_cli("loop", "--preset", "toy", "--agent-trigger", "loop")
+    else:
+        result = subprocess.run(
+            [smcub, "loop", "--preset", "toy", "--agent-trigger", "loop"],
+            cwd=REPO_ROOT,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+
+    summary = load_summary(result)
+
+    assert summary["status"] == "ok"
+    assert summary["safety"] == SAFETY_DECLARATION
